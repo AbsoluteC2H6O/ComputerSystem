@@ -8,7 +8,7 @@ num_iterations = 100 if len(sys.argv) < 2 else int(sys.argv[1])
 version = "v0" if len(sys.argv) < 3 else sys.argv[2]
 
 env = gym.make(f"TwoArmedBandit-{version}") #entorno
-agent = TwoArmedBandit(0.1, 0.9) #agente
+agent = TwoArmedBandit(0.1, 0.5) #valores de alpha y epsilon
 
 env.reset(options={'delay': 1}) #resetear el entorno
 
@@ -18,7 +18,7 @@ for iteration in range(num_iterations):
     _, reward, _, _, _ = env.step(action) #obtener la recompensa
     agent.update(action, reward) #actualizar
     agent.render() #nos sirve para ver la evolucion en la tabla de valores e imprimir por pantalla
-agent.renderRewardTotal()
+agent.renderRewardTotal() #para conocer la ganancia total obtenida
 
 env.reset(options={'delay': 1})
 agent.reset()

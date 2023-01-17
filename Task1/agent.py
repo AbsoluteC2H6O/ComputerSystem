@@ -10,8 +10,6 @@ class TwoArmedBandit():
         self.alpha = alpha #valor de alpha
         self.eps = eps #valor de epsilon
         self.reset() #resetear
-        eps_0_rewards = np.zeros(NUM_ITERATIONS) #values for the ploter 0
-        eps_1_rewards = np.zeros(NUM_ITERATIONS) #values for the ploter 1
 
     #reiniciar las variables y condiciones
     def reset(self):
@@ -49,5 +47,5 @@ class TwoArmedBandit():
 
     #renderizar rewards
     def renderRewardTotal(self):
-        print("\nRewards: {}".format(
+        print("\nRewards Total: {}".format(
             self.rewards[0]  + self.rewards[1]))
