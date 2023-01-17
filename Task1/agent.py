@@ -14,9 +14,9 @@ class TwoArmedBandit():
     def reset(self):
         self.action = 0 #accion
         self.reward = 0 #recompensa
-        self.rewards = np.zeros(self.arms)
         self.iteration = 0 #tasa de aprendizaje
         self.values = np.zeros(self.arms)
+        self.rewards = np.zeros(self.arms)
 
     #valorar las acciones
     def update(self, action, reward):
