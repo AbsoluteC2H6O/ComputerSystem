@@ -1,5 +1,6 @@
 import numpy as np #importamos la lib de objetos de matrices multidimensionales
 
+NUM_ITERATIONS = 100
 #creamos nuestra clase TwoArmedBandit
 class TwoArmedBandit():
 
@@ -9,6 +10,8 @@ class TwoArmedBandit():
         self.alpha = alpha #valor de alpha
         self.eps = eps #valor de epsilon
         self.reset() #resetear
+        eps_0_rewards = np.zeros(NUM_ITERATIONS) #values for the ploter 0
+        eps_1_rewards = np.zeros(NUM_ITERATIONS) #values for the ploter 1
 
     #reiniciar las variables y condiciones
     def reset(self):
@@ -41,5 +44,10 @@ class TwoArmedBandit():
 
     #renderizar
     def render(self):
-        print("Iteration: {}, Action: {}, Reward Actual: {}, Rewards: {}, Values: {}".format(
-            self.iteration, self.action, self.reward, self.rewards, self.values))
+        print("Iteration: {}, Action: {}, Reward Actual: {}, Values: {}".format(
+            self.iteration, self.action, self.reward, self.values))
+
+    #renderizar rewards
+    def renderRewardTotal(self):
+        print("\nRewards: {}".format(
+            self.rewards[0]  + self.rewards[1]))

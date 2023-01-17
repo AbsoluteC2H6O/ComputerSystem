@@ -18,6 +18,7 @@ for iteration in range(num_iterations):
     _, reward, _, _, _ = env.step(action) #obtener la recompensa
     agent.update(action, reward) #actualizar
     agent.render() #nos sirve para ver la evolucion en la tabla de valores e imprimir por pantalla
+agent.renderRewardTotal()
 
 env.reset(options={'delay': 1})
 agent.reset()
@@ -28,6 +29,7 @@ for iteration in range(num_iterations):
     _, reward, _, _, _ = env.step(action)
     agent.update(action, reward)
     agent.render()
+agent.renderRewardTotal()
 
 env.reset(options={'delay': 1})
 agent.reset()
@@ -38,5 +40,6 @@ for iteration in range(num_iterations):
     _, reward, _, _, _ = env.step(action)
     agent.update(action, reward)
     agent.render()
+agent.renderRewardTotal()
 
 env.close() #cierre del entorno
