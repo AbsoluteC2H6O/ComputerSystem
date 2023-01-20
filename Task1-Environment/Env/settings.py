@@ -11,7 +11,8 @@ TEXTURES = {
 pygame.font.init()
 
 FONTS = {
-    'large': pygame.font.Font(BASE_DIR / "assets" / "fonts" / "font.ttf", 64)
+    'large': pygame.font.Font(BASE_DIR / "assets" / "fonts" / "PressStart2P.ttf", 64),
+    'row': pygame.font.Font(BASE_DIR / "assets" / "fonts" / "TitanOne.ttf", 64)
 }
 
 MACHINE_WIDTH, MACHINE_HEIGHT = TEXTURES['machine'].get_size()

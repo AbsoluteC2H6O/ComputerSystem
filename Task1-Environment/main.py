@@ -1,8 +1,13 @@
 #importar modulos
 import sys #lista de directorios/carpetas
 import gym #standard API
-#import gym_environments #entorno para nuestro agente
+from gym.envs.registration import register
 from agent import TwoArmedBandit #importamos nuestra agente
+
+register (
+    id="TwoArmedBandit-v1",
+    entry_point="Env.bandits:TwoArmedBanditEnv",
+)
 
 num_iterations = 100 if len(sys.argv) < 2 else int(sys.argv[1])
 version = "v1" if len(sys.argv) < 3 else sys.argv[2]

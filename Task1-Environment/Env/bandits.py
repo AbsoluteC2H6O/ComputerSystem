@@ -86,8 +86,8 @@ class TwoArmedBanditEnv(gym.Env):
         self.window.blit(settings.TEXTURES['machine'], (50, 100))
 
         # Render the second machine
-        #self.window.blit(
-        #    settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
+        self.window.blit(
+            settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
 
         self._render_props()
 
