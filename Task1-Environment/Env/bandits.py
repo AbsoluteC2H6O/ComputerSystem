@@ -16,7 +16,7 @@ class Arm:
 
 class TwoArmedBanditEnv(gym.Env):
     def __init__(self):
-        self.delay = 0.5
+        self.delay = 3
         self.arms = (Arm(0.5, 1), Arm(0.1, 100))
         self.observation_space = spaces.Discrete(1)
         self.action_space = spaces.Discrete(len(self.arms))
@@ -27,11 +27,16 @@ class TwoArmedBanditEnv(gym.Env):
         pygame.display.set_caption("Two-Armed Bandit Environment")
         self.action = None
         self.reward = None
+        self.rewards = None
 
     def _get_obs(self):
         return 0
 
     def _get_info(self):
+        """#if self.reward is None or self.rewards is None:
+            return
+        self.rewards += self.reward
+        return self.rewards"""
         return {'state': 0}
 
     def reset(self, seed=None, options=None):
@@ -72,15 +77,36 @@ class TwoArmedBanditEnv(gym.Env):
         self.window.blit(arrow, (x - w / 2 - 80, 150 +
                          settings.MACHINE_HEIGHT - h / 2))
 
+        # Effect shade
+        font = settings.FONTS['large']
+        text_obj = font.render(f"{self.reward}", True, (0, 0, 0))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (x+3, 83)
+        self.window.blit(text_obj, text_rect)
+
         # Render the reward
         font = settings.FONTS['large']
-        text_obj = font.render(f"{self.reward}", True, (255, 250, 26))
+        text_obj = font.render(f"{self.reward}", True, (234, 234, 77))
         text_rect = text_obj.get_rect()
         text_rect.center = (x, 80)
         self.window.blit(text_obj, text_rect)
 
+        # Render the rewards
+        """font = settings.FONTS['large']
+        text_obj = font.render(f"{self.rewards}", True, (0, 0, 0))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (300, 80)
+        self.window.blit(text_obj, text_rect)"""
+
+        # Copy
+        font = settings.FONTS['short']
+        text_obj = font.render(settings.TEXT, True, (0, 0, 0))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (200, 30)
+        self.window.blit(text_obj, text_rect)
+
     def render(self):
-        self.window.fill((0, 0, 0))
+        self.window.fill((144, 48, 188))
 
         # Render the first machine
         self.window.blit(settings.TEXTURES['machine'], (50, 100))

@@ -12,10 +12,13 @@ pygame.font.init()
 
 FONTS = {
     'large': pygame.font.Font(BASE_DIR / "assets" / "fonts" / "PressStart2P.ttf", 64),
-    'row': pygame.font.Font(BASE_DIR / "assets" / "fonts" / "TitanOne.ttf", 64)
+    'short': pygame.font.Font(BASE_DIR / "assets" / "fonts" / "PressStart2P.ttf", 10)
 }
 
 MACHINE_WIDTH, MACHINE_HEIGHT = TEXTURES['machine'].get_size()
 
 WINDOW_WIDTH = 150 + MACHINE_WIDTH * 2
 WINDOWS_HEIGHT = 200 + MACHINE_HEIGHT
+
+TEXT = "Two-Armed Bandit - By: Abe & Alfredo"
+TOTAL = "Total:"

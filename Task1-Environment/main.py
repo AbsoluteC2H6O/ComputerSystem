@@ -20,7 +20,7 @@ env.reset(options={'delay': 1}) #resetear el entorno
 for iteration in range(num_iterations):
     action = agent.get_action("random")    
     _, reward, _, _, _ = env.step(action)
-    agent.update(action, reward) 
+    agent.update(action, reward)
     agent.render()
 
 env.close() #cierre del entorno
