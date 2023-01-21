@@ -60,17 +60,29 @@ class TwoArmedBanditEnv(gym.Env):
     def _render_props(self): #metodo privado
         if self.reward is None or self.action is None:
             return
-
+        
         x = 50 + settings.MACHINE_WIDTH / 2
 
         if self.action == 1:
             x += 50 + settings.MACHINE_WIDTH
 
+        # Render the first machine
+        if(self.action ==0):
+            self.window.blit(settings.TEXTURES['machine'], (0, 1000000)) 
+            time.sleep(self.delay)
+            self.window.blit(settings.TEXTURES['machine'], (50, 100)) 
+
+        if(self.action ==1): 
+       # Render the second machine
+            self.window.blit(settings.TEXTURES['machine'], (0, 1000000)) 
+            time.sleep(self.delay)
+            self.window.blit(settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
+
+        pygame.display.update()    
         # Render the action
         arrow = settings.TEXTURES['arrow']
         w, h = arrow.get_size()
-        self.window.blit(arrow, (x - w / 2 - 80, 150 +
-                         settings.MACHINE_HEIGHT - h / 2))
+        self.window.blit(arrow, (x - w / 2 - 80, 150 + settings.MACHINE_HEIGHT - h / 2))
 
         # Render the reward
         font = settings.FONTS['large']
@@ -82,15 +94,7 @@ class TwoArmedBanditEnv(gym.Env):
     def render(self):
         self.window.fill((0, 0, 0))
 
-        # Render the first machine
-        self.window.blit(settings.TEXTURES['machine'], (50, 100))
-
-        # Render the second machine
-        self.window.blit(
-            settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
-
         self._render_props()
-
         pygame.event.pump()
         pygame.display.update()
 
