@@ -27,17 +27,19 @@ class TwoArmedBanditEnv(gym.Env):
         pygame.display.set_caption("Two-Armed Bandit Environment")
         self.action = None
         self.reward = None
-        self.rewards = None
+        self.rewards = 0
 
     def _get_obs(self):
         return 0
 
     def _get_info(self):
-        """#if self.reward is None or self.rewards is None:
-            return
-        self.rewards += self.reward
-        return self.rewards"""
         return {'state': 0}
+
+    def _get_rewards(self):
+        if self.reward is None:
+            return  self.rewards
+        self.rewards += self.reward
+        return self.rewards
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
@@ -56,8 +58,8 @@ class TwoArmedBanditEnv(gym.Env):
         self.reward = self.arms[action].execute()
         observation = self._get_obs()
         info = self._get_info()
-
-        self.render()
+        rewards = self._get_rewards()
+        self.render()   
         time.sleep(self.delay)
 
         return observation, self.reward, False, False, info
@@ -65,12 +67,19 @@ class TwoArmedBanditEnv(gym.Env):
     def _render_props(self): #metodo privado
         if self.reward is None or self.action is None:
             return
-
         x = 50 + settings.MACHINE_WIDTH / 2
 
         if self.action == 1:
             x += 50 + settings.MACHINE_WIDTH
 
+        # Render the first machine
+        if(self.action == 0):
+            self.window.blit(settings.TEXTURES['machine'], (50, 100)) 
+
+        if(self.action == 1): 
+        # Render the second machine
+            self.window.blit(settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
+        
         # Render the action
         arrow = settings.TEXTURES['arrow']
         w, h = arrow.get_size()
@@ -92,11 +101,11 @@ class TwoArmedBanditEnv(gym.Env):
         self.window.blit(text_obj, text_rect)
 
         # Render the rewards
-        """font = settings.FONTS['large']
+        font = settings.FONTS['large']
         text_obj = font.render(f"{self.rewards}", True, (0, 0, 0))
         text_rect = text_obj.get_rect()
         text_rect.center = (300, 80)
-        self.window.blit(text_obj, text_rect)"""
+        self.window.blit(text_obj, text_rect)
 
         # Copy
         font = settings.FONTS['short']
@@ -107,14 +116,6 @@ class TwoArmedBanditEnv(gym.Env):
 
     def render(self):
         self.window.fill((144, 48, 188))
-
-        # Render the first machine
-        self.window.blit(settings.TEXTURES['machine'], (50, 100))
-
-        # Render the second machine
-        self.window.blit(
-            settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
-
         self._render_props()
 
         pygame.event.pump()
