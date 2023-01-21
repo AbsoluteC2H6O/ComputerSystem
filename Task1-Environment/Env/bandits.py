@@ -2,7 +2,9 @@ import random
 import time
 import gym
 from gym import spaces
-import pygame
+import pygame, sys
+from pygame.locals import *
+
 
 from . import settings
 
@@ -123,20 +125,25 @@ class TwoArmedBanditEnv(gym.Env):
         text_rect.center = (925, 655)
         self.window.blit(text_obj, text_rect)
 
-        # Render the first machine
-        if(self.action == 0 and self.reward == 1):
-            self.window.blit(settings.TEXTURES['machine-1'], (50, 100)) 
-            self.window.blit(settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
-        elif(self.action == 0 and self.reward == 0):
-            self.window.blit(settings.TEXTURES['machine'], (50, 100)) 
-            self.window.blit(settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
-        #Render the second machine
-        if(self.action == 1 and self.reward == 100):
-            self.window.blit(settings.TEXTURES['machine-1'], (100 + settings.MACHINE_WIDTH, 100))
-            self.window.blit(settings.TEXTURES['machine'], (50, 100))
-        elif(self.action == 1 and self.reward == 0):
-            self.window.blit(settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
-            self.window.blit(settings.TEXTURES['machine'], (50, 100)) 
+        if(self.iteration % 2 == 0):
+            if(self.action == 0):
+                # Render the first machine
+                self.window.blit(settings.TEXTURES['machine-1'], (50, 100)) 
+                self.window.blit(settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
+            if(self.action == 1):
+                # Render the second machine
+                self.window.blit(settings.TEXTURES['machine-1'], (100 + settings.MACHINE_WIDTH, 100))
+                self.window.blit(settings.TEXTURES['machine'], (50, 100))
+
+        elif(self.iteration % 2 != 0):
+            if(self.action == 0):
+                # Render the first machine
+                self.window.blit(settings.TEXTURES['machine'], (50, 100)) 
+                self.window.blit(settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
+            if(self.action == 1):
+                # Render the second machine
+                self.window.blit(settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
+                self.window.blit(settings.TEXTURES['machine'], (50, 100))
 
         # Render the action
         arrow = settings.TEXTURES['arrow']
