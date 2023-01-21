@@ -16,7 +16,7 @@ class Arm:
 
 class TwoArmedBanditEnv(gym.Env):
     def __init__(self):
-        self.delay = 3
+        self.delay = 0.1
         self.arms = (Arm(0.5, 1), Arm(0.1, 100))
         self.observation_space = spaces.Discrete(1)
         self.action_space = spaces.Discrete(len(self.arms))
@@ -28,6 +28,7 @@ class TwoArmedBanditEnv(gym.Env):
         self.action = None
         self.reward = None
         self.rewards = 0
+        self.iteration = 0
 
     def _get_obs(self):
         return 0
@@ -39,6 +40,7 @@ class TwoArmedBanditEnv(gym.Env):
         if self.reward is None:
             return  self.rewards
         self.rewards += self.reward
+        self.iteration += 1
         return self.rewards
 
     def reset(self, seed=None, options=None):
@@ -47,7 +49,7 @@ class TwoArmedBanditEnv(gym.Env):
         if options is not None:
             if type(options) is not dict:
                 raise RuntimeError("Variable options is not a dictionary")
-            self.delay = options.get('delay', 0.5)
+            self.delay = options.get('delay', 0.1)
 
         observation = self._get_obs()
         info = self._get_info()
@@ -72,47 +74,91 @@ class TwoArmedBanditEnv(gym.Env):
         if self.action == 1:
             x += 50 + settings.MACHINE_WIDTH
 
+        # Text 'Rewards'
+        font = settings.FONTS['short']
+        text_obj = font.render(settings.TOTAL, True, (0, 0, 0))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (860, 30)
+        self.window.blit(text_obj, text_rect)
+
+        # Effect shade rewards
+        font = settings.FONTS['large-1']
+        text_obj = font.render(f"{self.rewards}", True, (0, 0, 0))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (943, 33)
+        self.window.blit(text_obj, text_rect)
+
+        # Render the rewards
+        font = settings.FONTS['large-1']
+        text_obj = font.render(f"{self.rewards}", True, (234, 234, 77))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (940, 30)
+        self.window.blit(text_obj, text_rect)
+
+        # Text 'Two-Armed Bandit - By: Abe & Alfredo'
+        font = settings.FONTS['short']
+        text_obj = font.render(settings.TEXT, True, (0, 0, 0))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (200, 30)
+        self.window.blit(text_obj, text_rect)
+
+        # Text 'Game Number'
+        font = settings.FONTS['short']
+        text_obj = font.render(settings.ITERACION, True, (0, 0, 0))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (830, 655)
+        self.window.blit(text_obj, text_rect)
+
+        # Effect shade iterations
+        font = settings.FONTS['large-1']
+        text_obj = font.render(f"{self.iteration}", True, (0, 0, 0))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (928, 655)
+        self.window.blit(text_obj, text_rect)
+
+        # Iteration number
+        font = settings.FONTS['large-1']
+        text_obj = font.render(f"{self.iteration}", True, (37, 196, 222))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (925, 655)
+        self.window.blit(text_obj, text_rect)
+
         # Render the first machine
-        if(self.action == 0):
+        if(self.action == 0 and self.reward == 1):
+            self.window.blit(settings.TEXTURES['machine-1'], (50, 100)) 
+            self.window.blit(settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
+        elif(self.action == 0 and self.reward == 0):
+            self.window.blit(settings.TEXTURES['machine'], (50, 100)) 
+            self.window.blit(settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
+        #Render the second machine
+        if(self.action == 1 and self.reward == 100):
+            self.window.blit(settings.TEXTURES['machine-1'], (100 + settings.MACHINE_WIDTH, 100))
+            self.window.blit(settings.TEXTURES['machine'], (50, 100))
+        elif(self.action == 1 and self.reward == 0):
+            self.window.blit(settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
             self.window.blit(settings.TEXTURES['machine'], (50, 100)) 
 
-        if(self.action == 1): 
-        # Render the second machine
-            self.window.blit(settings.TEXTURES['machine'], (100 + settings.MACHINE_WIDTH, 100))
-        
         # Render the action
         arrow = settings.TEXTURES['arrow']
         w, h = arrow.get_size()
         self.window.blit(arrow, (x - w / 2 - 80, 150 +
                          settings.MACHINE_HEIGHT - h / 2))
 
-        # Effect shade
+        # Effect shade reward actual
         font = settings.FONTS['large']
         text_obj = font.render(f"{self.reward}", True, (0, 0, 0))
         text_rect = text_obj.get_rect()
         text_rect.center = (x+3, 83)
         self.window.blit(text_obj, text_rect)
 
-        # Render the reward
+        # Render the reward actual
         font = settings.FONTS['large']
         text_obj = font.render(f"{self.reward}", True, (234, 234, 77))
         text_rect = text_obj.get_rect()
         text_rect.center = (x, 80)
         self.window.blit(text_obj, text_rect)
 
-        # Render the rewards
-        font = settings.FONTS['large']
-        text_obj = font.render(f"{self.rewards}", True, (0, 0, 0))
-        text_rect = text_obj.get_rect()
-        text_rect.center = (300, 80)
-        self.window.blit(text_obj, text_rect)
-
-        # Copy
-        font = settings.FONTS['short']
-        text_obj = font.render(settings.TEXT, True, (0, 0, 0))
-        text_rect = text_obj.get_rect()
-        text_rect.center = (200, 30)
-        self.window.blit(text_obj, text_rect)
+        #time.sleep(1)
 
     def render(self):
         self.window.fill((144, 48, 188))
