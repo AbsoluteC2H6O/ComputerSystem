@@ -6,3 +6,5 @@
 
 # Ignora archivos de pycache
 .pyc
+.cpython
+.cpython-38.pyc
