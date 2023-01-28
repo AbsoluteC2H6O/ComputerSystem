@@ -50,6 +50,6 @@ class ValueIteration():
                             self.policy[s] = a
                             bestValue=qa_policy
                             self.values[s] = max(bestValue)
-                            betPolicy = False;
+                            betPolicy = False
                 if betPolicy == False:
                     break
