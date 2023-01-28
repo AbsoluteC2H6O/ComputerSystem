@@ -4,7 +4,7 @@ import time
 import gym #standard API
 from gym.envs.registration import register
 from agent import ValueIteration
-
+# registro Env
 register (
     id="FrozenLake-v2",
     entry_point="Env.frozen_lake:FrozenLakeEnv",
@@ -18,11 +18,10 @@ if "SDL_AUDIODRIVER" in os.environ:
 env = gym.make('FrozenLake-v1', render_mode="human")
 agent = ValueIteration(env.observation_space.n, env.action_space.n, env.P, 0.9)
 
+# Elegir el modo Value o Policy
 agent.solve(100, "Policy")
-# agent.solve(10000, "Policy-Improvement")
 agent.render()
-# agent.solve(10000, "Iteration")
-# agent.render()
+
 observation, info = env.reset()
 terminated, truncated = False, False
 
@@ -33,8 +32,9 @@ while not (terminated or truncated):
     action = agent.get_action(observation)
     observation, current_reward, terminated, truncated, _, = env.step(action)
     if terminated and current_reward > 0:
-        print("Agente completo con exito el juego!")
+        print("\n¡El agente completo con exito el juego!")
     elif terminated:
-        print("Agente no completo el juego de manera exitosa!")
+        print("\nEl agente NO completo el juego de manera exitosa, se fue por el charco.")
+
 time.sleep(2)
 env.close()
