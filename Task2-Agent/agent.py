@@ -19,7 +19,7 @@ class ValueIteration():
 
     def solve(self, iterations, method):
         if method == "Iteration":
-            print("method")
+            print("method value Iteration")
             for _ in range(iterations):
                 for s in range(self.states_n):
                     valuesIteration = [sum([prob * (r + self.gamma * self.values[s_])
@@ -28,18 +28,25 @@ class ValueIteration():
                     self.values[s] = max(valuesIteration)
                     self.policy[s] = np.argmax(np.array(valuesIteration))
         else:
+            print("method policy Iteration")
+            betValueIs = False
+            # while betValueIs:
             for _ in range(iterations):
                 for s in range(self.states_n):
                     valuesPolicy = [sum([prob * (r + self.gamma * self.values[s_])
-                                for prob, s_, r, _ in self.P[s][a]])
-                            for a in range(self.actions_n)]
-                    for s in range(self.states_n):
-                            for a in range(self.actions_n):
-                                bestValue = [sum([prob * (r + self.gamma * self.values[s_])
-                                for prob, s_, r, _ in self.P[s][a]])]
-                                if(bestValue > valuesPolicy):
-                                    self.values[s] = max(bestValue)
-                                    self.policy[s] = a
-                                else:
-                                    self.values[s] = max(valuesPolicy)
-                                    self.policy[s] = np.argmax(np.array(valuesPolicy))
+                                for prob, s_, r, _ in self.P[s][self.policy[s]]])]
+                    self.values[s] = max(valuesPolicy)
+                    self.policy[s] = np.argmax(np.array(valuesPolicy))
+                for s in range(self.states_n):
+                    bestValue = valuesPolicy
+                    for a in range(self.actions_n):
+                        qa_policy = [sum([prob* (r + self.gamma * self.values[s_])
+                        for prob, s_, r, _ in self.P[s][a]])]
+                        if(qa_policy > bestValue):
+                            self.policy[s] = a
+                            bestValue=qa_policy
+                            betValueIs = True
+                            self.values[s] = max(bestValue)
+                        # else:
+                        #     self.values[s] = max(valuesPolicy)
+                        #     self.policy[s] = np.argmax(np.array(valuesPolicy))
