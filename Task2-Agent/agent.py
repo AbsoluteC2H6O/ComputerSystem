@@ -35,17 +35,15 @@ class ValueIteration():
             self.values = np.zeros(self.states_n)
             self.policy = np.zeros(self.states_n)
             diff = 0
-            theta = 1e-2
+            theta = 1e-8 # error
             while True:
                 while True:
-                    # Policy Evaluation
+                # Policy Evaluation
                     for s in range(self.states_n):
                         valueActual = [sum([prob * (r + self.gamma * self.values[s_])
                                     for prob, s_, r, _ in self.P[s][self.policy[s]]])]
                         self.values[s] = np.array(valueActual)
                         diff = max(diff, abs(valueActual - self.values[s]))
-                        # print('diff: ', float(diff))
-                        # print('valor: ', self.values[s])
                     if diff < theta:
                         break
                 # Policy Improvement
@@ -55,9 +53,7 @@ class ValueIteration():
                     self.policy[s] = np.argmax([sum([prob * (r + self.gamma * self.values[s_])
                             for prob, s_, r, _ in self.P[s][a]])
                             for a in range(self.actions_n)])
-                    #actual = np.argmax(action_values))
                     if(best != self.policy[s]):
                         policy_stable = False
-                    #self.policy[s] = np.array(actual)
                 if policy_stable:
                     break
