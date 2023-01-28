@@ -29,24 +29,22 @@ class ValueIteration():
                     self.policy[s] = np.argmax(np.array(valuesIteration))
         else:
             print("method policy Iteration")
-            betValueIs = False
-            # while betValueIs:
             for _ in range(iterations):
+                # Ejecutamos Value iteration por cada estado
                 for s in range(self.states_n):
                     valuesPolicy = [sum([prob * (r + self.gamma * self.values[s_])
                                 for prob, s_, r, _ in self.P[s][self.policy[s]]])]
                     self.values[s] = max(valuesPolicy)
                     self.policy[s] = np.argmax(np.array(valuesPolicy))
+                # Ejecutamos para cada estado el policy iteration
                 for s in range(self.states_n):
                     bestValue = valuesPolicy
                     for a in range(self.actions_n):
                         qa_policy = [sum([prob* (r + self.gamma * self.values[s_])
                         for prob, s_, r, _ in self.P[s][a]])]
+                        # Si la politica nueva es mejor que la que tenemos previa,
+                        # Actualizamos su valor y asignamos esa accion a la politica actual
                         if(qa_policy > bestValue):
                             self.policy[s] = a
                             bestValue=qa_policy
-                            betValueIs = True
                             self.values[s] = max(bestValue)
-                        # else:
-                        #     self.values[s] = max(valuesPolicy)
-                        #     self.policy[s] = np.argmax(np.array(valuesPolicy))

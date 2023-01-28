@@ -19,8 +19,9 @@ env = gym.make('FrozenLake-v1', render_mode="human")
 agent = ValueIteration(env.observation_space.n, env.action_space.n, env.P, 0.9)
 
 agent.solve(10000, "Policy")
-# agent.solve(10000, "Iteration")
-
+agent.render()
+agent.solve(10000, "Iteration")
+agent.render()
 observation, info = env.reset()
 terminated, truncated = False, False
 
@@ -30,6 +31,9 @@ time.sleep(2)
 while not (terminated or truncated):
     action = agent.get_action(observation)
     observation, _, terminated, truncated, _ = env.step(action)
-
+    if terminated:
+        print("Agente completo con exito el juego!")
+    if truncated:
+        print("Agente no completo el jueg de manera exitosa!")
 time.sleep(2)
 env.close()
