@@ -1,14 +1,10 @@
 import time
-
 import numpy as np
-
 import gym
 from gym import spaces
 import pygame
-
 from . import settings
 from .world import World
-
 
 class FrozenLakeEnv(gym.Env):
     metadata = {"render_modes": ["human"], "render_fps": 4}
