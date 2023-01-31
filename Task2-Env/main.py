@@ -1,9 +1,14 @@
+#importar modulos
 import os
-import gym
-import gym_environments
 import time
+import gym #standard API
+from gym.envs.registration import register
 from agent import ValueIteration
-
+# registro Env
+register (
+    id="RobotBattery-v0",
+    entry_point="Env.robot_battery:RobotBatteryEnv",
+)
 # Allowing environment to have sounds
 if "SDL_AUDIODRIVER" in os.environ:
     del os.environ["SDL_AUDIODRIVER"]
@@ -12,7 +17,7 @@ if "SDL_AUDIODRIVER" in os.environ:
 env = gym.make('RobotBattery-v0', render_mode="human")
 agent = ValueIteration(env.observation_space.n, env.action_space.n, env.P, 0.9)
 
-agent.solve(10000)
+agent.solve(10)
 agent.render()
 
 observation, info = env.reset()
