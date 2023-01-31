@@ -10,18 +10,12 @@ register (
     entry_point="Env.v0.robot_battery:RobotBatteryEnv",
 )
 
-# registro Env: "Env.v0.robot_maze:RobotMazeEnv"," / ""
-register (
-    id="RobotMaze-V0",
-    entry_point="Env.v0.robot_maze:RobotMazeEnv",
-)
-
 # Allowing environment to have sounds
 if "SDL_AUDIODRIVER" in os.environ:
     del os.environ["SDL_AUDIODRIVER"]
 
 # RobotBattery-v0, FrozenLake-v1, FrozenLake-v2, RobotMaze-V0
-env = gym.make('RobotBattery-v0', render_mode="human")
+env = gym.make('RobotBattery-v0')
 agent = ValueIteration(env.observation_space.n, env.action_space.n, env.P, 0.9)
 
 agent.solve(100)
