@@ -32,7 +32,7 @@ class RobotBatteryEnv(gym.Env):
         terminated = self.P[self.state][action][0][3]
         self.state = self.P[self.state][action][0][1]
         self.render()
-        time.sleep(0.25)
+        time.sleep(1)
         return self.state, self.reward, terminated, False, {}
 
     def render(self):
