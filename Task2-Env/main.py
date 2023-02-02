@@ -15,10 +15,10 @@ if "SDL_AUDIODRIVER" in os.environ:
     del os.environ["SDL_AUDIODRIVER"]
 
 # RobotBattery-v0, FrozenLake-v1, FrozenLake-v2, RobotMaze-V0
-env = gym.make('RobotBattery-v0')
+env = gym.make('RobotBattery-v0', render_mode="human")
 agent = ValueIteration(env.observation_space.n, env.action_space.n, env.P, 0.9)
 
-agent.solve(100)
+agent.solve(10)
 agent.render()
 
 observation, info = env.reset()

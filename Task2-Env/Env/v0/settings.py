@@ -18,12 +18,12 @@ VIRTUAL_WIDTH = TILE_SIZE * COLS
 VIRTUAL_HEIGHT = TILE_SIZE * ROWS
 
 # Scale factor between virtual screen and window
-H_SCALE = 4
-V_SCALE = 4
+H_SCALE = 1
+V_SCALE = 1
 
 # Resolution of the actual window
-WINDOW_WIDTH = VIRTUAL_WIDTH * H_SCALE
-WINDOW_HEIGHT = VIRTUAL_HEIGHT * V_SCALE
+WINDOW_WIDTH = TILE_SIZE * COLS*0.22
+WINDOW_HEIGHT = TILE_SIZE* ROWS*0.22
 
 # Default pause time between steps (in seconds)
 DEFAULT_DELAY = 0.5
@@ -1541,7 +1541,7 @@ P = {
     # Borde derecho
     239: {
         0: [(0.50, 239, 0.0, False), (0.50, 238, 0.0, False)],
-        1: [(0.50, 239, 0.0, False), (0.50, 255, 0.0, False)],
+        1: [(0.50, 239, 0.0, False), (0.50, 255, 1.0, True)],
         2: [(0.3333333333333333, 239, 0.0, False), (0.3333333333333333, 223, 0.0, False), (0.3333333333333333, 238, 0.0, False)],
         3: [(0.50, 239, 0.0, False), (0.50, 223, 0.0, False)]
     },
@@ -1625,7 +1625,7 @@ P = {
         2: [(0.50, 252, 0.0, False), (0.50, 253, 0.0, False)],
         3: [(0.50, 252, 0.0, False), (0.50, 236, 0.0, False)]
     },
-    252: {
+    253: {
         0: [(0.50, 253, 0.0, False), (0.50, 252, 0.0, False)],
         1: [(0.3333333333333333, 253, 0.0, False), (0.3333333333333333, 237, 0.0, False), (0.3333333333333333, 252, 0.0, False)],
         2: [(0.50, 253, 0.0, False), (0.50, 254, 0.0, False)],
@@ -1634,14 +1634,14 @@ P = {
     254: {
         0: [(0.50, 254, 0.0, False), (0.50, 253, 0.0, False)],
         1: [(0.3333333333333333, 254, 0.0, False), (0.3333333333333333, 238, 0.0, False), (0.3333333333333333, 253, 0.0, False)],
-        2: [(0.50, 254, 0.0, False), (0.50, 255, 0.0, False)],
+        2: [(0.50, 254, 0.0, False), (0.50, 255,1.0, True)],
         3: [(0.50, 254, 0.0, False), (0.50, 238, 0.0, False)]
     },
     # Esquina inferior derecha
     255: {
-        0: [(0.50, 255, 0.0, False), (0.50, 254, 0.0, False)],
-        1: [(0.3333333333333333, 255, 0.0, False), (0.3333333333333333, 239, 0.0, False), (0.3333333333333333, 254, 0.0, False)],
-        2: [(0.3333333333333333, 255, 0.0, False), (0.3333333333333333, 239, 0.0, False), (0.3333333333333333, 254, 0.0, False)],
-        3: [(0.50, 0, 0.0, False), (0.50, 239, 0.0, False)]
+        0: [(1.0, 255, 0, True)],
+        1: [(1.0, 255, 0, True)],
+        2: [(1.0, 255, 0, True)],
+        3: [(1.0, 255, 0, True)]
     }
 }

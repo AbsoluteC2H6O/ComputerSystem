@@ -8,8 +8,8 @@ from .world import World
 
 
 class RobotBatteryEnv(gym.Env):
-    # metadata = {"render_modes": ["human"], "render_fps": 4}
-    def __init__(self, render_mode=None):
+    metadata = {"render_modes": ["human"], "render_fps": 4}
+    def __init__(self, **kwargs):
         self.observation_space = spaces.Discrete(settings.NUM_TILES)
         self.action_space = spaces.Discrete(settings.NUM_ACTIONS)
         self.current_action = 1
