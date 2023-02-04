@@ -9,6 +9,7 @@ from .world import World
 
 class RobotBatteryEnv(gym.Env):
     metadata = {"render_modes": ["human"], "render_fps": 4}
+    
     def __init__(self, **kwargs):
         self.observation_space = spaces.Discrete(settings.NUM_TILES)
         self.action_space = spaces.Discrete(settings.NUM_ACTIONS)
@@ -18,11 +19,10 @@ class RobotBatteryEnv(gym.Env):
         self.delay = settings.DEFAULT_DELAY
         self.P = settings.P
         self.world = World(
-            "Robot  Battery Environment",
+            "Robot Battery Environment",
             self.current_state,
             self.current_action
         )
-        self.reset()
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
@@ -30,16 +30,15 @@ class RobotBatteryEnv(gym.Env):
         if options is not None:
             if not isinstance(options, dict):
                 raise RuntimeError("Variable options is not a dictionary")
-            self.delay = options.get('delay', 0.5)
+            self.delay = options.get('delay', 0.2)
+            
         np.random.seed(seed)
+        
         self.current_state = 0
         self.current_action = 1
         self.world.reset(self.current_state, self.current_action)
-        # Agent robot
-        self.action = 0
-        self.reward = 0.0
-        self.state = 0
-        return self.state, {}
+  
+        return 0, {}
 
     def step(self, action):
         self.current_action = action
@@ -62,24 +61,13 @@ class RobotBatteryEnv(gym.Env):
             terminated
         )
         
-        self.action = action
-        self.reward = self.P[self.state][action][0][2]
-        terminated = self.P[self.state][action][0][3]
-        self.state = self.P[self.state][action][0][1]
-        
         self.render()
         time.sleep(self.delay)
 
         return self.current_state, self.current_reward, terminated, False, {}
-        #
-   
 
     def render(self):
         self.world.render()
-        # print(
-        #     "Action {}, reward {}, state {}".format(
-        #         self.action,
-        #         self.reward,
-        #         self.state))
+   
     def close(self):
         self.world.close()

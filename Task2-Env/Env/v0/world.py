@@ -84,7 +84,17 @@ class World:
                 (self.tilemap.tiles[self.state].x,
                  self.tilemap.tiles[self.state].y)
             )
-
+        for _ in range(settings.ROWS + 1):
+            self.render_surface.blit(
+                settings.TEXTURES['background'],
+                (_*31,
+                    settings.VIRTUAL_HEIGHT -30)
+            )
+        self.render_surface.blit(
+            settings.TEXTURES['battery0-2'],
+            (settings.ROWS*31,
+                settings.VIRTUAL_HEIGHT -30)
+        )
         self.screen.blit(
             pygame.transform.scale(
                 self.render_surface,

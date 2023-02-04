@@ -64,27 +64,32 @@ class World:
     def render(self):
         self.render_surface.fill((0, 0, 0))
 
-        self.tilemap.render(self.render_surface)
+        # self.tilemap.render(self.render_surface)
 
-        self.render_surface.blit(
-            settings.TEXTURES['stool'],
-            (self.tilemap.tiles[0].x, self.tilemap.tiles[0].y)
-        )
+        # self.render_surface.blit(
+        #     settings.TEXTURES['stool'],
+        #     (self.tilemap.tiles[0].x, self.tilemap.tiles[0].y)
+        # )
 
-        if self.render_goal:
-            self.render_surface.blit(
-                settings.TEXTURES['goal'],
-                (self.tilemap.tiles[self.finish_state].x,
-                 self.tilemap.tiles[self.finish_state].y)
-            )
+        # if self.render_goal:
+        #     self.render_surface.blit(
+        #         settings.TEXTURES['goal'],
+        #         (self.tilemap.tiles[self.finish_state].x,
+        #          self.tilemap.tiles[self.finish_state].y)
+        #     )
 
-        if self.render_character:
-            self.render_surface.blit(
-                settings.TEXTURES['character'][self.action],
-                (self.tilemap.tiles[self.state].x,
-                 self.tilemap.tiles[self.state].y)
-            )
+        # if self.render_character:
+        #     self.render_surface.blit(
+        #         settings.TEXTURES['character'][self.action],
+        #         (self.tilemap.tiles[self.state].x,
+        #          self.tilemap.tiles[self.state].y)
+        #     )
 
+        # self.render_surface.blit(
+        #     settings.TEXTURES['ice'][self.action],
+        #     (30,
+        #         settings.VIRTUAL_HEIGHT - 15)
+        # )
         self.screen.blit(
             pygame.transform.scale(
                 self.render_surface,
