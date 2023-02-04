@@ -7,7 +7,7 @@ ROWS = 16
 COLS = 16
 
 # Size of the square tiles used in this environment.
-TILE_SIZE = ROWS * COLS
+TILE_SIZE = 128
 
 NUM_TILES = ROWS * COLS
 NUM_ACTIONS = 4
@@ -18,12 +18,12 @@ VIRTUAL_WIDTH = TILE_SIZE * COLS
 VIRTUAL_HEIGHT = TILE_SIZE * ROWS
 
 # Scale factor between virtual screen and window
-H_SCALE = 1
-V_SCALE = 1
+H_SCALE = 4
+V_SCALE = 4
 
 # Resolution of the actual window
-WINDOW_WIDTH = TILE_SIZE * COLS*0.22
-WINDOW_HEIGHT = TILE_SIZE* ROWS*0.22
+WINDOW_WIDTH = TILE_SIZE * H_SCALE
+WINDOW_HEIGHT = TILE_SIZE * H_SCALE
 
 # Default pause time between steps (in seconds)
 DEFAULT_DELAY = 0.5
@@ -32,10 +32,10 @@ BASE_DIR = pathlib.Path(__file__).parent
 
 # Textures used in the environment
 TEXTURES = {
-    'ice': pygame.image.load(BASE_DIR / "assets" / "graphics" / "block_tiles_blue.png"),
-    'hole': pygame.image.load(BASE_DIR / "assets" / "graphics" / "block_tiles_red.png"),
-    'cracked_hole': pygame.image.load(BASE_DIR / "assets" / "graphics" / "cracked_hole.png"),
-    'goal': pygame.image.load(BASE_DIR / "assets" / "graphics" / "goal.png"),
+    'ice': pygame.image.load(BASE_DIR / "assets" / "graphics" / "fondo.png"),
+    'hole': pygame.image.load(BASE_DIR / "assets" / "graphics" / "battery-lost.png"),
+    'cracked_hole': pygame.image.load(BASE_DIR / "assets" / "graphics" / "explosion.png"),
+    'goal': pygame.image.load(BASE_DIR / "assets" / "graphics" / "battery5.png"),
     'stool': pygame.image.load(BASE_DIR / "assets" / "graphics" / "stool.png"),
     'character': [
         pygame.image.load(BASE_DIR / "assets" / "graphics" / "robot-l.png"),
@@ -49,13 +49,13 @@ TEXTURES = {
 pygame.mixer.init()
 
 # Loading music
-pygame.mixer.music.load(BASE_DIR / "assets" / "sounds" / "ice_village.ogg")
+pygame.mixer.music.load(BASE_DIR / "assets" / "sounds" / "game.ogg")
 
 # Sound effects
 SOUNDS = {
-    'ice_cracking': pygame.mixer.Sound(BASE_DIR / "assets" / "sounds" / "ice_cracking.ogg"),
-    'water_splash': pygame.mixer.Sound(BASE_DIR / "assets" / "sounds" / "water_splash.ogg"),
-    'win': pygame.mixer.Sound(BASE_DIR / "assets" / "sounds" / "win.ogg")
+    'ice_cracking': pygame.mixer.Sound(BASE_DIR / "assets" / "sounds" / "lost-battery.ogg"),
+    'water_splash': pygame.mixer.Sound(BASE_DIR / "assets" / "sounds" / "lost-game.ogg"),
+    'win': pygame.mixer.Sound(BASE_DIR / "assets" / "sounds" / "game-win.ogg")
 }
 
 # Default P matrix
@@ -1634,7 +1634,7 @@ P = {
     254: {
         0: [(0.50, 254, 0.0, False), (0.50, 253, 0.0, False)],
         1: [(0.3333333333333333, 254, 0.0, False), (0.3333333333333333, 238, 0.0, False), (0.3333333333333333, 253, 0.0, False)],
-        2: [(0.50, 254, 0.0, False), (0.50, 255,1.0, True)],
+        2: [(0.50, 254, 0.0, False), (0.50, 255, 1.0, True)],
         3: [(0.50, 254, 0.0, False), (0.50, 238, 0.0, False)]
     },
     # Esquina inferior derecha
