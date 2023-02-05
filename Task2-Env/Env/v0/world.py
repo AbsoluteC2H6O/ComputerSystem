@@ -92,33 +92,54 @@ class World:
                     settings.VIRTUAL_HEIGHT - 30)
             )
 
-        if (current_battery >= 92):
+        if (current_battery >= 91):
             self.render_surface.blit(
                 settings.TEXTURES['battery5'],
                 (settings.ROWS*30.5,
                     settings.VIRTUAL_HEIGHT - 33)
             )
-        if (current_battery <= 91 and current_battery >= 80):
+        if (current_battery <= 90 and current_battery >= 80):
             self.render_surface.blit(
                 settings.TEXTURES['battery4'],
                 (settings.ROWS*30.5,
                  settings.VIRTUAL_HEIGHT - 33)
             )
 
-        if (current_battery >= 50 and current_battery <= 79):
+        if (current_battery >= 70 and current_battery <= 79):
             self.render_surface.blit(
                 settings.TEXTURES['battery3'],
                 (settings.ROWS*30.5,
                  settings.VIRTUAL_HEIGHT - 33)
             )
 
-        if (current_battery >= 30 and current_battery <= 49):
+        if (current_battery >= 60 and current_battery <= 69):
             self.render_surface.blit(
-                settings.TEXTURES['battery0-3'],
+                settings.TEXTURES['battery2'],
                 (settings.ROWS*30.5,
                  settings.VIRTUAL_HEIGHT - 33)
             )
 
+        if (current_battery >= 50 and current_battery <= 59):
+            self.render_surface.blit(
+                settings.TEXTURES['battery1'],
+                (settings.ROWS*30.5,
+                 settings.VIRTUAL_HEIGHT - 33)
+            )
+
+        if (current_battery >= 40 and current_battery <= 49):
+            self.render_surface.blit(
+                settings.TEXTURES['battery0'],
+                (settings.ROWS*30.5,
+                 settings.VIRTUAL_HEIGHT - 33)
+            )
+
+        if (current_battery >= 30 and current_battery <= 39):
+            self.render_surface.blit(
+                settings.TEXTURES['battery0-1'],
+                (settings.ROWS*30.5,
+                 settings.VIRTUAL_HEIGHT - 33)
+            )
+        
         if (current_battery >= 20 and current_battery <= 29):
             self.render_surface.blit(
                 settings.TEXTURES['battery0-2'],
@@ -126,14 +147,21 @@ class World:
                  settings.VIRTUAL_HEIGHT - 33)
             )
 
-        if (current_battery >= 10 and current_battery <= 29):
+        if (current_battery >= 10 and current_battery <= 19):
             self.render_surface.blit(
-                settings.TEXTURES['battery0-1'],
+                settings.TEXTURES['battery0-3'],
                 (settings.ROWS*30.5,
                  settings.VIRTUAL_HEIGHT - 33)
             )
 
-        if (current_battery <= 9):
+        if (current_battery <= 1 and current_battery <= 9):
+            self.render_surface.blit(
+                settings.TEXTURES['battery0-4'],
+                (settings.ROWS*30.5,
+                 settings.VIRTUAL_HEIGHT - 33)
+            )
+
+        if (current_battery == 0):
             self.render_surface.blit(
                 settings.TEXTURES['baterry-lost-point'],
                 (settings.ROWS*30.5,
