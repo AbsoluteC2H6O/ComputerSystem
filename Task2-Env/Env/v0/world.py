@@ -1,8 +1,7 @@
 import pygame
-
+from pygame.locals import *
 from . import settings
 from .tilemap import TileMap
-
 
 class World:
     def __init__(self, title, state, action):
@@ -22,6 +21,7 @@ class World:
         self.render_goal = True
         self.tilemap = None
         self.finish_state = None
+        self.iteration = 0
         self._create_tilemap()
 
     def _create_tilemap(self):
@@ -57,7 +57,8 @@ class World:
                 self.render_character = False
                 settings.SOUNDS['ice_cracking'].play()
                 settings.SOUNDS['water_splash'].play()
-
+        
+        self.iteration += 1
         self.state = state
         self.action = action
 
@@ -84,17 +85,20 @@ class World:
                 (self.tilemap.tiles[self.state].x,
                  self.tilemap.tiles[self.state].y)
             )
+        
         for _ in range(settings.ROWS + 1):
             self.render_surface.blit(
                 settings.TEXTURES['background'],
                 (_*31,
                     settings.VIRTUAL_HEIGHT -30)
             )
+        
         self.render_surface.blit(
             settings.TEXTURES['battery0-2'],
-            (settings.ROWS*31,
-                settings.VIRTUAL_HEIGHT -30)
+            (settings.ROWS*30.5,
+                settings.VIRTUAL_HEIGHT -33)
         )
+        
         self.screen.blit(
             pygame.transform.scale(
                 self.render_surface,
@@ -102,10 +106,36 @@ class World:
             (0, 0)
         )
 
+        # Texto del copy
+        font = settings.FONTS['short-1']
+        text_obj = font.render(f"{settings.COPY}", True, (0, 0, 0))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (90, 513)
+        self.screen.blit(text_obj, text_rect)
+        # Texto del battery
+        font = settings.FONTS['short']
+        text_obj = font.render(f"{settings.BATTERY}", True, (0, 0, 0))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (458, 513)
+        self.screen.blit(text_obj, text_rect)
+        # Texto STEPS
+        font = settings.FONTS['short']
+        text_obj = font.render(f"{settings.STEP}", True, (0, 0, 0))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (270, 513)
+        self.screen.blit(text_obj, text_rect)
+        # Valor STEP
+        font = settings.FONTS['short']
+        text_obj = font.render(f"{self.iteration}", True, (69, 8, 153))
+        text_rect = text_obj.get_rect()
+        text_rect.center = (292, 513)
+        self.screen.blit(text_obj, text_rect)
+
         pygame.event.pump()
         pygame.display.update()
 
     def close(self):
+        pygame.font.quit()
         pygame.mixer.music.stop()
         pygame.mixer.quit()
         pygame.display.quit()

@@ -58,6 +58,17 @@ TEXTURES = {
     ]
 }
 
+pygame.font.init()
+
+FONTS = {
+    'short': pygame.font.Font(BASE_DIR / "assets" / "fonts" / "Bangers-Regular.ttf", 17),
+    'short-1': pygame.font.Font(BASE_DIR / "assets" / "fonts" / "Bangers-Regular.ttf", 14)
+}
+
+COPY = "Robot Battery - By: Abe & Alfredo"
+BATTERY = "Battery:"
+STEP = "STEP:"
+
 # Initializing the mixer
 pygame.mixer.init()
 
