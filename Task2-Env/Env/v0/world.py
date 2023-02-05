@@ -55,8 +55,7 @@ class World:
             else:
                 self.tilemap.tiles[state].texture_name = "cracked_hole"
                 self.render_character = False
-                settings.SOUNDS['ice_cracking'].play()
-                settings.SOUNDS['water_splash'].play()
+                settings.SOUNDS['lost-game'].play()
         
         self.iteration += 1
         self.state = state

@@ -77,8 +77,8 @@ pygame.mixer.music.load(BASE_DIR / "assets" / "sounds" / "game.ogg")
 
 # Sound effects
 SOUNDS = {
-    'ice_cracking': pygame.mixer.Sound(BASE_DIR / "assets" / "sounds" / "lost-battery.ogg"),
-    'water_splash': pygame.mixer.Sound(BASE_DIR / "assets" / "sounds" / "lost-game.ogg"),
+    'lost-battery': pygame.mixer.Sound(BASE_DIR / "assets" / "sounds" / "lost-battery.ogg"),
+    'lost-game': pygame.mixer.Sound(BASE_DIR / "assets" / "sounds" / "lost-game.ogg"),
     'win': pygame.mixer.Sound(BASE_DIR / "assets" / "sounds" / "game-win.ogg")
 }
 
