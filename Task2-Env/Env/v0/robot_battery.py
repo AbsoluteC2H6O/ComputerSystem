@@ -16,7 +16,7 @@ class RobotBatteryEnv(gym.Env):
         self.current_action = 1
         self.current_state = 0
         self.current_reward = 0.0
-        self.decrement_battery = 5
+        self.decrement_battery = 1
         self.current_battery = 100
         self.initial_battery = 100
         self.delay = settings.DEFAULT_DELAY
@@ -57,9 +57,7 @@ class RobotBatteryEnv(gym.Env):
             r -= p
             p, self.current_state, self.current_reward, terminated = possibilities[i]
             i += 1
-        print("Valor de i: ", i)
         if r < 1 - (self.current_battery / self.initial_battery):
-            print("Valor de current_battery:", self.current_battery)
             if(i >= 2):
                 if(self.current_action == 1):
                     self.current_action = 2
@@ -75,6 +73,7 @@ class RobotBatteryEnv(gym.Env):
         )
 
         if(self.current_battery <= self.decrement_battery):
+            self.current_battery = 0
             settings.SOUNDS['lost-game'].play()
             time.sleep(self.delay+1)
             return self.current_state, self.current_reward, True, True, {}
@@ -87,7 +86,7 @@ class RobotBatteryEnv(gym.Env):
         return self.current_state, self.current_reward, terminated, False, {}
 
     def render(self):
-        self.world.render()
+        self.world.render(self.current_battery)
 
     def close(self):
         self.world.close()

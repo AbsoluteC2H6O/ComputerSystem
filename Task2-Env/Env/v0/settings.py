@@ -32,10 +32,10 @@ BASE_DIR = pathlib.Path(__file__).parent
 
 # Textures used in the environment
 TEXTURES = {
-    'ice': pygame.image.load(BASE_DIR / "assets" / "graphics" / "fondo.png"),
-    'hole': pygame.image.load(BASE_DIR / "assets" / "graphics" / "battery-lost.png"),
-    'cracked_hole': pygame.image.load(BASE_DIR / "assets" / "graphics" / "explosion.png"),
-    'goal': pygame.image.load(BASE_DIR / "assets" / "graphics" / "battery5.png"),
+    'metal': pygame.image.load(BASE_DIR / "assets" / "graphics" / "fondo.png"),
+    'baterry-lost-point': pygame.image.load(BASE_DIR / "assets" / "graphics" / "battery-lost.png"),
+    'explosion': pygame.image.load(BASE_DIR / "assets" / "graphics" / "explosion.png"),
+    'baterry-charge': pygame.image.load(BASE_DIR / "assets" / "graphics" / "battery5.png"),
     'battery0-1': pygame.image.load(BASE_DIR / "assets" / "graphics" / "battery0-1.png"),
     'battery0-2': pygame.image.load(BASE_DIR / "assets" / "graphics" / "battery0-2.png"),
     'battery0-3': pygame.image.load(BASE_DIR / "assets" / "graphics" / "battery0-3.png"),
