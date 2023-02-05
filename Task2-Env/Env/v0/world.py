@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 from . import settings
 from .tilemap import TileMap
-
+import time
 
 class World:
     def __init__(self, title, state, action):
@@ -51,13 +51,33 @@ class World:
     def update(self, state, action, reward, terminated):
         if terminated:
             if state == self.finish_state:
+                time.sleep(3)
                 self.render_goal = False
+                self.render_surface.blit(
+                settings.TEXTURES['baterry-charge'],
+                (settings.ROWS*30.5,
+                    settings.VIRTUAL_HEIGHT - 33)
+                )
                 settings.SOUNDS['win'].play()
+                
+ 
             else:
+                time.sleep(3)
                 self.tilemap.tiles[state].texture_name = "explosion"
+                self.render_surface.blit(
+                settings.TEXTURES['explosion'],
+                (settings.ROWS*30.5,
+                    settings.VIRTUAL_HEIGHT - 33)
+                )
+                self.render_surface.blit(
+                settings.TEXTURES['explosion'],
+                (self.tilemap.tiles[self.state].x,
+                    self.tilemap.tiles[self.state].y)
+                )
                 self.render_character = False
                 settings.SOUNDS['lost-game'].play()
-
+                
+        
         self.iteration += 1
         self.state = state
         self.action = action

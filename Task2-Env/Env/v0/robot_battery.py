@@ -16,7 +16,7 @@ class RobotBatteryEnv(gym.Env):
         self.current_action = 1
         self.current_state = 0
         self.current_reward = 0.0
-        self.decrement_battery = 1
+        self.decrement_battery = 5
         self.current_battery = 100
         self.initial_battery = 100
         self.delay = settings.DEFAULT_DELAY
