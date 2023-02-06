@@ -16,7 +16,7 @@ class RobotBatteryEnv(gym.Env):
         self.current_action = 1
         self.current_state = 0
         self.current_reward = 0.0
-        self.decrement_battery = 1
+        self.decrement_battery = 2
         self.current_battery = 100
         self.initial_battery = 100
         self.delay = settings.DEFAULT_DELAY
@@ -57,14 +57,16 @@ class RobotBatteryEnv(gym.Env):
             r -= p
             p, self.current_state, self.current_reward, terminated = possibilities[i]
             i += 1
-        # if r < 1 - (self.current_battery / self.initial_battery):
-        #     if(i >= 2):
-        #         if(self.current_action == 1):
-        #             self.current_action = 2
-        #             p, self.current_state, self.current_reward, terminated = possibilities[0]
-        #     else:
-        #         p, self.current_state, self.current_reward, terminated = possibilities[i]
-
+        if r < 1 - (self.current_battery / self.initial_battery):
+            # print('Correct action', self.current_action, self.current_state)
+            if(i >= 2):
+                if(self.current_action == 1):
+                    self.current_action = 2
+                    p, self.current_state, self.current_reward, terminated = possibilities[0]
+            else:
+                # print('Incorrect', self.current_action, self.current_state)
+                p, self.current_state, self.current_reward, terminated = possibilities[i]
+                print('s', self.current_state)
         if(self.current_battery <= self.decrement_battery):
             self.current_battery = 0
 
