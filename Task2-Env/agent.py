@@ -1,6 +1,5 @@
 import numpy as np
 
-
 class ValueIteration():
     def __init__(self, states_n, actions_n, P, gamma):
         self.states_n = states_n

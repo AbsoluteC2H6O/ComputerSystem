@@ -3,7 +3,7 @@ import pathlib
 import pygame
 
 # Size of the square tiles used in this environment.
-TILE_SIZE = 32
+TILE_SIZE = 16
 
 # Grid
 ROWS = 4
