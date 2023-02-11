@@ -19,7 +19,7 @@ env = gym.make('FrozenLake-v1', render_mode="human")
 agent = ValueIteration(env.observation_space.n, env.action_space.n, env.P, 0.2)
 
 # Elegir el modo Iteration o Policy
-agent.solve(10000, "Policy")
+agent.solve(2, "Policy")
 agent.render()
 
 observation, info = env.reset()

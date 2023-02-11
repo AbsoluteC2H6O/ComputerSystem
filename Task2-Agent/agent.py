@@ -34,9 +34,10 @@ class ValueIteration():
                 for s in range(self.states_n):
                     valuesPolicy = [sum([prob * (r + self.gamma * self.values[s_])
                                 for prob, s_, r, _ in self.P[s][self.policy[s]]])]
-                    self.values[s] = max(valuesPolicy)
-                    self.policy[s] = np.argmax(np.array(valuesPolicy))
-               
+                    print('values policy', valuesPolicy)
+                    self.values[s] = valuesPolicy[0]
+                    # self.policy[s] = np.argmax(np.array(valuesPolicy))
+                    
                 # Ejecutamos para cada estado el policy improvement
                 for s in range(self.states_n):
                     betPolicy = True
