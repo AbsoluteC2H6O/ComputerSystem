@@ -9,7 +9,7 @@ class MazeGenerator:
         self,
         num_rows: int,
         num_cols: int,
-        neighborhood: List[Tuple[int, int]] = [(0, -1), (0,0), (1,1), (-1,-1), (1,-1), (1, 0), (0, 1), (-1, 0)],
+        neighborhood: List[Tuple[int, int]] = [(0, -1), (1, 0), (0, 1), (-1, 0)],
     ) -> None:
         self.num_rows = num_rows
         self.num_cols = num_cols

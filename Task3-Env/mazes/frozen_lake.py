@@ -2,7 +2,7 @@
 Frozen Lake environment as a maze
 """
 import maze_generators
-
+import kruskal2
 
 class FrozenLake:
     def __init__(self, **kwargs):
@@ -11,10 +11,11 @@ class FrozenLake:
         maze_generator = kwargs.get(
             "maze_generator_class", maze_generators.KruskalMazeGenerator
         )(self._rows, self._cols)
-        self.walls = maze_generator.generate()
-
+        self.walls = kruskal2.graph()
+        # self.walls = maze_generator.generate()   
     def render(self):
         # render the top wall
+        # print('maze', self.walls)
         print("-" * int(self._cols * 2 + 1))
 
         for i in range(self._rows):
