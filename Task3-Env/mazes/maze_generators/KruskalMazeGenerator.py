@@ -2,12 +2,42 @@
 Maze generator based on depth first search algorithm
 """
 from typing import List, Any, Tuple, Set
-
 import random
-
 from .MazeGenerator import MazeGenerator
 
+GRAPH_SIZE = 10
+cels = [(i,j) for j in range(GRAPH_SIZE) for i in range(GRAPH_SIZE)]
+neighbors = lambda n : [(n[0]+dx,n[1]+dy) for dx,dy in ((-1,0),(1,0),(0,-1),(0,1))
+                       if n[0]+dx >= 0 and n[0]+dx < GRAPH_SIZE and n[1]+dy >= 0 and n[1]+dy < GRAPH_SIZE]
 
+class Kruskal:
+    def __init__(self, cels):
+        self.cel_map = {}
+        print(len(cels))
+        for i,val in enumerate(cels):
+            n = self.NodeGraph(val, i)
+            self.cel_map[val] = n
+            
+    def find(self, cel):
+        return self.find_cel(cel).cel
+
+    def find_cel(self, cel):
+        if type(self.cel_map[cel].cel) is int:
+            return self.cel_map[cel]
+        else:
+            parent_cel = self.find_cel(self.cel_map[cel].cel.val)
+            self.cel_map[cel].cel = parent_cel
+            return parent_cel
+
+    def union(self, node1, node2):
+        cel1 = self.find_cel(node1)
+        cel2 = self.find_cel(node2)
+        if cel1.cel != cel2.cel:
+            cel1.cel = cel2
+    class NodeGraph:
+        def __init__(self, val, cel):
+            self.val = val
+            self.cel = cel
 class KruskalMazeGenerator(MazeGenerator):
     def __init__(
         self,
@@ -16,70 +46,50 @@ class KruskalMazeGenerator(MazeGenerator):
         neighborhood: List[Tuple[int, int]] = [(0, -1), (1, 0), (0, 1), (-1, 0)],
     ) -> None:
         super().__init__(num_rows, num_cols, neighborhood)
-
-    def _init_walls(self) -> None:
-        for i in range(self.num_rows):
-            for j in range(self.num_cols):
-                current_index = i * self.num_cols + j
-                for offset_i, offset_j in self.neighborhood:
-                    n_i, n_j = i + offset_i, j + offset_j
-
-                    neighbor_index = n_i * self.num_cols + n_j
-                    self.walls.add((current_index, neighbor_index))
-
+        
+    # def _init_walls(self) -> None:
+    #    print()
     def generate(self, start: int = 0) -> Set[Tuple[int, int]]:
-        self._init_walls()
+        # self._init_walls()
 
-        stack: List[int] = [start]
-        visited: Set[int] = {start}
-        arrayVisted=[]
-        # print('unvis', self.walls)
-        list_walls: List[int] = []
-        
-        # 1. Created a list of walls
-        for i in range(self.num_rows):
-            for j in range(self.num_cols):
-                current_index = i * self.num_cols + j
-                list_walls.insert(current_index, current_index)
-
-        # 1.1 Create a set for each cell, each containning just that one cell
-        
-        # 2 For each wall, in some random order:
-        # randomCell =  random.randint(0, len(list_walls))
-        # while randomCell in visited:
-        #     randomCell =  random.randint(0, len(list_walls))
-        for i in range(self.num_rows):
-            for j in range(self.num_cols):
-                unvisited_neighbors: List[int] = []
-                current_index = i * self.num_cols + j
+        walls = [(cel, nbor) for cel in cels for nbor in neighbors(cel)]
+        maze: Set[Tuple[int, int]] = set()
+        maze_kruskal = Kruskal(cels)
+        while len(maze) < len(cels)-1:
+            print(len(walls))
+            wall = walls.pop(random.randint(0, len(walls)-1))
+            if maze_kruskal.find(wall[0]) != maze_kruskal.find(wall[1]):
+                maze_kruskal.union(wall[0], wall[1])
+                if (wall[0][0],wall[0][1]) in maze:
+                    maze.remove((wall[0][0], wall[0][1]))
+                    
+                if (wall[0][1],wall[0][0]) in maze:
+                    maze.remove((wall[0][1], wall[0][0]))
+                    
+                # if (wall[1][0], wall[1][1]) in self.walls:
+                #     self.walls.remove((wall[1][0], wall[1][1]))
+                # if (wall[1][1], wall[1][0]) in self.walls:
+                #     self.walls.remove((wall[1][1], wall[1][0]))
                 
-                # Saber si tiene vecinos no visitados o con muros
-                i, j = current_index // self.num_cols, current_index % self.num_cols
+                # self.walls.remove((wall[0], wall[1]))
+                # self.walls.remove((wall[1][0], wall[0][0]))
+                # if (wall[0] and wall[1]) in maze:
+                #     maze.remove((wall[0][0], wall[0][1]))
+                # if (wall[1]) in maze:
+                #     maze.remove((wall[0][1], wall[0][0]))  
+                # print(walls)
+                maze.add((wall[0][0],wall[0][1]))
+                maze.add((wall[1][0],wall[1][1]))
+                self.walls.add((wall[0][0],wall[0][1]))
+                self.walls.add((wall[1][0],wall[1][1]))
+                                
 
-                for offset_i, offset_j in self.neighborhood:
-                    n_i, n_j = i + offset_i, j + offset_j
-                    if not ((0 <= n_i < self.num_rows) and (0 <= n_j < self.num_cols)):
-                        continue
-                    neighbor_index = n_i * self.num_cols + n_j
-                    if neighbor_index not in visited:
-                        unvisited_neighbors.append(neighbor_index)
+        # self.walls.remove((0,0))
+        # print(len(self.walls))
 
-                if len(unvisited_neighbors) == 0:
-                    continue
+        return maze
 
-                neighbor = random.choice(unvisited_neighbors)
-                # Remove the wall
-                if (current_index, neighbor) in self.walls:
-                    self.walls.remove((current_index, neighbor))
-                if (neighbor, current_index) in self.walls:
-                    self.walls.remove((neighbor, current_index))
-
-                visited.add(neighbor)
-            # while len(list_walls)
             
-        return self.walls
-                # list_walls.insert(current_index, current_index)
-        # 2.1 If the cells divided by this wall belong to distinct sets:
            
 
 
