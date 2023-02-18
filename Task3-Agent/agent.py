@@ -36,7 +36,7 @@ class MonteCarlo:
             )
             G = sum(
                 [
-                    step[2] * (self.gamma**i)
+                    step[2] + (self.gamma**i)
                     for i, step in enumerate(self.episode[first_occurence:])
                 ]
             )
