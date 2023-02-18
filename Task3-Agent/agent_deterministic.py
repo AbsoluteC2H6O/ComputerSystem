@@ -43,6 +43,7 @@ class MonteCarloDet:
             # )
             # print('first:',first_occurence)
             G = self.gamma*G + reward
+            reward = reward_a
             print('G', G)
             if (state, action) in states_actions:
                 self.returns[state][action] = G
