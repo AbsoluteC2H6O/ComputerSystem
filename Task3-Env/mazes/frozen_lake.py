@@ -3,7 +3,10 @@ Frozen Lake environment as a maze
 """
 import maze_generators
 import kruskal2
-
+from colorama import init
+from colorama import Fore, Back, Style
+height = 11
+width = 27
 class FrozenLake:
     def __init__(self, **kwargs):
         self._rows = kwargs.get("rows", 4)
@@ -11,7 +14,21 @@ class FrozenLake:
         maze_generator = kwargs.get(
             "maze_generator_class", maze_generators.KruskalMazeGenerator
         )(self._rows, self._cols)
-        self.walls = maze_generator.generate()   
+        self.walls = maze_generator.generate()
+       
+    # def printMaze(self):
+    #     # Initialize colorama
+    #     init()
+    #     for i in range(0, height):
+    #         for j in range(0, width):
+    #             if (self.walls[i][j] == 'u'):
+    #                 print(Fore.WHITE + str(self.walls[i][j]), end=" ")
+    #             elif (self.walls[i][j] == ' '):
+    #                 print(Fore.GREEN + str(self.walls[i][j]), end=" ")
+    #             else:
+    #                 print(Fore.RED + str(self.walls[i][j]), end=" ")
+    #         print('\n')
+            
     def render(self):
         # render the top wall
         # print('maze', self.walls)
