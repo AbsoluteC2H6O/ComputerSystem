@@ -4,6 +4,7 @@ import gym_environments
 from gym.envs.registration import register
 from agent import MonteCarlo
 from agent_deterministic import MonteCarloDet
+import numpy as np
 
 # registro Env
 register (
@@ -29,12 +30,17 @@ register (
 def train(env, agent, episodes):
     for _ in range(episodes):
         observation, _ = env.reset()
+        # observation = np.random.randint(0, 4)
         terminated, truncated = False, False
         while not (terminated or truncated):
             action = agent.get_action(observation) # Accion aleatoria
-            new_observation, reward, terminated, truncated, _ = env.step(action)
-            agent.update(observation, action, reward, terminated)
-            observation = new_observation
+            if action !=-1:
+                new_observation, reward, terminated, truncated, _ = env.step(action)
+                agent.update(observation, action, reward, terminated)
+                observation = new_observation
+            else:
+                terminated = True
+                
             
 
 def play(env, agent):
@@ -42,8 +48,11 @@ def play(env, agent):
     terminated, truncated = False, False
     while not (terminated or truncated):
         action = agent.get_best_action(observation)
-        observation, _, terminated, truncated, _ = env.step(action)
-        env.render()
+        if action !=-1:
+            observation, _, terminated, truncated, _ = env.step(action)
+            env.render()
+        else:
+            terminated = True
         time.sleep(1)
 
 
@@ -54,7 +63,7 @@ if __name__ == "__main__":
     )
 
     agent_deterministic = MonteCarloDet(
-        env.observation_space.n, env.action_space.n, gamma=0.9, epsilon=0.9
+        env.observation_space.n, env.action_space.n, gamma=0.9
     )
 
     mode = 'deterministic'
