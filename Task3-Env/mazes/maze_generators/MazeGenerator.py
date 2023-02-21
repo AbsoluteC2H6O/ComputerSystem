@@ -2,8 +2,6 @@
 Base for any maze generator
 """
 from typing import List, Any, Tuple, Set, NoReturn
-
-
 class MazeGenerator:
     def __init__(
         self,

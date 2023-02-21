@@ -91,5 +91,26 @@ class KruskalMazeGenerator(MazeGenerator):
                     self.walls.remove((celZero*self.num_cols +celZeroAd,celOne*self.num_cols +celOneAd))
                 elif (celOne*self.num_cols + celOneAd,celZero*self.num_cols + celZeroAd) in self.walls:
                     self.walls.remove((celOne*self.num_cols +celOneAd,celZero*self.num_cols +celZeroAd))
-        
+        self.maze = maze
+        self.maze_kruskal = maze_kruskal
         return self.walls
+
+    def generatePMaztrix(self):
+        print('Generating P matrix')
+        components = {}
+        for row in range(self.num_rows):
+            for col in range(self.num_cols):
+                components[self.maze_kruskal.find((row, col))] = []
+
+        for row in range(self.num_rows):
+            for col in range(self.num_cols):
+                components[self.maze_kruskal.find((row, col))].append((row, col))
+        print(len(components))
+        print('components', components)
+        self.generateInitEndPositions(components)
+        
+    def generateInitEndPositions(self, components):
+        initialPosition = components[random.randint(0, len(components)-1)]
+        endPosition =components[random.randint(0, len(components)-1)]
+        
+        return {initialPosition, endPosition}
