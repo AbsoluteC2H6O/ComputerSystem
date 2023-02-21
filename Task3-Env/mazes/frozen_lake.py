@@ -2,6 +2,7 @@
 Frozen Lake environment as a maze
 """
 import maze_generators
+import pygame
 class FrozenLake:
     def __init__(self, **kwargs):
         self._rows = kwargs.get("rows", 4)
@@ -60,3 +61,7 @@ class FrozenLake:
 
             # finally, end of line
             print("")
+            
+    def renderPygame(self):
+        pygame.init()
+        
