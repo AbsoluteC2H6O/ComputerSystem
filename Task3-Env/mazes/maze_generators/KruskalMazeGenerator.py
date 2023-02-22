@@ -1,6 +1,8 @@
 """
 Maze generator based on depth first search algorithm
 """
+import sys
+from collections import deque
 from typing import List, Tuple, Set
 import random
 from .MazeGenerator import MazeGenerator
@@ -104,15 +106,19 @@ class KruskalMazeGenerator(MazeGenerator):
                 components[self.maze_kruskal.find((row, col))] = []
         key = 0
         keyComp = []
-        n=0
+        n = 0
+        mat = []
         for row in range(self.num_rows):
+            colMat = []
             for col in range(self.num_cols):
                 components[self.maze_kruskal.find(
                     (row, col))].append((row, col))
                 key = self.maze_kruskal.find((row, col))
                 keyComp.insert(n, n)
-                n+=1
-        
+                n += 1
+                colMat.append(1)
+            mat.append(colMat)
+
         # Generate init and finish character position
         initPosition = components[key][random.randint(
             0, len(components[key])-1)]
@@ -120,10 +126,115 @@ class KruskalMazeGenerator(MazeGenerator):
         while endPosition == initPosition:
             endPosition = components[key][random.randint(
                 0, len(components[key])-1)]
-        
-        stateInit = initPosition[0]* self.num_cols + initPosition[1]
-        # print('robotPositions',initPosition, endPosition,stateInit)
+
+        stateInit = initPosition[0] * self.num_cols + initPosition[1]
+
+        # Generate shortes path in the puzzle:
+        D = self.findShortestPathLength(mat, initPosition, endPosition)
+        if D[3] != -1:
+            print("The shortest path from source to destination has length", D[3])
+        else:
+            print("Destination cannot be reached from source")
+        # self.findShortestPathLength(mat,initPosition,endPosition)
+
+        print('robotPositions', initPosition, endPosition, stateInit)
         # print('init state = ', stateDic[0]*self.num_cols + stateDic[1])
         dic1 = dict(zip([0, 1, 2, 3], [None]*4))
         dic2 = dict(zip(keyComp, [dic1]*(self.num_rows*self.num_cols)))
         # pos.append((1, 2, 0.0, False),(1, 2, 0.0, False),(1, 2, 0.0, False))
+
+    def isValid(self, mat, visited, row, col, i, j):
+        initState = i*self.num_rows + j
+        endState = row*self.num_rows + col
+        return (row >= 0) and (row < len(mat)) and (col >= 0) and (col < len(mat[0])) and not visited[row][col] and (((endState, initState) not in self.walls) and ((initState, endState) not in self.walls)) and initState >= 0 and initState < self.num_cols*self.num_rows and endState >= 0 and endState < self.num_cols*self.num_rows
+
+    def findShortestPathLength(self, mat, src, dest):
+        # obtener celda fuente (i, j)
+        row = [-1, 0, 0, 1]
+        col = [0, -1, 1, 0]
+        i, j = src
+        # obtener celda de destino (x, y)
+        x, y = dest
+        # Caso base: entrada no válida
+        if not mat or len(mat) == 0 or mat[i][j] == 0 or mat[x][y] == 0:
+            return -1
+        # Matriz `M × N`
+        (M, N) = (len(mat), len(mat[0]))
+        # construye una matriz para realizar un seguimiento de las celdas visitadas
+        visited = [[False for x in range(N)] for y in range(M)]
+        # crea una queue vacía
+        q = deque()
+        # marcar la celda de origen como visitada y poner en queue el nodo de origen
+        visited[i][j] = True
+        # (i, j, dist) representa las coordenadas de las celdas de la matriz y sus
+        # distancia mínima de la fuente
+        q.append((i, j, 0))
+        # almacena la longitud de la ruta más larga desde el origen hasta el destino
+        min_dist = sys.maxsize
+        # Bucle # hasta que la queue esté vacía
+        pasage = []
+        nodePassages = []
+        pasage.append((i, j, 0))
+        parentsDic = {}
+        parentPairs = []
+        
+        while q:
+            # quitar la queue del nodo frontal y procesarlo
+            (i, j, dist) = q.popleft()
+            # (i, j) representa una celda actual, y `dist` almacena su
+            # distancia mínima de la fuente
+            # si se encuentra el destino, actualice `min_dist` y pare
+
+            if i == x and j == y:
+                min_dist = dist
+                break
+            # verifica los cuatro movimientos posibles desde la celda actual
+            # y poner en queue cada movimiento válido
+            for k in range(4):
+                # comprobar si es posible ir a la posición
+                # (i + row[k], j + col[k]) desde la posición actual
+                condition = self.isValid(
+                    mat, visited, i + row[k], j + col[k], i, j)
+                if condition:
+                    endState = (i + row[k])*self.num_rows + (j + col[k])
+                    initState = i*self.num_rows + j
+                    parentPairs.append((initState, endState))
+                    # marca la siguiente celda como visitada y la pone en queue
+                    visited[i + row[k]][j + col[k]] = True
+                    q.append((i + row[k], j + col[k], dist + 1))
+                    newDist = dist + 1
+                    pasage.append((i + row[k], j + col[k]))
+                    nodePassages.append(
+                        ((i, j), (i + row[k], j + col[k], dist + 1)))
+
+        for i in range(self.num_cols*self.num_rows):
+            parentsDic[i] = []
+            
+        for l in range(len(parentPairs)):
+            parentsDic[parentPairs[l][1]].append(parentPairs[l][0])
+            
+        actualNode = dest[0]*self.num_rows + dest[1]
+        endNode = src[0]*self.num_rows + src[1]
+        path = []
+        path.append(endNode)
+        while parentsDic[actualNode][0] != endNode:
+            path.append(actualNode)
+            actualNode = parentsDic[actualNode][0]
+        path.append(actualNode)
+        # Generate aleatory holes
+        randomBombsStates = []
+        while len(randomBombsStates) != self.num_cols:
+            aleatoryState = random.randint(0, self.num_cols*self.num_rows)
+            if (aleatoryState) not in path and (aleatoryState) not in randomBombsStates:
+                randomBombsStates.append(aleatoryState)
+        D = [
+            randomBombsStates,
+            dest[0]*self.num_rows + dest[1],
+            endNode,
+            min_dist,
+            path
+        ]
+        if min_dist != sys.maxsize:
+            return D
+        else:
+            return -1
