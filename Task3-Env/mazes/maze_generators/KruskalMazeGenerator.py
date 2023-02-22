@@ -129,19 +129,49 @@ class KruskalMazeGenerator(MazeGenerator):
 
         stateInit = initPosition[0] * self.num_cols + initPosition[1]
 
-        # Generate shortes path in the puzzle:
+        # Generate shortes path in the puzzle
+        # Generate aleatory bombs positions
+        # Generate sortestPath to solve the puzzle with a BFS searh implementation
         D = self.findShortestPathLength(mat, initPosition, endPosition)
+        
         if D[3] != -1:
             print("The shortest path from source to destination has length", D[3])
         else:
             print("Destination cannot be reached from source")
-        # self.findShortestPathLength(mat,initPosition,endPosition)
 
         print('robotPositions', initPosition, endPosition, stateInit)
+        stateFinal = endPosition[0] * self.num_cols + endPosition[1]
         # print('init state = ', stateDic[0]*self.num_cols + stateDic[1])
         dic1 = dict(zip([0, 1, 2, 3], [None]*4))
+        # print(dic1)
         dic2 = dict(zip(keyComp, [dic1]*(self.num_rows*self.num_cols)))
         # pos.append((1, 2, 0.0, False),(1, 2, 0.0, False),(1, 2, 0.0, False))
+        i = 0
+        
+        # Finally generatin P matrix
+        for rows in range(self.num_rows): # 0 1
+            for cols in range(self.num_cols):
+                current_index = rows * self.num_cols + cols
+                left_index = rows * self.num_cols + cols - 1
+                down_index = (rows+1) * self.num_cols + cols
+                right_index = rows * self.num_cols + cols + 1
+                up_index = (rows-1) * self.num_cols + cols
+                #print('actual', current_index, left_index, down_index, right_index, up_index)
+                for action in range(4):
+                    if(current_index == stateFinal):
+                        dic1[action] = (1, current_index, 0.0, True)
+                        print('here')
+                    # else:
+                    #     print('')
+                    #     if (action == 0):  # movimiento en izq
+                    #         dic1[action] = (1, actual, 0.0, False), (1, 2, 0.0, False), (1, 2, 0.0, False)
+                    #     if (action == 1):  # movimiento en abajo
+                    #         dic1[action] = (1, actual, 0.0, False), (1, 2, 0.0, False), (1, 2, 0.0, False)
+                    #     if (action == 2):  # movimiento en der
+                    #         dic1[action] = (1, actual, 0.0, False), (1, 2, 0.0, False), (1, 2, 0.0, False)
+                    #     if (action == 0):  # movimiento en arriba
+                    #         dic1[action] = (1, actual, 0.0, False), (1, 2, 0.0, False), (1, 2, 0.0, False)
+        print(dic2)
 
     def isValid(self, mat, visited, row, col, i, j):
         initState = i*self.num_rows + j
