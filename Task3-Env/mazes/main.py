@@ -1,6 +1,6 @@
 from frozen_lake import FrozenLake
 
-env = FrozenLake(rows=10, cols=10)
+env = FrozenLake(rows=5, cols=5)
 
 env.render()
 

@@ -5,7 +5,7 @@ from typing import List, Tuple, Set
 import random
 from .MazeGenerator import MazeGenerator
 
-GRAPH_SIZE = 10
+GRAPH_SIZE = 5
 cels = [(i, j) for j in range(GRAPH_SIZE) for i in range(GRAPH_SIZE)]
 
 
@@ -87,30 +87,43 @@ class KruskalMazeGenerator(MazeGenerator):
                 celOneAd = wall[1][1]
                 maze_kruskal.union(wall[0], wall[1])
                 maze.append(wall)
-                if (celZero*self.num_cols + celZeroAd,celOne*self.num_cols + celOneAd) in self.walls:
-                    self.walls.remove((celZero*self.num_cols +celZeroAd,celOne*self.num_cols +celOneAd))
-                elif (celOne*self.num_cols + celOneAd,celZero*self.num_cols + celZeroAd) in self.walls:
-                    self.walls.remove((celOne*self.num_cols +celOneAd,celZero*self.num_cols +celZeroAd))
+                if (celZero*self.num_cols + celZeroAd, celOne*self.num_cols + celOneAd) in self.walls:
+                    self.walls.remove(
+                        (celZero*self.num_cols + celZeroAd, celOne*self.num_cols + celOneAd))
+                elif (celOne*self.num_cols + celOneAd, celZero*self.num_cols + celZeroAd) in self.walls:
+                    self.walls.remove(
+                        (celOne*self.num_cols + celOneAd, celZero*self.num_cols + celZeroAd))
         self.maze = maze
         self.maze_kruskal = maze_kruskal
         return self.walls
 
     def generatePMaztrix(self):
-        print('Generating P matrix')
         components = {}
         for row in range(self.num_rows):
             for col in range(self.num_cols):
                 components[self.maze_kruskal.find((row, col))] = []
-
+        key = 0
+        keyComp = []
+        n=0
         for row in range(self.num_rows):
             for col in range(self.num_cols):
-                components[self.maze_kruskal.find((row, col))].append((row, col))
-        print(len(components))
-        print('components', components)
-        self.generateInitEndPositions(components)
+                components[self.maze_kruskal.find(
+                    (row, col))].append((row, col))
+                key = self.maze_kruskal.find((row, col))
+                keyComp.insert(n, n)
+                n+=1
         
-    def generateInitEndPositions(self, components):
-        initialPosition = components[random.randint(0, len(components)-1)]
-        endPosition =components[random.randint(0, len(components)-1)]
+        # Generate init and finish character position
+        initPosition = components[key][random.randint(
+            0, len(components[key])-1)]
+        endPosition = initPosition
+        while endPosition == initPosition:
+            endPosition = components[key][random.randint(
+                0, len(components[key])-1)]
         
-        return {initialPosition, endPosition}
+        stateInit = initPosition[0]* self.num_cols + initPosition[1]
+        # print('robotPositions',initPosition, endPosition,stateInit)
+        # print('init state = ', stateDic[0]*self.num_cols + stateDic[1])
+        dic1 = dict(zip([0, 1, 2, 3], [None]*4))
+        dic2 = dict(zip(keyComp, [dic1]*(self.num_rows*self.num_cols)))
+        # pos.append((1, 2, 0.0, False),(1, 2, 0.0, False),(1, 2, 0.0, False))
