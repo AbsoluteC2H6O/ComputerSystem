@@ -13,9 +13,8 @@ cels = [(i, j) for j in range(GRAPH_SIZE) for i in range(GRAPH_SIZE)]
 
 def neighbors(n): return [(n[0]+dx, n[1]+dy) for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1))
                           if n[0]+dx >= 0 and n[0]+dx < GRAPH_SIZE and n[1]+dy >= 0 and n[1]+dy < GRAPH_SIZE]
-
-
 class Kruskal:
+    # Metodo que inicializa el grafo de Kruskal con n*n celdas
     def __init__(self, cels):
         self.cel_map = {}
         for i, val in enumerate(cels):
@@ -25,6 +24,7 @@ class Kruskal:
     def find(self, cel):
         return self.find_cel(cel).cel
 
+    # Metodo de buscar celda
     def find_cel(self, cel):
         if type(self.cel_map[cel].cel) is int:
             return self.cel_map[cel]
@@ -32,13 +32,13 @@ class Kruskal:
             parent_cel = self.find_cel(self.cel_map[cel].cel.val)
             self.cel_map[cel].cel = parent_cel
             return parent_cel
-
+    # Metodo union para unir dos nodos vecinos, permite crear un pasaje entre ellos
     def union(self, node1, node2):
         cel1 = self.find_cel(node1)
         cel2 = self.find_cel(node2)
         if cel1.cel != cel2.cel:
             cel1.cel = cel2
-
+    # Clase Nodo del grafo, que gaurda el valor y su celda
     class NodeGraph:
         def __init__(self, val, cel):
             self.val = val
@@ -55,6 +55,7 @@ class KruskalMazeGenerator(MazeGenerator):
     ) -> None:
         super().__init__(num_rows, num_cols, neighborhood)
 
+    # Metodo que inicializa todas las celdas con muros
     def _init_walls(self) -> None:
         for i in range(self.num_rows):
             for j in range(self.num_cols):
@@ -75,6 +76,8 @@ class KruskalMazeGenerator(MazeGenerator):
 
                     self.walls.add((current_index, neighbor_index))
 
+    # Metodo que genera el laberinto para el algoritmo de Kruskal (Abre pasajes entre los muros)
+    # Retorna un conjunto de muros del grafo.
     def generate(self, start: int = 0) -> Set[Tuple[int, int]]:
         self._init_walls()
         walls = [(cel, nbor) for cel in cels for nbor in neighbors(cel)]
@@ -99,6 +102,11 @@ class KruskalMazeGenerator(MazeGenerator):
         self.maze_kruskal = maze_kruskal
         return self.walls
 
+    # Metodo generador de la matriz P
+    # Este metodo genera la matriz P con la posicion inicial y final del caracter, las bombas aleatorizadas (1*Numero de columnas)
+    # Este metodo tambien consigue la ruta mas corta para atravesar el inicio del fin, asegura que no existan bombas a mitad de camino.
+    # Este metodo de la clase permite la generacion de la matriz P en el formato adecuado para ser resuelto por el agente monte carlo.
+  
     def generatePMaztrix(self):
         components = {}
         for row in range(self.num_rows):
@@ -135,9 +143,9 @@ class KruskalMazeGenerator(MazeGenerator):
         D = self.findShortestPathLength(mat, initPosition, endPosition)
         
         if D[3] != -1:
-            print("The shortest path from source to destination has length", D[3])
+            print("El pasaje mas corto del nodo inicial{} al nodo final {}, tiene una longitud de {} pasos, a traves de la ruta {}, con bombas en los estados {}".format(D[1],  D[2], D[3],  D[4], D[0]) )
         else:
-            print("Destination cannot be reached from source")
+            print("No se alcanzo el destino, intentelo de nuevo!")
 
         print('robotPositions', initPosition, endPosition, stateInit)
         stateFinal = endPosition[0] * self.num_cols + endPosition[1]
@@ -178,30 +186,29 @@ class KruskalMazeGenerator(MazeGenerator):
         endState = row*self.num_rows + col
         return (row >= 0) and (row < len(mat)) and (col >= 0) and (col < len(mat[0])) and not visited[row][col] and (((endState, initState) not in self.walls) and ((initState, endState) not in self.walls)) and initState >= 0 and initState < self.num_cols*self.num_rows and endState >= 0 and endState < self.num_cols*self.num_rows
 
+    # Este metodo nos provee la lista del recorrido del camino mas corto del laberinto, las posiciones de las bombas aleatorias y la ruta
+    # mas corta de los pasajes para llegar al destino.
     def findShortestPathLength(self, mat, src, dest):
-        # obtener celda fuente (i, j)
+        # multiplicar o sumar estos valores permite moverse de derecha a izquierda o de arriba a abajo
         row = [-1, 0, 0, 1]
         col = [0, -1, 1, 0]
         i, j = src
-        # obtener celda de destino (x, y)
         x, y = dest
         # Caso base: entrada no válida
         if not mat or len(mat) == 0 or mat[i][j] == 0 or mat[x][y] == 0:
             return -1
-        # Matriz `M × N`
+        # Matriz M x N
         (M, N) = (len(mat), len(mat[0]))
         # construye una matriz para realizar un seguimiento de las celdas visitadas
         visited = [[False for x in range(N)] for y in range(M)]
-        # crea una queue vacía
+        # Cola necesaria para ejecutar el algoritmo de BFS
         q = deque()
-        # marcar la celda de origen como visitada y poner en queue el nodo de origen
         visited[i][j] = True
         # (i, j, dist) representa las coordenadas de las celdas de la matriz y sus
         # distancia mínima de la fuente
         q.append((i, j, 0))
         # almacena la longitud de la ruta más larga desde el origen hasta el destino
         min_dist = sys.maxsize
-        # Bucle # hasta que la queue esté vacía
         pasage = []
         nodePassages = []
         pasage.append((i, j, 0))
@@ -209,10 +216,7 @@ class KruskalMazeGenerator(MazeGenerator):
         parentPairs = []
         
         while q:
-            # quitar la queue del nodo frontal y procesarlo
             (i, j, dist) = q.popleft()
-            # (i, j) representa una celda actual, y `dist` almacena su
-            # distancia mínima de la fuente
             # si se encuentra el destino, actualice `min_dist` y pare
 
             if i == x and j == y:
@@ -232,7 +236,6 @@ class KruskalMazeGenerator(MazeGenerator):
                     # marca la siguiente celda como visitada y la pone en queue
                     visited[i + row[k]][j + col[k]] = True
                     q.append((i + row[k], j + col[k], dist + 1))
-                    newDist = dist + 1
                     pasage.append((i + row[k], j + col[k]))
                     nodePassages.append(
                         ((i, j), (i + row[k], j + col[k], dist + 1)))
@@ -251,12 +254,15 @@ class KruskalMazeGenerator(MazeGenerator):
             path.append(actualNode)
             actualNode = parentsDic[actualNode][0]
         path.append(actualNode)
-        # Generate aleatory holes
+        
+        # Genera las bombas aleatorias y retorna un arreglo de estados
         randomBombsStates = []
         while len(randomBombsStates) != self.num_cols:
             aleatoryState = random.randint(0, self.num_cols*self.num_rows)
             if (aleatoryState) not in path and (aleatoryState) not in randomBombsStates:
                 randomBombsStates.append(aleatoryState)
+        # Objeto que contiene las posiciones de las bombas aleatorias, el estado inicial y final, la minima distancia del camino mas corto
+        # y los estados que debe recorrer para llegar
         D = [
             randomBombsStates,
             dest[0]*self.num_rows + dest[1],
@@ -267,4 +273,5 @@ class KruskalMazeGenerator(MazeGenerator):
         if min_dist != sys.maxsize:
             return D
         else:
+            # Se retorna -1 si no se logro encontrar una salida como metodo de seguridad, pero se garantiza al menos una ruta de solucion.
             return -1
