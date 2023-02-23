@@ -156,61 +156,59 @@ class KruskalMazeGenerator(MazeGenerator):
         print('robotPositions', initPosition,
               endPosition, stateInit, stateFinal)
         # print('init state = ', stateDic[0]*self.num_cols + stateDic[1])
-        dic1 = {}
-        for _ in range(4):
-            dic1[_] = []
-        # print('dic1', dic1)
         dic2 = {}
         for _ in range(self.num_cols*self.num_rows):
-            dic2[_] = dic1
+            dic2[_] = []
         # dic2 = dict(zip(keyComp, [dic1]*(self.num_rows*self.num_cols)))
-        #print('dic2', dic2)
-
         # Finally generatin P matrix
         for rows in range(self.num_rows):  # 0 1
             for cols in range(self.num_cols):
-                current_index = rows * self.num_cols + cols # Posicion actual
-                left_index = rows * self.num_cols + cols - 1 # Izq
-                down_index = rows * self.num_cols + cols + self.num_rows # Abajo
-                right_index = rows * self.num_cols + cols + 1 # Derecha
-                up_index = rows * self.num_cols + cols - self.num_rows # Arriba
-                
-                if(left_index < 0):
+                dic1 = {}
+                for _ in range(4):
+                    dic1[_] = []
+                current_index = rows * self.num_cols + cols  # Posicion actual
+                left_index = rows * self.num_cols + cols - 1  # Izq
+                down_index = rows * self.num_cols + cols + self.num_rows  # Abajo
+                right_index = rows * self.num_cols + cols + 1  # Derecha
+                up_index = rows * self.num_cols + cols - self.num_rows  # Arriba
+
+                if (left_index < 0):
                     left_index = 0
-                if(down_index  >= self.num_cols*self.num_rows):
+                if (down_index >= self.num_cols*self.num_rows):
                     down_index = current_index
-                if(right_index >= self.num_cols*self.num_rows):
+                if (right_index >= self.num_cols*self.num_rows):
                     right_index = self.num_cols*self.num_rows - 1
-                if(up_index < 0):
+                if (up_index < 0):
                     up_index = current_index
-                if((current_index+1)%self.num_cols == 0):
+                if ((current_index+1) % self.num_cols == 0):
                     right_index = current_index
-                if(current_index%self.num_cols == 0):
+                if (current_index % self.num_cols == 0):
                     left_index = current_index
 
                 # print('actual', current_index, left_index, down_index, right_index, up_index)
 
-                # if (current_index == stateFinal): # estado actual == meta
-                #     dic2[current_index][0].append(
-                #             (1, current_index, 0.0, True)
-                #         )
-                #     dic2[current_index][1].append(
-                #             (1, current_index, 0.0, True)
-                #         )
-                #     dic2[current_index][2].append(
-                #             (1, current_index, 0.0, True)
-                #         )
-                #     dic2[current_index][3].append(
-                #             (1, current_index, 0.0, True)
-                #         )
-                #     print('here:', current_index, stateFinal)
+                if (current_index == stateFinal):  # estado actual == meta
+                    dic1[0].append(
+                        (1, current_index, 0.0, True)
+                    )
+                    dic1[1].append(
+                        (1, current_index, 0.0, True)
+                    )
+                    dic1[2].append(
+                        (1, current_index, 0.0, True)
+                    )
+                    dic1[3].append(
+                        (1, current_index, 0.0, True)
+                    )
+                    dic2[current_index] = dic1
+                else:
+                    dic1[0].append((1, left_index, 0.0, False))
+                    dic1[1].append((1, down_index, 0.0, False))
+                    dic1[2].append((1, right_index, 0.0, False))
+                    dic1[3].append((1, up_index, 0.0, False))
+                    dic2[current_index] = dic1
 
-                dic2[current_index][0].append((1, left_index, 0.0, False))
-                # dic2[current_index][1] = [(1, down_index, 0.0, False)]
-                # dic2[current_index][2] = [(1, right_index, 0.0, False)]
-                # dic2[current_index][3] = [(1, up_index, 0.0, False)]
-
-        print(dic2)
+        print('dic22', dic2)
 
     def isValid(self, mat, visited, row, col, i, j):
         initState = i*self.num_rows + j
