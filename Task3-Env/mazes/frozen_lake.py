@@ -11,7 +11,7 @@ class FrozenLake:
             "maze_generator_class", maze_generators.KruskalMazeGenerator
         )(self._rows, self._cols)
         self.walls = maze_generator.generate()
-        self.P = maze_generator.generatePMaztrix()
+        self.P = maze_generator.generatePMatrix()
         
     def render(self):
         print("-" * int(self._cols * 2 + 1))
