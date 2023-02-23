@@ -201,14 +201,83 @@ class KruskalMazeGenerator(MazeGenerator):
                         (1, current_index, 0.0, True)
                     )
                     dic2[current_index] = dic1
+                elif(current_index in D[0]):
+                    dic1[0].append(
+                        (1, current_index, 0.0, True)
+                    )
+                    dic1[1].append(
+                        (1, current_index, 0.0, True)
+                    )
+                    dic1[2].append(
+                        (1, current_index, 0.0, True)
+                    )
+                    dic1[3].append(
+                        (1, current_index, 0.0, True)
+                    )
+                    dic2[current_index] = dic1
                 else:
-                    dic1[0].append((1, left_index, 0.0, False))
-                    dic1[1].append((1, down_index, 0.0, False))
-                    dic1[2].append((1, right_index, 0.0, False))
-                    dic1[3].append((1, up_index, 0.0, False))
+                    if((current_index, left_index) in self.walls or (left_index, current_index) in self.walls):
+                        dic1[0].append((1, current_index, 0.0, False))
+                        print("here0")
+                    else:
+                        if(current_index-1 == stateFinal and (current_index)%self.num_cols != 0):
+                            dic1[0].append(
+                                (1, left_index, 1.0, True)
+                            )
+                        else:
+                            if(current_index-1 in D[0] and (current_index)%self.num_cols != 0):
+                                dic1[0].append((1, left_index, 0.0, True))
+                            else:
+                                dic1[0].append((1, left_index, 0.0, False))
+
+                    if((current_index, down_index) in self.walls or (down_index, current_index) in self.walls):
+                        dic1[1].append((1, current_index, 0.0, False))
+                        print("here1")
+                    else:
+                        if(current_index+self.num_rows == stateFinal and current_index + self.num_rows < self.num_rows*self.num_cols):
+                            dic1[1].append(
+                                (1, down_index, 1.0, True)
+                            )
+                        else:
+                            if(current_index+self.num_rows in D[0] and current_index + self.num_rows < self.num_rows*self.num_cols):
+                                dic1[1].append((1, down_index, 0.0, True))
+                            else:
+                                dic1[1].append((1, down_index, 0.0, False))
+
+                    if((current_index, right_index) in self.walls or (right_index, current_index) in self.walls):
+                        dic1[2].append((1, current_index, 0.0, False))
+                        print("here2")
+                    else:
+                        if(current_index+1 == stateFinal and (current_index+1)%self.num_cols != 0):
+                            dic1[2].append(
+                                (1, right_index, 1.0, True)
+                            )
+                        else:
+                            if(current_index+1 in D[0] and (current_index+1)%self.num_cols != 0):
+                                dic1[2].append((1, right_index, 0.0, True))
+                            else:
+                                dic1[2].append((1, right_index, 0.0, False))
+
+                    if((current_index, up_index) in self.walls or (up_index, current_index) in self.walls):
+                        dic1[3].append((1, current_index, 0.0, False))
+                        print("here3")
+                    else:
+                        if(current_index-self.num_rows == stateFinal):
+                            dic1[3].append(
+                                (1, up_index, 1.0, True)
+                            )
+                        else:
+                            if(current_index-self.num_rows in D[0]):
+                                dic1[3].append((1, up_index, 0.0, True))
+                            else:
+                                dic1[3].append((1, up_index, 0.0, False))
+    
                     dic2[current_index] = dic1
 
         print('dic22', dic2)
+        print(' ')
+        # print('Walls:', self.walls)
+        print('Bombis:', D[0])
 
     def isValid(self, mat, visited, row, col, i, j):
         initState = i*self.num_rows + j
