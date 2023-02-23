@@ -13,6 +13,8 @@ cels = [(i, j) for j in range(GRAPH_SIZE) for i in range(GRAPH_SIZE)]
 
 def neighbors(n): return [(n[0]+dx, n[1]+dy) for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1))
                           if n[0]+dx >= 0 and n[0]+dx < GRAPH_SIZE and n[1]+dy >= 0 and n[1]+dy < GRAPH_SIZE]
+
+
 class Kruskal:
     # Metodo que inicializa el grafo de Kruskal con n*n celdas
     def __init__(self, cels):
@@ -33,12 +35,14 @@ class Kruskal:
             self.cel_map[cel].cel = parent_cel
             return parent_cel
     # Metodo union para unir dos nodos vecinos, permite crear un pasaje entre ellos
+
     def union(self, node1, node2):
         cel1 = self.find_cel(node1)
         cel2 = self.find_cel(node2)
         if cel1.cel != cel2.cel:
             cel1.cel = cel2
     # Clase Nodo del grafo, que gaurda el valor y su celda
+
     class NodeGraph:
         def __init__(self, val, cel):
             self.val = val
@@ -106,7 +110,7 @@ class KruskalMazeGenerator(MazeGenerator):
     # Este metodo genera la matriz P con la posicion inicial y final del caracter, las bombas aleatorizadas (1*Numero de columnas)
     # Este metodo tambien consigue la ruta mas corta para atravesar el inicio del fin, asegura que no existan bombas a mitad de camino.
     # Este metodo de la clase permite la generacion de la matriz P en el formato adecuado para ser resuelto por el agente monte carlo.
-  
+
     def generatePMaztrix(self):
         components = {}
         for row in range(self.num_rows):
@@ -141,44 +145,71 @@ class KruskalMazeGenerator(MazeGenerator):
         # Generate aleatory bombs positions
         # Generate sortestPath to solve the puzzle with a BFS searh implementation
         D = self.findShortestPathLength(mat, initPosition, endPosition)
-        
+
         if D[3] != -1:
-            print("El pasaje mas corto del nodo inicial{} al nodo final {}, tiene una longitud de {} pasos, a traves de la ruta {}, con bombas en los estados {}".format(D[1],  D[2], D[3],  D[4], D[0]) )
+            print("El pasaje mas corto del nodo inicial{} al nodo final {}, tiene una longitud de {} pasos, a traves de la ruta {}, con bombas en los estados {}".format(
+                D[1],  D[2], D[3],  D[4], D[0]))
         else:
             print("No se alcanzo el destino, intentelo de nuevo!")
 
-        print('robotPositions', initPosition, endPosition, stateInit)
         stateFinal = endPosition[0] * self.num_cols + endPosition[1]
+        print('robotPositions', initPosition,
+              endPosition, stateInit, stateFinal)
         # print('init state = ', stateDic[0]*self.num_cols + stateDic[1])
-        dic1 = dict(zip([0, 1, 2, 3], [None]*4))
-        # print(dic1)
-        dic2 = dict(zip(keyComp, [dic1]*(self.num_rows*self.num_cols)))
-        # pos.append((1, 2, 0.0, False),(1, 2, 0.0, False),(1, 2, 0.0, False))
-        i = 0
-        
+        dic1 = {}
+        for _ in range(4):
+            dic1[_] = []
+        # print('dic1', dic1)
+        dic2 = {}
+        for _ in range(self.num_cols*self.num_rows):
+            dic2[_] = dic1
+        # dic2 = dict(zip(keyComp, [dic1]*(self.num_rows*self.num_cols)))
+        #print('dic2', dic2)
+
         # Finally generatin P matrix
-        for rows in range(self.num_rows): # 0 1
+        for rows in range(self.num_rows):  # 0 1
             for cols in range(self.num_cols):
-                current_index = rows * self.num_cols + cols
-                left_index = rows * self.num_cols + cols - 1
-                down_index = (rows+1) * self.num_cols + cols
-                right_index = rows * self.num_cols + cols + 1
-                up_index = (rows-1) * self.num_cols + cols
-                #print('actual', current_index, left_index, down_index, right_index, up_index)
-                for action in range(4):
-                    if(current_index == stateFinal):
-                        dic1[action] = (1, current_index, 0.0, True)
-                        print('here')
-                    # else:
-                    #     print('')
-                    #     if (action == 0):  # movimiento en izq
-                    #         dic1[action] = (1, actual, 0.0, False), (1, 2, 0.0, False), (1, 2, 0.0, False)
-                    #     if (action == 1):  # movimiento en abajo
-                    #         dic1[action] = (1, actual, 0.0, False), (1, 2, 0.0, False), (1, 2, 0.0, False)
-                    #     if (action == 2):  # movimiento en der
-                    #         dic1[action] = (1, actual, 0.0, False), (1, 2, 0.0, False), (1, 2, 0.0, False)
-                    #     if (action == 0):  # movimiento en arriba
-                    #         dic1[action] = (1, actual, 0.0, False), (1, 2, 0.0, False), (1, 2, 0.0, False)
+                current_index = rows * self.num_cols + cols # Posicion actual
+                left_index = rows * self.num_cols + cols - 1 # Izq
+                down_index = rows * self.num_cols + cols + self.num_rows # Abajo
+                right_index = rows * self.num_cols + cols + 1 # Derecha
+                up_index = rows * self.num_cols + cols - self.num_rows # Arriba
+                
+                if(left_index < 0):
+                    left_index = 0
+                if(down_index  >= self.num_cols*self.num_rows):
+                    down_index = current_index
+                if(right_index >= self.num_cols*self.num_rows):
+                    right_index = self.num_cols*self.num_rows - 1
+                if(up_index < 0):
+                    up_index = current_index
+                if((current_index+1)%self.num_cols == 0):
+                    right_index = current_index
+                if(current_index%self.num_cols == 0):
+                    left_index = current_index
+
+                # print('actual', current_index, left_index, down_index, right_index, up_index)
+
+                # if (current_index == stateFinal): # estado actual == meta
+                #     dic2[current_index][0].append(
+                #             (1, current_index, 0.0, True)
+                #         )
+                #     dic2[current_index][1].append(
+                #             (1, current_index, 0.0, True)
+                #         )
+                #     dic2[current_index][2].append(
+                #             (1, current_index, 0.0, True)
+                #         )
+                #     dic2[current_index][3].append(
+                #             (1, current_index, 0.0, True)
+                #         )
+                #     print('here:', current_index, stateFinal)
+
+                dic2[current_index][0].append((1, left_index, 0.0, False))
+                # dic2[current_index][1] = [(1, down_index, 0.0, False)]
+                # dic2[current_index][2] = [(1, right_index, 0.0, False)]
+                # dic2[current_index][3] = [(1, up_index, 0.0, False)]
+
         print(dic2)
 
     def isValid(self, mat, visited, row, col, i, j):
@@ -214,7 +245,7 @@ class KruskalMazeGenerator(MazeGenerator):
         pasage.append((i, j, 0))
         parentsDic = {}
         parentPairs = []
-        
+
         while q:
             (i, j, dist) = q.popleft()
             # si se encuentra el destino, actualice `min_dist` y pare
@@ -242,10 +273,10 @@ class KruskalMazeGenerator(MazeGenerator):
 
         for i in range(self.num_cols*self.num_rows):
             parentsDic[i] = []
-            
+
         for l in range(len(parentPairs)):
             parentsDic[parentPairs[l][1]].append(parentPairs[l][0])
-            
+
         actualNode = dest[0]*self.num_rows + dest[1]
         endNode = src[0]*self.num_rows + src[1]
         path = []
@@ -254,7 +285,7 @@ class KruskalMazeGenerator(MazeGenerator):
             path.append(actualNode)
             actualNode = parentsDic[actualNode][0]
         path.append(actualNode)
-        
+
         # Genera las bombas aleatorias y retorna un arreglo de estados
         randomBombsStates = []
         while len(randomBombsStates) != self.num_cols:
