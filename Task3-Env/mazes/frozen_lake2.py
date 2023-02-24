@@ -3,8 +3,18 @@ Frozen Lake environment as a maze
 """
 import maze_generators
 import pygame
+import time
+import numpy as np
+from gym import spaces
+from . import settings
+
 class FrozenLake:
+    metadata = {"render_modes": ["human"], "render_fps": 4}
+
     def __init__(self, **kwargs):
+        super().__init__()
+        self.observation_space = spaces.Discrete(settings.NUM_TILES)
+        self.action_space = spaces.Discrete(settings.NUM_ACTIONS)
         self._rows = kwargs.get("rows", 4)
         self._cols = kwargs.get("cols", 4)
         maze_generator = kwargs.get(
@@ -13,7 +23,19 @@ class FrozenLake:
         self.walls = maze_generator.generate()
         self.P = maze_generator.generatePMatrix()
         
+    def reset(self, seed=None, options=None):
+        super().reset(seed=seed)
+
+        if options is not None:
+            if not isinstance(options, dict):
+                raise RuntimeError("Variable options is not a dictionary")
+            self.delay = options.get('delay', 0.5)
+    
+        np.random.seed(seed)
+        return 0, {}
+
     def render(self):
+
         print("-" * int(self._cols * 2 + 1))
         for i in range(self._rows):
             for j in range(self._cols):
@@ -62,7 +84,33 @@ class FrozenLake:
 
             # finally, end of line
             print("")
-            
-    def renderPygame(self):
-        pygame.init()
+    
+    # def step(self, action):
+    #     self.current_action = action
+
+    #     possibilities = self.P[self.current_state][self.current_action]
+
+    #     p = 0
+    #     i = 0
+
+    #     r = np.random.random()
+    #     while r > p:
+    #         r -= p
+    #         p, self.current_state, self.current_reward, terminated = possibilities[i]
+    #         i += 1
+
+    #     self.world.update(
+    #         self.current_state,
+    #         self.current_action,
+    #         self.current_reward,
+    #         terminated
+    #     )
+
+    #     self.render()
+    #     time.sleep(self.delay)
+
+    #     return self.current_state, self.current_reward, terminated, False, {}
+
+    # def renderPygame(self):
+    #     pygame.init()
         

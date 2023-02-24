@@ -1,5 +1,5 @@
 """
-Maze generator based on depth first search algorithm
+Maze generator based on randomized Kruskal algorithm
 """
 import sys
 from collections import deque
@@ -7,7 +7,7 @@ from typing import List, Tuple, Set
 import random
 from .MazeGenerator import MazeGenerator
 
-GRAPH_SIZE = 5
+GRAPH_SIZE = 4
 cels = [(i, j) for j in range(GRAPH_SIZE) for i in range(GRAPH_SIZE)]
 
 
