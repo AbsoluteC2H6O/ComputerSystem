@@ -35,7 +35,7 @@ def play(env, agent):
         action = agent.get_best_action(observation)
         observation, _, terminated, truncated, _ = env.step(action)
         env.render()
-        time.sleep(1)
+        time.sleep(0.4)
 
 
 if __name__ == "__main__":

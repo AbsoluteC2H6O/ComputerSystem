@@ -7,6 +7,7 @@ import time
 import numpy as np
 from gym import spaces
 from . import settings
+from .world import World
 
 class FrozenLake:
     metadata = {"render_modes": ["human"], "render_fps": 4}
@@ -15,6 +16,10 @@ class FrozenLake:
         super().__init__()
         self.observation_space = spaces.Discrete(settings.NUM_TILES)
         self.action_space = spaces.Discrete(settings.NUM_ACTIONS)
+        self.current_action = 1
+        self.current_state = 0
+        self.current_reward = 0.0
+        self.delay = settings.DEFAULT_DELAY
         self._rows = kwargs.get("rows", 4)
         self._cols = kwargs.get("cols", 4)
         maze_generator = kwargs.get(
@@ -22,20 +27,30 @@ class FrozenLake:
         )(self._rows, self._cols)
         self.walls = maze_generator.generate()
         self.P = maze_generator.generatePMatrix()
+        self.world = World(
+            "Frozen Lake Environment", self.current_state, self.current_action
+        )
+        # self.reset()
         
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
-
+        self.action = 0
+        self.reward = 0.0
+        self.state = 0
         if options is not None:
             if not isinstance(options, dict):
                 raise RuntimeError("Variable options is not a dictionary")
             self.delay = options.get('delay', 0.5)
     
         np.random.seed(seed)
-        return 0, {}
-
+        return self.state, {}
+    
     def render(self):
-
+        print(
+            "Action {}, reward {}, state {}".format(
+                self.action, self.reward, self.state
+            )
+        )
         print("-" * int(self._cols * 2 + 1))
         for i in range(self._rows):
             for j in range(self._cols):
@@ -85,31 +100,24 @@ class FrozenLake:
             # finally, end of line
             print("")
     
-    # def step(self, action):
-    #     self.current_action = action
+    def step(self, action):
+        
+        self.action = action
+        self.reward = self.P[self.state][action][0][2]
+        terminated = self.P[self.state][action][0][3]
+        self.state = self.P[self.state][action][0][1]
 
-    #     possibilities = self.P[self.current_state][self.current_action]
+        self.world.update(
+            self.current_state,
+            self.current_action,
+            self.current_reward,
+            terminated
+        )
 
-    #     p = 0
-    #     i = 0
+        self.render()
+        time.sleep(self.delay)
 
-    #     r = np.random.random()
-    #     while r > p:
-    #         r -= p
-    #         p, self.current_state, self.current_reward, terminated = possibilities[i]
-    #         i += 1
-
-    #     self.world.update(
-    #         self.current_state,
-    #         self.current_action,
-    #         self.current_reward,
-    #         terminated
-    #     )
-
-    #     self.render()
-    #     time.sleep(self.delay)
-
-    #     return self.current_state, self.current_reward, terminated, False, {}
+        return self.current_state, self.current_reward, terminated, False, {}
 
     # def renderPygame(self):
     #     pygame.init()

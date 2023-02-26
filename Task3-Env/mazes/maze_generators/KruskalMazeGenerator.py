@@ -7,7 +7,7 @@ from typing import List, Tuple, Set
 import random
 from .MazeGenerator import MazeGenerator
 
-GRAPH_SIZE = 4
+GRAPH_SIZE = 5
 cels = [(i, j) for j in range(GRAPH_SIZE) for i in range(GRAPH_SIZE)]
 
 
