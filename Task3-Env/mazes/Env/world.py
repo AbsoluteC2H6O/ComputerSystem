@@ -5,10 +5,11 @@ from .tilemap import TileMap
 
 
 class World:
-    def __init__(self, title, state, action, matrix):
+    def __init__(self, title, state, action, matrix, walls):
         pygame.init()
         pygame.display.init()
-        pygame.mixer.music.play(loops=-1)
+        settings.SOUNDS['game-init'].play()
+        pygame.mixer.music.play(loops=-1, fade_ms=7000)
         self.render_surface = pygame.Surface(
             (settings.VIRTUAL_WIDTH, settings.VIRTUAL_HEIGHT)
         )
@@ -23,21 +24,25 @@ class World:
         self.tilemap = None
         self.finish_state = None
         self.matrix = matrix
+        self.walls = walls
         self._create_tilemap()
 
     def _create_tilemap(self):
-        tile_texture_names = ["ice" for _ in range(settings.NUM_TILES)]
+        tile_texture_names = ["metal" for _ in range(settings.NUM_TILES)]
+        tile_texture_walls = ["metal" for _ in range(settings.NUM_TILES)]
         for _, actions_table in self.matrix.items():
             for _, possibilities in actions_table.items():
                 for _, state, reward, terminated in possibilities:
+                    if (state,state+1) in self.walls:
+                        tile_texture_walls[state] = "battery0-5"
                     if terminated:
                         if reward > 0:
                             self.finish_state = state
                         else:
-                            tile_texture_names[state] = "hole"
+                            tile_texture_names[state] = "explosion"
 
-        tile_texture_names[self.finish_state] = "ice"
-        self.tilemap = TileMap(tile_texture_names)
+        tile_texture_names[self.finish_state] = "metal"
+        self.tilemap = TileMap(tile_texture_names, self.walls, tile_texture_walls)
 
     def reset(self, state, action):
         self.state = state
@@ -45,8 +50,8 @@ class World:
         self.render_character = True
         self.render_goal = True
         for tile in self.tilemap.tiles:
-            if tile.texture_name == "cracked_hole":
-                tile.texture_name = "hole"
+            if tile.texture_name == "explosion":
+                tile.texture_name = "baterry-lost-point"
 
     def update(self, state, action, reward, terminated):
         if terminated:
@@ -54,10 +59,10 @@ class World:
                 self.render_goal = False
                 settings.SOUNDS["win"].play()
             else:
-                self.tilemap.tiles[state].texture_name = "cracked_hole"
+                self.tilemap.tiles[state].texture_name = "explosion"
                 self.render_character = False
-                settings.SOUNDS["ice_cracking"].play()
-                settings.SOUNDS["water_splash"].play()
+                settings.SOUNDS["lost-battery"].play()
+                settings.SOUNDS["lost-game"].play()
 
         self.state = state
         self.action = action
@@ -68,13 +73,13 @@ class World:
         self.tilemap.render(self.render_surface)
 
         self.render_surface.blit(
-            settings.TEXTURES["stool"],
+            settings.TEXTURES["spacecraft"],
             (self.tilemap.tiles[0].x, self.tilemap.tiles[0].y),
         )
 
         if self.render_goal:
             self.render_surface.blit(
-                settings.TEXTURES["goal"],
+                settings.TEXTURES["baterry-charge"],
                 (
                     self.tilemap.tiles[self.finish_state].x,
                     self.tilemap.tiles[self.finish_state].y,

@@ -33,9 +33,13 @@ def play(env, agent):
     terminated, truncated = False, False
     while not (terminated or truncated):
         action = agent.get_best_action(observation)
-        observation, _, terminated, truncated, _ = env.step(action)
-        env.render()
-        time.sleep(0.4)
+        observation, current_reward, terminated, truncated, _ = env.step(action)
+        
+        if terminated and current_reward > 0:
+            print("\n¡El agente completo con exito el juego!")
+        elif terminated:
+            print("\nEl agente NO completo el juego de manera exitosa, se fue por el charco.")
+        # time.sleep(self.delay)
 
 
 if __name__ == "__main__":
@@ -45,10 +49,10 @@ if __name__ == "__main__":
         env.observation_space.n, env.action_space.n, gamma=0.9, epsilon=0.9
     )
 
-    train(env, agent, episodes=100)
+    train(env, agent, episodes=10000)
     agent.render()
     # env.render()
     # env.renderPygame()
     play(env, agent)
-
+    env.render()
     env.close()

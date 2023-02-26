@@ -16,9 +16,6 @@ class FrozenLake:
         super().__init__()
         self.observation_space = spaces.Discrete(settings.NUM_TILES)
         self.action_space = spaces.Discrete(settings.NUM_ACTIONS)
-        self.current_action = 1
-        self.current_state = 0
-        self.current_reward = 0.0
         self.delay = settings.DEFAULT_DELAY
         self._rows = kwargs.get("rows", 4)
         self._cols = kwargs.get("cols", 4)
@@ -27,6 +24,10 @@ class FrozenLake:
         )(self._rows, self._cols)
         self.walls = maze_generator.generate()
         self.P = maze_generator.generatePMatrix()
+        # Initial position:
+        self.current_action = 1
+        self.current_state = 0
+        self.current_reward = 0.0
         self.world = World(
             "Frozen Lake Environment", self.current_state, self.current_action
         )
@@ -43,6 +44,9 @@ class FrozenLake:
             self.delay = options.get('delay', 0.5)
     
         np.random.seed(seed)
+        self.current_state = 0
+        self.current_action = 1
+        self.world.reset(self.current_state, self.current_action)
         return self.state, {}
     
     def render(self):
