@@ -7,7 +7,7 @@ from typing import List, Tuple, Set
 import random
 from .MazeGenerator import MazeGenerator
 
-GRAPH_SIZE = 5
+GRAPH_SIZE = 16
 cels = [(i, j) for j in range(GRAPH_SIZE) for i in range(GRAPH_SIZE)]
 
 
@@ -131,7 +131,7 @@ class KruskalMazeGenerator(MazeGenerator):
                 colMat.append(1)
             mat.append(colMat)
 
-        # Generate init and finish character position
+        # Generacion de las posiciones iniciales y finales del agente
         initPosition = components[key][random.randint(
             0, len(components[key])-1)]
         endPosition = initPosition
@@ -140,13 +140,13 @@ class KruskalMazeGenerator(MazeGenerator):
                 0, len(components[key])-1)]
 
 
-        # Generate shortes path in the puzzle
-        # Generate aleatory bombs positions
-        # Generate sortestPath to solve the puzzle with a BFS searh implementation
+        # Genera la ruta mas corta del rompecabezas
+        # Genera las posiciones aleatoriazadas de las bombas
+        # Genera la ruta mas corta a traves de un algoritmo de BFS sobre el grafo construido
         D = self.findShortestPathLength(mat, initPosition, endPosition)
 
         if D[3] != -1:
-            print("El pasaje mas corto del nodo inicial{} al nodo final {}, tiene una longitud de {} pasos, a traves de la ruta {}, con bombas en los estados {}".format(
+            print("El pasaje mas corto del nodo inicial '{}' al nodo final '{}', tiene una longitud de '{}' pasos, a traves de la ruta {}, con bombas en los estados {}".format(
                 D[1],  D[2], D[3],  D[4], D[0]))
         else:
             print("No se alcanzo el destino, intentelo de nuevo!")
@@ -156,7 +156,7 @@ class KruskalMazeGenerator(MazeGenerator):
         for _ in range(self.num_cols*self.num_rows):
             MatrixP[_] = []
 
-        # Finally generatin P matrix
+        # Finalmente la generacion de la matriz P
         for rows in range(self.num_rows):  # 0 1
             for cols in range(self.num_cols):
                 dic1 = {}
@@ -180,8 +180,6 @@ class KruskalMazeGenerator(MazeGenerator):
                     right_index = current_index
                 if (current_index % self.num_cols == 0):
                     left_index = current_index
-
-                # print('actual', current_index, left_index, down_index, right_index, up_index)
 
                 if (current_index == stateFinal):  # estado actual == meta
                     dic1[0].append(
@@ -267,8 +265,7 @@ class KruskalMazeGenerator(MazeGenerator):
                     MatrixP[current_index] = dic1
 
         print('\nMatrixP', MatrixP)
-        print(' ')
-        # print('Walls:', self.walls)
+        # print('\nWalls:', self.walls)
         return MatrixP
 
     def isValid(self, mat, visited, row, col, i, j):
