@@ -7,7 +7,10 @@ from typing import List, Tuple, Set
 import random
 from .MazeGenerator import MazeGenerator
 
-GRAPH_SIZE = 16
+sys.path.append("..")
+from Env.settings import COLS
+
+GRAPH_SIZE = COLS
 cels = [(i, j) for j in range(GRAPH_SIZE) for i in range(GRAPH_SIZE)]
 
 

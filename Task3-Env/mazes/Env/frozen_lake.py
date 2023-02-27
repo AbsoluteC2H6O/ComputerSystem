@@ -15,8 +15,8 @@ class FrozenLakeEnv(gym.Env):
         self.action_space = spaces.Discrete(settings.NUM_ACTIONS)
         self.delay = settings.DEFAULT_DELAY
         # Maze
-        self._rows = kwargs.get("rows", 16)
-        self._cols = kwargs.get("cols", 16)
+        self._rows = kwargs.get("rows", settings.ROWS)
+        self._cols = kwargs.get("cols", settings.COLS)
         maze_generator = kwargs.get(
             "maze_generator_class", maze_generators.KruskalMazeGenerator
         )(self._rows, self._cols)
