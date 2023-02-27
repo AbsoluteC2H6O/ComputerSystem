@@ -21,7 +21,7 @@ H_SCALE = ROWS
 V_SCALE = COLS
 
 # Resolution of the actual window
-WINDOW_WIDTH = TILE_SIZE * H_SCALE 
+WINDOW_WIDTH = TILE_SIZE * H_SCALE
 WINDOW_HEIGHT = TILE_SIZE * H_SCALE
 
 # Default pause time between steps (in seconds)
@@ -46,12 +46,19 @@ TEXTURES = {
     'battery3': pygame.image.load(BASE_DIR / "assets" / "graphics" / "battery3.png"),
     'battery4': pygame.image.load(BASE_DIR / "assets" / "graphics" / "battery4.png"),
     'battery5': pygame.image.load(BASE_DIR / "assets" / "graphics" / "battery5.png"),
-    
+
     'spacecraft': pygame.image.load(BASE_DIR / "assets" / "graphics" / "spacecraft.png"),
-    'rWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "rightWall.png"),
-    'uWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "upWall.png"),
-    'urWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "upRightWall.png"),
-    
+    'rWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "r.png"),
+    'uWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "u.png"),
+    'urWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "ur.png"),
+    'lWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "l.png"),
+    'ulWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "ul.png"),
+    'ulbWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "ulb.png"),
+    'urbWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "urb.png"),
+    'brWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "br.png"),
+    'bWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "b.png"),
+    'lbWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "lb.png"),
+
     'background': pygame.image.load(BASE_DIR / "assets" / "graphics" / "head.png"),
     'character': [
         pygame.image.load(BASE_DIR / "assets" / "graphics" / "robot-l.png"),
@@ -92,4 +99,3 @@ SOUNDS = {
     'lost-game': pygame.mixer.Sound(BASE_DIR / "assets" / "sounds" / "lost-game.ogg"),
     'win': pygame.mixer.Sound(BASE_DIR / "assets" / "sounds" / "game-win.ogg")
 }
-
