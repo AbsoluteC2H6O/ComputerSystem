@@ -181,8 +181,6 @@ class KruskalMazeGenerator(MazeGenerator):
                 if (current_index % self.num_cols == 0):
                     left_index = current_index
 
-                # print('actual', current_index, left_index, down_index, right_index, up_index)
-
                 if (current_index == stateFinal):  # estado actual == meta
                     dic1[0].append(
                         (1, current_index, 0.0, True)
@@ -266,9 +264,6 @@ class KruskalMazeGenerator(MazeGenerator):
     
                     MatrixP[current_index] = dic1
 
-        # print('\nMatrixP', MatrixP)
-        # print(' ')
-        # print('Walls:', self.walls)
         initRobotPosition = D[2]
         matrix = [MatrixP,initRobotPosition]
         return matrix

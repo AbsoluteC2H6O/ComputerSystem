@@ -4,7 +4,6 @@ import gym
 import gym_environments
 from gym.envs.registration import register
 from agent import MonteCarlo
-# from frozen_lake2 import FrozenLake
 
 # registro entry_point="Env.v0.robot_battery:RobotBatteryEnv",
 # registro entry_point="Env.froze_lake:FrozenLakeEnv",
@@ -39,20 +38,16 @@ def play(env, agent):
             print("\n¡El agente completo con exito el juego!")
         elif terminated:
             print("\nEl agente NO completo el juego de manera exitosa, se fue por el charco.")
-        # time.sleep(self.delay)
 
 
 if __name__ == "__main__":
     env = gym.make("FrozenLake-v1", render_mode="human")
-    # env = FrozenLake(rows=5, cols=5)
     agent = MonteCarlo(
         env.observation_space.n, env.action_space.n, gamma=0.9, epsilon=0.9
     )
 
     train(env, agent, episodes=10000)
     agent.render()
-    # env.render()
-    # env.renderPygame()
     play(env, agent)
     env.render()
     env.close()

@@ -7,19 +7,18 @@ ROWS = 16
 COLS = 16
 
 # Size of the square tiles used in this environment.
-TILE_SIZE = 33
-TILE_SIZE_WALL = 30
+TILE_SIZE = ROWS*2+1
+TILE_SIZE_WALL = ROWS*2/3
 NUM_TILES = ROWS * COLS
 NUM_ACTIONS = 4
-INITIAL_STATE = 0
 
 # Resolution to emulate
 VIRTUAL_WIDTH = TILE_SIZE * COLS
 VIRTUAL_HEIGHT = TILE_SIZE * ROWS + 30
 
 # Scale factor between virtual screen and window
-H_SCALE = 16
-V_SCALE = 16
+H_SCALE = ROWS
+V_SCALE = COLS
 
 # Resolution of the actual window
 WINDOW_WIDTH = TILE_SIZE * H_SCALE 
@@ -49,6 +48,10 @@ TEXTURES = {
     'battery5': pygame.image.load(BASE_DIR / "assets" / "graphics" / "battery5.png"),
     
     'spacecraft': pygame.image.load(BASE_DIR / "assets" / "graphics" / "spacecraft.png"),
+    'rWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "rightWall.png"),
+    'uWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "upWall.png"),
+    'urWall': pygame.image.load(BASE_DIR / "assets" / "graphics" / "upRightWall.png"),
+    
     'background': pygame.image.load(BASE_DIR / "assets" / "graphics" / "head.png"),
     'character': [
         pygame.image.load(BASE_DIR / "assets" / "graphics" / "robot-l.png"),

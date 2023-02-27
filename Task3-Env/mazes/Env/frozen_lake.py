@@ -31,16 +31,14 @@ class FrozenLakeEnv(gym.Env):
             M[1],
             self.current_action,
             self.P,
-            self.walls
+            self.walls,
+            M[1],
         )
         self.initialState = M[1]
         self.reset()
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
-        # self.action = 0
-        # self.reward = 0.0
-        # self.state = 0
         if options is not None:
             if not isinstance(options, dict):
                 raise RuntimeError("Variable options is not a dictionary")
@@ -54,30 +52,37 @@ class FrozenLakeEnv(gym.Env):
 
     def step(self, action):
         self.current_action = action
-        # self.action = action
-        # self.reward = self.P[self.state][action][0][2]
         _, self.state, self.current_reward, terminated = self.P[self.state][self.current_action][0]
-        # self.state = self.P[self.state][action][0][1]
-        
-        self.world.update(
-            self.state,
-            self.current_action,
-            self.current_reward,
-            terminated
-        )
+        if(terminated):
+            self.world.update(
+                self.state,
+                self.current_action,
+                self.current_reward,
+                terminated,
+            )
+            self.render()
+            time.sleep(3)
+            self.close()
+        else:
+            self.world.update(
+                self.state,
+                self.current_action,
+                self.current_reward,
+                terminated,
+            )
 
-        self.render()
-        time.sleep(self.delay)
+            self.render()
+            time.sleep(self.delay)
 
         return self.state, self.current_reward, terminated, False, {}
 
     def render(self):
-        print(
-            "Action {}, reward {}, state {}".format(
-                self.current_action, self.current_reward, self.state
-            )
-        )
-        print(self.state, self.initialState)
+        # print(
+        #     "Action {}, reward {}, state {}".format(
+        #         self.current_action, self.current_reward, self.state
+        #     )
+        # )
+        
         if (self.state == self.initialState):
             print("-" * int(self._cols * 2 + 1))
             for i in range(self._rows):
