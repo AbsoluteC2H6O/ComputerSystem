@@ -1,0 +1,49 @@
+- Task3-Env Corrected names and righ walls.
+- Task3-Env Walls limit interface.
+- Task3-Env Added new images.
+- Task3-Env num of tiles in setting global.
+- Task3-Env connected maze walls in the interface.
+- Task3-Env Created game for robot battery environment images and new map.
+- Task3-Env Connected interface with frozen lake environment.
+- Task3-Env: Se crea la carpeta Env con FrozenLake clasico, se actualiza el main.
+- Task3-Env Actualizacion de la funcion generatePMatrix, cambio en las conexiones y limpieza de print
+- Task3-Env Actualizacion de la funcion generatePMaztrix
+- Task3-Env Corrected generation of P matrix for states.
+- Task-Env Actualizacion de la funcion generatePMaztrix
+- Task3-Env corrected code.
+- Task3-Env Aleatory BFS positions. (#3)
+- Task3-Env Comenzar a generar la matrix P
+- Task3-Env Corrected and finish initial and end position state and pairs.
+- Task3-Env Create self.kruskal edges and generate component edges with initial and end positions aleatory.
+- Task3-Env Started pygame
+- Task3-Env corrected kruskal implementation and maze printed.
+- Task3-Env Added print function prototype.
+- Task3-Env corrections in kruskal algorithm and connected to frozen lake maze generator.
+- Task3-Env Kruskal finish implementation.
+- Merge branch 'Task2-Env' into Tas2k-Env-2
+- Prim algorithm.
+- Updated changelog files and corrected comented code.
+- Task2 env (#2)
+- segmentacion de carpetas de entorno, v0 entorno del Robot Battery y v1 para el nuevo entorno
+- Incluir el Env y conectarlo con el main
+- Carpeta para la tarea 2
+- Updated changelod.md
+- Delete condition invalid
+- modificacion linea 21 main.py
+- Cambio del texto de juego ganado y perdido, se incorpora algunos comentarios en agent.py
+- master updated CHANGELOG.md
+- Task2 agent sol1 (#1)
+- Updated changelog file.
+- Add changelog file.
+- Agregada la animacion para diferenciar cuando se obtiene un reward en la maquina actual.
+- Incorporar el numero de iteraciones y ganancia total, agregue el efecto de agrandamiento de la maquina.
+- Corrected rewards.
+- Se cambia color de fondo, se incluye texto copy, cambio de tama#o de fuente, efecto sombra al rewards
+- Carpeta inician con el environment, agent, settings, fonts y graphics de la tarea 1 para el profesor Alejandro.
+- Carpeta de la tarea 1 del profe Alejandro Mujica
+- Delete other.py
+- Modify iterations and execute main function for the agent.
+- Comentarios y elminar listas sin uso, ajustar el nombre Rewards por Rewards Total
+- Corrected rewards and show after method ends iteration.
+- Change structure folders.
+- First commit
