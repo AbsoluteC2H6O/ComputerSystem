@@ -39,39 +39,71 @@ class World:
                         else:
                             tile_texture_names[state] = "explosion"
         for state in self.walls:
-            if (state[0] - state[1] < 0):
+            specialStates = [0, ((settings.ROWS*settings.COLS)-1)]
+            i = len(specialStates)
+            for _ in range(settings.ROWS*settings.COLS):
+                if (_ < settings.COLS and (_,_+1) not in self.walls and(_+1,_) not in self.walls):
+                    tile_texture_names[_] = "uWall"
+                if (_ >= (specialStates[1]-settings.COLS) and _ < specialStates[1] and (_,_+1) not in self.walls and(_+1,_) not in self.walls):
+                    tile_texture_names[_] = "bWall"
+                if (_+1 % settings.ROWS == 0):
+                    specialStates.insert(i, _)
+                    if(_,_-settings.ROWS) in self.walls or (_-settings.ROWS,_) in self.walls:
+                        tile_texture_names[_] = "urWall"
+                    else:
+                        tile_texture_names[_] = "rWall"
+                    i += 1
+                if (_ % settings.ROWS == 0):
+                    specialStates.insert(i, _)
+                    if(_,_-settings.ROWS) in self.walls or (_-settings.ROWS,_) in self.walls:
+                        tile_texture_names[_] = "ulWall"
+                    else:
+                        tile_texture_names[_] = "lWall"
+                    i += 1
+       
+       
+            if ((0, 1) in self.walls and (0, 16) in self.walls):
+                tile_texture_names[0] = "urWall"
+            else:
+                tile_texture_names[0] = "ulWall"
+
+            if ((specialStates[1]-1, specialStates[1]) in self.walls and (specialStates[1]-settings.ROWS, specialStates[1]) in self.walls):
+                tile_texture_names[specialStates[1]] = "urbWall"
+            else:
+                tile_texture_names[specialStates[1]] = "brWall"
+
+            if (state[0] - state[1] < 0 and state[0] not in specialStates and state[1] not in specialStates):
                 if (self.isRWall(state[0], state[1])):
                     tile_texture_names[state[0]] = "rWall"
                 if (self.isUWall(state[0], state[1])):
                     tile_texture_names[state[0]] = "uWall"
                 if (self.isRUWall(state[0], state[1])):
                     tile_texture_names[state[0]] = "urWall"
-                if(_ < settings.COLS -1 and self.isRWall(state[0], state[1])):
-                    tile_texture_names[_] = "urWall"
-                else:
-                    if(_ < settings.COLS -1):
-                        tile_texture_names[_] = "uWall"
+                if (state[0] < settings.COLS and self.isRWall(state[0], state[1])):
+                    tile_texture_names[state[0]] = "urWall"
 
-            else:
+                if (state[0] >= ((settings.ROWS*settings.COLS)-1-settings.COLS) and self.isRWall(state[0], state[1])):
+                    tile_texture_names[state[0]] = "brWall"
+
+            elif (state[0] not in specialStates and state[1] not in specialStates):
                 if (self.isRWall(state[1], state[0])):
                     tile_texture_names[state[1]] = "rWall"
                 if (self.isUWall(state[1], state[0])):
                     tile_texture_names[state[1]] = "uWall"
                 if (self.isRUWall(state[1], state[0])):
                     tile_texture_names[state[1]] = "urWall"
-                if(_ < settings.COLS -1 and self.isRWall(state[1], state[0])):
-                    tile_texture_names[_] = "urWall"
-                else:
-                    if(_ < settings.COLS -1):
-                        tile_texture_names[_] = "uWall"
+                if (state[1] < settings.COLS and self.isRWall(state[1], state[0])):
+                    tile_texture_names[state[1]] = "urWall"
+                if (state[1] > ((settings.ROWS*settings.COLS)-settings.COLS) and self.isRWall(state[1], state[0])):
+                    tile_texture_names[state[1]] = "brWall"
 
         tile_texture_names[self.finish_state] = "metal"
         self.tilemap = TileMap(tile_texture_names)
 
-    def isRWall(self,state, stateNext):
+    def isRWall(self, state, stateNext):
         return state + 1 == stateNext
 
-    def isUWall(self,state, stateNext):
+    def isUWall(self, state, stateNext):
         return state - settings.COLS == stateNext
 
     def isRUWall(self, state, stateNext):
@@ -80,27 +112,27 @@ class World:
         return condition
 
     def reset(self, state, action):
-        self.state=state
-        self.action=action
-        self.render_character=True
-        self.render_goal=True
+        self.state = state
+        self.action = action
+        self.render_character = True
+        self.render_goal = True
         for tile in self.tilemap.tiles:
             if tile.texture_name == "explosion":
-                tile.texture_name="baterry-lost-point"
+                tile.texture_name = "baterry-lost-point"
 
     def update(self, state, action, reward, terminated):
         if terminated:
             if state == self.finish_state:
-                self.render_goal=False
+                self.render_goal = False
                 settings.SOUNDS["win"].play()
             else:
-                self.tilemap.tiles[state].texture_name="explosion"
-                self.render_character=False
+                self.tilemap.tiles[state].texture_name = "explosion"
+                self.render_character = False
                 settings.SOUNDS["lost-battery"].play()
                 settings.SOUNDS["lost-game"].play()
 
-        self.state=state
-        self.action=action
+        self.state = state
+        self.action = action
 
     def render(self):
         self.render_surface.fill((0, 0, 0))
