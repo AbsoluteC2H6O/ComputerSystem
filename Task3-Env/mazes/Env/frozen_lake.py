@@ -82,6 +82,7 @@ class FrozenLakeEnv(gym.Env):
                 self.current_action, self.current_reward, self.state
             )
         )
+        self.renderInConsole()
         self.world.render()
 
     def close(self):

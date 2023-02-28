@@ -1,24 +1,37 @@
 import pathlib
-
+import numpy as np
 import pygame
 
+randomCels =np.random.randint(5,16)
 # Grid
-ROWS = 16
-COLS = 16
+ROWS = randomCels
+COLS = randomCels
 
 # Size of the square tiles used in this environment.
-TILE_SIZE = ROWS*2+1
-TILE_SIZE_WALL = ROWS*2/3
+proportionalValue = 2
+if(ROWS >=12):
+    proportionalValue=(16-ROWS)*0.08 +2
+elif(ROWS >=10):
+    proportionalValue=(16-ROWS)*0.15 +2
+elif(ROWS >=7):
+    proportionalValue=(16-ROWS)*0.23 +2
+elif(ROWS ==6):
+    proportionalValue=(16-ROWS)*0.40 +1
+elif(ROWS ==5):
+    proportionalValue=(16-ROWS)*0.45 +1
+else:
+    proportionalValue=(16-ROWS)*0.26 +2
+TILE_SIZE = ROWS*proportionalValue+1
 NUM_TILES = ROWS * COLS
 NUM_ACTIONS = 4
 
 # Resolution to emulate
 VIRTUAL_WIDTH = TILE_SIZE * COLS
-VIRTUAL_HEIGHT = TILE_SIZE * ROWS + 30
+VIRTUAL_HEIGHT = TILE_SIZE * ROWS
 
 # Scale factor between virtual screen and window
-H_SCALE = ROWS
-V_SCALE = COLS
+H_SCALE = ROWS*proportionalValue
+V_SCALE = COLS*proportionalValue
 
 # Resolution of the actual window
 WINDOW_WIDTH = TILE_SIZE * H_SCALE

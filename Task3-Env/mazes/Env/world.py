@@ -30,14 +30,6 @@ class World:
 
     def _create_tilemap(self):
         tile_texture_names = ["metal" for _ in range(settings.NUM_TILES)]
-        for _, actions_table in self.matrix.items():
-            for _, possibilities in actions_table.items():
-                for _, state, reward, terminated in possibilities:
-                    if terminated:
-                        if reward > 0:
-                            self.finish_state = state
-                        else:
-                            tile_texture_names[state] = "explosion"
         specialStates = [0, ((settings.ROWS*settings.COLS)-1),((settings.ROWS*settings.COLS))-settings.COLS]
         i = len(specialStates)
         for _ in range(settings.ROWS*settings.COLS):
@@ -98,6 +90,15 @@ class World:
                     tile_texture_names[state[1]] = "urWall"
                 if (state[1] > ((settings.ROWS*settings.COLS)-settings.COLS) and self.isRWall(state[1], state[0])):
                     tile_texture_names[state[1]] = "brWall"
+        for _, actions_table in self.matrix.items():
+            for _, possibilities in actions_table.items():
+                for _, state, reward, terminated in possibilities:
+                    if terminated:
+                        if reward > 0:
+                            self.finish_state = state
+                        else:
+                            tile_texture_names[state] = "explosion"
+
 
         tile_texture_names[self.finish_state] = "metal"
         self.tilemap = TileMap(tile_texture_names)
