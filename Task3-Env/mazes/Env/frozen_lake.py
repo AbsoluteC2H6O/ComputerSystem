@@ -27,7 +27,7 @@ class FrozenLakeEnv(gym.Env):
         self.state =  M[1]
         self.current_reward = 0.0
         self.world = World(
-            "Frozen Lake Environment",
+            "Robot battery Environment as maze",
             M[1],
             self.current_action,
             self.P,
@@ -77,62 +77,62 @@ class FrozenLakeEnv(gym.Env):
         return self.state, self.current_reward, terminated, False, {}
 
     def render(self):
-        # print(
-        #     "Action {}, reward {}, state {}".format(
-        #         self.current_action, self.current_reward, self.state
-        #     )
-        # )
-        
-        if (self.state == self.initialState):
-            print("-" * int(self._cols * 2 + 1))
-            for i in range(self._rows):
-                for j in range(self._cols):
-                    # evaluate if there is a left wall
-                    current_index = i * self._cols + j
-                    left_index = i * self._cols + j - 1
-                    has_left_wall = (
-                        j == 0
-                        or (current_index, left_index) in self.walls
-                        or (left_index, current_index) in self.walls
-                    )
-
-                    # render the left wall if exists
-                    if has_left_wall:
-                        print("|", end="")
-                    else:
-                        # space if there is no a left wall
-                        print(" ", end="")
-
-                    # render the cell
-                    print(' ', end="")
-
-                # render the right wall for the current row
-                print("|")
-
-                # render the first bottom wall
-                print("-", end="")
-
-                # render the bottom wall when if exists
-                for j in range(self._cols):
-                    current_index = i * self._cols + j
-                    bottom_index = (i + 1) * self._cols + j
-                    has_bottom_wall = (
-                        i == self._rows - 1
-                        or (current_index, bottom_index) in self.walls
-                        or (bottom_index, current_index) in self.walls
-                    )
-                    if has_bottom_wall:
-                        print("-", end="")
-                    else:
-                        # space if there is not a bottom wall
-                        print(" ", end="")
-                    
-                    # render the next bottom wall
-                    print("-", end="")
-
-                # finally, end of line
-                print("")
+        print(
+            "Action {}, reward {}, state {}".format(
+                self.current_action, self.current_reward, self.state
+            )
+        )
         self.world.render()
 
     def close(self):
         self.world.close()
+    
+    def renderInConsole(self):
+        print("-" * int(self._cols * 2 + 1))
+        for i in range(self._rows):
+            for j in range(self._cols):
+                # evaluate if there is a left wall
+                current_index = i * self._cols + j
+                left_index = i * self._cols + j - 1
+                has_left_wall = (
+                    j == 0
+                    or (current_index, left_index) in self.walls
+                    or (left_index, current_index) in self.walls
+                )
+
+                # render the left wall if exists
+                if has_left_wall:
+                    print("|", end="")
+                else:
+                    # space if there is no a left wall
+                    print(" ", end="")
+
+                # render the cell
+                print(' ', end="")
+
+            # render the right wall for the current row
+            print("|")
+
+            # render the first bottom wall
+            print("-", end="")
+
+            # render the bottom wall when if exists
+            for j in range(self._cols):
+                current_index = i * self._cols + j
+                bottom_index = (i + 1) * self._cols + j
+                has_bottom_wall = (
+                    i == self._rows - 1
+                    or (current_index, bottom_index) in self.walls
+                    or (bottom_index, current_index) in self.walls
+                )
+                if has_bottom_wall:
+                    print("-", end="")
+                else:
+                    # space if there is not a bottom wall
+                    print(" ", end="")
+                
+                # render the next bottom wall
+                print("-", end="")
+
+            # finally, end of line
+            print("")

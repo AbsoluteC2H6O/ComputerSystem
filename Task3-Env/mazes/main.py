@@ -4,7 +4,6 @@ import gym
 import gym_environments
 from gym.envs.registration import register
 from agent import MonteCarlo
-
 # registro entry_point="Env.v0.robot_battery:RobotBatteryEnv",
 # registro entry_point="Env.froze_lake:FrozenLakeEnv",
 register (
@@ -33,12 +32,6 @@ def play(env, agent):
     while not (terminated or truncated):
         action = agent.get_best_action(observation)
         observation, current_reward, terminated, truncated, _ = env.step(action)
-        
-        if terminated and current_reward > 0:
-            print("\n¡El agente completo con exito el juego!")
-        elif terminated:
-            print("\nEl agente NO completo el juego de manera exitosa, se fue por el charco.")
-
 
 if __name__ == "__main__":
     env = gym.make("FrozenLake-v1", render_mode="human")
