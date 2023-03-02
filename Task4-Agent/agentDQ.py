@@ -38,6 +38,7 @@ class DoubleQLearning:
             )
 
         self.q12[state][action] = self.q1[state][action] + self.q2[state][action]
+        return self.q12[state][action]
 
     def _update(self, state, action, next_state, reward, terminated):
         self.iteration += 1
