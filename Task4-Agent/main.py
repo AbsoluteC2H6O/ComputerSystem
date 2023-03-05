@@ -128,7 +128,7 @@ if __name__ == "__main__":
             agentQ.render()
             agentDQ.render()
             printFigure(total_rewards_q, total_rewards_dq, option, i+1, j+1, seedG=seedGam, seedA=seedAlp)
-            totalRewards(n_episodes=n_epis)
+            total_rewards_q, total_rewards_dq = totalRewards(n_episodes=n_epis)
             seedAlp += 0.1
         seedGam += 0.35
         seedAlp = 0.05
