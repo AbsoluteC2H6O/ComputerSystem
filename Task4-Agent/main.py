@@ -12,7 +12,6 @@ def train(env, agent, episodes, total_rewards):
     for j in range(episodes):
         if (j % 100  == 0):
             print('Corrida {} de {}'.format(j, episodes))
-            time.sleep(0.5)
         observation, _ = env.reset()
         terminated, truncated = False, False
         while not (terminated or truncated):
@@ -25,16 +24,9 @@ def train(env, agent, episodes, total_rewards):
             total_rewards[i] += reward
         i+=1
 
-def totalRewards():
-    total_rewards_q = np.zeros(n_episodes)
-    total_rewards_dq = np.zeros(n_episodes)
-    return total_rewards_q, total_rewards_dq
-
-
 def play(env, agent):
     observation, _ = env.reset()
     env.render()
-    time.sleep(1)
     terminated, truncated = False, False
     while not (terminated or truncated):
         action = agent.get_action(observation, "greedy")
@@ -43,92 +35,24 @@ def play(env, agent):
         observation = new_observation
         env.render()
 
-
-if __name__ == "__main__":
-    # Iterators
-    n_episodes = 50
-    # Type environment: 0 = CliffWalking, 1 = Taxi
-    option = 0
-    # Inicialization
+def totalRewards(n_episodes):
     total_rewards_q = np.zeros(n_episodes)
     total_rewards_dq = np.zeros(n_episodes)
-    # total_rewards_q1 = np.zeros(n_episodes)
-    # total_rewards_dq1 = np.zeros(n_episodes)
+    return total_rewards_q, total_rewards_dq
 
-    environments = ["CliffWalking-v0", "Taxi-v3"]
-    env = gym.make(environments[option])
-    #env1 = gym.make(environments[option+1])
-    agentQ = QLearning(
-        env.observation_space.n, env.action_space.n, alpha=0.1, gamma=0.9, epsilon=0.05
-    )
-    agentDQ = DoubleQLearning(
-        env.observation_space.n, env.action_space.n, alpha=0.1, gamma=0.9, epsilon=0.05
-    )
-    # agentQ1 = QLearning(
-    #     env.observation_space.n, env.action_space.n, alpha=0.1, gamma=0.9, epsilon=0.05
-    # )
-    # agentDQ1 = DoubleQLearning(
-    #     env.observation_space.n, env.action_space.n, alpha=0.1, gamma=0.9, epsilon=0.05
-    # )
-    
-    episodes = n_episodes if len(sys.argv) == 1 else int(sys.argv[1])
-    # Q-Learning
-    print('Calculo en modo Q-Learning')
-    time.sleep(1)
-    train(env, agentQ, episodes, total_rewards_q)
-    print('Completado modo Q-Learning')
-    env.reset()
-    # Doble Q-Learning
-    time.sleep(1)
-    print('\nCalculo en modo Doble Q-Learning')
-    train(env, agentDQ, episodes, total_rewards_dq)
-    print('Completado modo Doble Q-Learning')
-    agentQ.render()
-    agentDQ.render()
-    #env.close()
-
-    # # Q-Learning
-    # print('Calculo en modo Q-Learning')
-    # time.sleep(1)
-    # train(env1, agentQ1, episodes, total_rewards_q1)
-    # print('Completado modo Q-Learning')
-    # env1.reset()
-    # # Doble Q-Learning
-    # time.sleep(1)
-    # print('\nCalculo en modo Doble Q-Learning')
-    # train(env1, agentDQ1, episodes, total_rewards_dq1)
-    # print('Completado modo Doble Q-Learning')
-    # agentQ.render()
-    # agentDQ.render()
-    # env.close()
-    # env1.close()
-
+def printFigure(total_rewards_q, total_rewards_dq, option, gam, alp, seedG, seedA):
     if(option == 0):
         # -- Graph Environment CliffWalking --
-        # plt.figure(figsize=(8,4))
-        # plt.subplot(2, 1, 1) 
-        # plt.plot(total_rewards_q, label='Q-Learning')
-        # plt.title(r'Individual Graphs. Env = CliffWalking.')
-        # plt.legend()
-
-        # #plt.figure(figsize=(8,4))
-        # plt.subplot(2, 1, 2)
-        # plt.plot(total_rewards_dq, label='Double Q-Learning', color ='orange')
-        # plt.legend()
-        # plt.show()
-
         plt.figure(figsize=(10,6))
         plt.plot(total_rewards_q,
                 label='Q-Learning')
         plt.plot(total_rewards_dq,
                 label='Double Q-Learning')
-        # plt.hlines(xmin=0, xmax=episodes, y=0.05/6*100, 
-        #     label='Optimal')
         plt.ylabel('Sum of rewards during episode')
         plt.xlabel('Episodes')
-        plt.title(r'Parameters: Env = CliffWalking, ($\epsilon = 0.05$), ($\alpha = 0.1$), ($\gamma = 0.9$)')
-        plt.legend()
-        plt.savefig("figura_base{}.jpg".format(10), dpi=600)
+        plt.title('Parameters: Env = CliffWalking, Epsilon = 0.05, Alpha = {}, Gamma = {}'.format(seedA, seedG))
+        plt.legend(loc='lower center', ncol=3, frameon=False)
+        plt.savefig("EnvCliffWalkingGamma{}Alpha{}.jpg".format(gam, alp), dpi=600)
         #plt.show()
     else:
         # -- Graph Taxi --
@@ -143,31 +67,71 @@ if __name__ == "__main__":
                                 else np.mean(total_rewards_dq[:i])
                                 for i in range(1, len(total_rewards_dq))
                                 ])
-                
-        # plt.figure(figsize=(8,4))
-        # plt.subplot(2, 1, 1) 
-        # plt.plot(q_avg_rewards, label='Q-Learning')
-        # plt.title(r'Individual Graphs. Env = Taxi.')
-        # plt.legend()
-
-        # plt.subplot(2, 1, 2)
-        # plt.plot(dq_avg_rewards, label='Double Q-Learning', color ='orange')
-        # plt.legend()
-        # plt.show()
-
         plt.figure(figsize=(10,6))
         plt.plot(q_avg_rewards,
                 label='Q-Learning')
         plt.plot(dq_avg_rewards,
                 label='Double Q-Learning')
-        # plt.hlines(xmin=0, xmax=episodes, y=0.05/6*100, 
-        #     label='Optimal')
         plt.ylabel('Sum of rewards during episode')
         plt.xlabel('Episodes')
-        plt.title(r'Parameters: Env = Taxi, ($\epsilon = 0.05$), ($\alpha = 0.1$), ($\gamma = 0.9$)')
+        plt.title('Parameters: Env = Taxi, Epsilon = 0.05, Alpha = {}, Gamma = {}'.format(seedA, seedG))
         plt.legend(loc='lower center', ncol=3, frameon=False)
-        plt.savefig("figura_base{}.jpg".format(11), dpi=600)
+        plt.savefig("EnvCliffWalkingGamma{}Alpha{}.jpg".format(gam, alp), dpi=600)
         #plt.show()
+
+if __name__ == "__main__":
+    # Iterators
+    n_epis = 500
+    seedGam, seedAlp = 0.1, 0.05
+    # Type environment: 0 = CliffWalking, 1 = Taxi
+    option = - 1
+    # Inicialization
+    eps = 0.05
+    total_rewards_q = np.zeros(n_epis)
+    total_rewards_dq = np.zeros(n_epis)
+    environments = ["CliffWalking-v0", "Taxi-v3"]
+    
+    print('Hola! Elije el Env a ejecutar: 0 = CliffWalking o 1 = Taxi.')
+    while(option != 0 and option !=1):
+        option = int(input())
+        if(option < 0 or option > 1):
+            print('Opcion incorrecta, marque una opcion entre 0 o 1.')
+
+    env = gym.make(environments[option])
+    # agentQ = QLearning(
+    #     env.observation_space.n, env.action_space.n, alpha=seedAlp, gamma=seedGam, epsilon=eps
+    # )
+    # agentDQ = DoubleQLearning(
+    #     env.observation_space.n, env.action_space.n, alpha=seedAlp, gamma=seedGam, epsilon=eps
+    # )
+    episodes = n_epis if len(sys.argv) == 1 else int(sys.argv[1])
+    print('Environment elegido: {}'.format(environments[option]))
+    time.sleep(0.5)
+    for i in range(3):
+        for j in range(10):
+            print('Parametros: Epsilon = {}, Gamma = {}, Alpha = {}'.format(eps, seedGam, seedAlp))
+            agentQ = QLearning(
+                env.observation_space.n, env.action_space.n, alpha=seedAlp, gamma=seedGam, epsilon=eps
+            )
+            agentDQ = DoubleQLearning(
+                env.observation_space.n, env.action_space.n, alpha=seedAlp, gamma=seedGam, epsilon=eps
+            )
+            # Q-Learning
+            print('Calculo en modo Q-Learning')
+            train(env, agentQ, episodes, total_rewards_q)
+            print('Completado modo Q-Learning')
+            env.reset()
+            # Doble Q-Learning
+            print('\nCalculo en modo Doble Q-Learning')
+            train(env, agentDQ, episodes, total_rewards_dq)
+            print('Completado modo Doble Q-Learning')
+            agentQ.render()
+            agentDQ.render()
+            printFigure(total_rewards_q, total_rewards_dq, option, i+1, j+1, seedG=seedGam, seedA=seedAlp)
+            totalRewards(n_episodes=n_epis)
+            seedAlp += 0.1
+        seedGam += 0.35
+    env.close()
 
     # env = gym.make(environments[1], render_mode="human")
     # print("Jugando con Q learning")
