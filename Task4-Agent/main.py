@@ -10,7 +10,7 @@ from agentDQ import DoubleQLearning
 def train(env, agent, episodes, total_rewards):
     i = 0
     for j in range(episodes):
-        if (j % 100  == 0):
+        if (j % 10  == 0):
             print('Corrida {} de {}'.format(j, episodes))
         observation, _ = env.reset()
         terminated, truncated = False, False
