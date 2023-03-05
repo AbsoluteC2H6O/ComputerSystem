@@ -76,7 +76,7 @@ def printFigure(total_rewards_q, total_rewards_dq, option, gam, alp, seedG, seed
         plt.xlabel('Episodes')
         plt.title('Parameters: Env = Taxi, Epsilon = 0.05, Alpha = {}, Gamma = {}'.format(seedA, seedG))
         plt.legend(loc='lower center', ncol=3, frameon=False)
-        plt.savefig("EnvCliffWalkingGamma{}Alpha{}.jpg".format(gam, alp), dpi=600)
+        plt.savefig("EnvTaxiGamma{}Alpha{}.jpg".format(gam, alp), dpi=600)
         #plt.show()
 
 if __name__ == "__main__":
@@ -131,6 +131,7 @@ if __name__ == "__main__":
             totalRewards(n_episodes=n_epis)
             seedAlp += 0.1
         seedGam += 0.35
+        seedAlp = 0.05
     env.close()
 
     # env = gym.make(environments[1], render_mode="human")
