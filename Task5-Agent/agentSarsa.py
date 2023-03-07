@@ -1,7 +1,6 @@
 import numpy as np
 
-
-class DoubleQLearning:
+class SARSA:
     def __init__(self, states_n, actions_n, alpha, gamma, epsilon):
         self.states_n = states_n
         self.actions_n = actions_n
@@ -12,66 +11,65 @@ class DoubleQLearning:
 
     def reset(self):
         self.episode = 0
-        self.iteration = 0
+        self.step = 0
         self.state = 0
         self.action = 0
         self.next_state = 0
+        self.next_action = 0
         self.reward = 0
-        self.q1 = np.zeros((self.states_n, self.actions_n))
-        self.q2 = np.zeros((self.states_n, self.actions_n))
-        self.q12 = np.zeros((self.states_n, self.actions_n))
+        self.done = False
+        self.q_table = np.zeros((self.states_n, self.actions_n))
 
-    def update(self, state, action, next_state, reward, terminated):
-        self._update(state, action, next_state, reward, terminated)
+    def update(
+        self, state, action, next_state, next_action, reward, terminated, truncated
+    ):
+        self._update(
+            state, action, next_state, next_action, reward, terminated, truncated
+        )
+        self.q_table[state, action] = self.q_table[state, action] + self.alpha * (
+            reward
+            + self.gamma * self.q_table[next_state, next_action]
+            - self.q_table[state, action]
+        )
 
-        if np.random.uniform(0, 1) <= 0.5:
-            self.q1[state, action] = self.q1[state, action] + self.alpha * (
-                reward
-                + self.gamma * self.q2[next_state, np.argmax(self.q1[next_state])]
-                - self.q1[state, action]
-            )
-        else:
-            self.q2[state, action] = self.q2[state, action] + self.alpha * (
-                reward
-                + self.gamma * self.q1[next_state, np.argmax(self.q2[next_state])]
-                - self.q2[state, action]
-            )
+    def _update(
+        self, state, action, next_state, next_action, reward, terminated, truncated
+    ):
+        if self.done:
+            self.step = 0
+            self.done = False
 
-        self.q12[state][action] = self.q1[state][action] + self.q2[state][action]
-        return self.q12[state][action]
-
-    def _update(self, state, action, next_state, reward, terminated):
-        self.iteration += 1
+        self.step += 1
         self.state = state
         self.action = action
         self.next_state = next_state
+        self.next_action = next_action
         self.reward = reward
-        if terminated:
+
+        if terminated or truncated:
             self.episode += 1
-            self.iteration = 0
+            self.done = True
 
     def get_action(self, state, mode):
         if mode == "random":
             return np.random.choice(self.actions_n)
         elif mode == "greedy":
-            return np.argmax(self.q12[state])
+            return np.argmax(self.q_table[state])
         elif mode == "epsilon-greedy":
             if np.random.uniform(0, 1) < self.epsilon:
                 return np.random.choice(self.actions_n)
             else:
-                return np.argmax(self.q12[state])
+                return np.argmax(self.q_table[state])
 
-    def render(self, mode="values"):
+    def render(self, mode="step"):
         if mode == "step":
             print(
-                "Episode: {}, Iteration: {}, State: {}, Action: {}, Next state: {}, Reward: {}".format(
-                    self.episode,
-                    self.iteration,
-                    self.state,
-                    self.action,
-                    self.next_state,
-                    self.reward,
-                )
+                f"Episode: {self.episode}, Step: {self.step}, State: {self.state}, Action: {self.action}, ",
+                end="",
             )
+            print(
+                f"Next state: {self.next_state}, Next action: {self.next_action}, Reward: {self.reward}"
+            )
+
         elif mode == "values":
-            print("Q1: {}\nQ2: {}".format(self.q1, self.q2))
+            print(f"Q-Table: {self.q_table}")

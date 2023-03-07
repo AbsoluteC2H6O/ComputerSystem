@@ -1,7 +1,6 @@
 import numpy as np
 
-
-class QLearning:
+class EXPECTEDSARSA:
     def __init__(self, states_n, actions_n, alpha, gamma, epsilon):
         self.states_n = states_n
         self.actions_n = actions_n
@@ -12,32 +11,60 @@ class QLearning:
 
     def reset(self):
         self.episode = 0
-        self.iteration = 0
+        self.step = 0
         self.state = 0
         self.action = 0
         self.next_state = 0
+        self.next_action = 0
         self.reward = 0
+        self.done = False
         self.q_table = np.zeros((self.states_n, self.actions_n))
 
-    def update(self, current_state, action, next_state, reward, terminated):
-        self._update(current_state, action, next_state, reward, terminated)
-        self.q_table[current_state, action] = self.q_table[
-            current_state, action
-        ] + self.alpha * (
-            reward
-            + self.gamma * np.max(self.q_table[next_state])
-            - self.q_table[current_state, action]
+    def update(
+        self, state, action, next_state, next_action, reward, terminated, truncated
+    ):
+        self._update(
+            state, action, next_state, next_action, reward, terminated, truncated
         )
+        best_action = np.argmax(self.q_table[self.next_state][:])
+        # print('best', best_action)
+        greedy_actions = 0
+        exp_q = 0
+        for i in range(self.actions_n):
+            if self.q_table[next_state][i] == best_action:
+                greedy_actions += 1
 
-    def _update(self, current_state, action, next_state, reward, terminated):
-        self.iteration += 1
-        self.state = current_state
+        non_greedy = self.epsilon / self.actions_n
+        if (greedy_actions == 0):
+            greedy_actions_p = non_greedy
+        else:
+            greedy_actions_p = ((1 - self.epsilon) / greedy_actions) + non_greedy
+        for i in range(self.actions_n):
+            if self.q_table[self.next_state][i] == best_action:
+                exp_q += self.q_table[self.next_state][i] * greedy_actions_p
+            else:
+                exp_q += self.q_table[self.next_state][i] * non_greedy
+
+        target = reward + self.gamma * exp_q
+        self.q_table[state, action] = self.q_table[state, action] + self.alpha * (target - self.q_table[self.state][self.action])
+
+    def _update(
+        self, state, action, next_state, next_action, reward, terminated, truncated
+    ):
+        if self.done:
+            self.step = 0
+            self.done = False
+
+        self.step += 1
+        self.state = state
         self.action = action
         self.next_state = next_state
+        self.next_action = next_action
         self.reward = reward
-        if terminated:
+
+        if terminated or truncated:
             self.episode += 1
-            self.iteration = 0
+            self.done = True
 
     def get_action(self, state, mode):
         if mode == "random":
@@ -45,25 +72,20 @@ class QLearning:
         elif mode == "greedy":
             return np.argmax(self.q_table[state])
         elif mode == "epsilon-greedy":
-            rdm = np.random.uniform(0, 1)
-            if rdm < self.epsilon:
+            if np.random.uniform(0, 1) < self.epsilon:
                 return np.random.choice(self.actions_n)
             else:
                 return np.argmax(self.q_table[state])
 
-    def render(self, mode="values"):
+    def render(self, mode="step"):
         if mode == "step":
             print(
-                "Episode: {}, Iteration: {}, State: {}, Action: {}, Next state: {}, Reward: {}".format(
-                    self.episode,
-                    self.iteration,
-                    self.state,
-                    self.action,
-                    self.next_state,
-                    self.reward,
-                )
+                f"Episode: {self.episode}, Step: {self.step}, State: {self.state}, Action: {self.action}, ",
+                end="",
             )
-        elif mode == "values":
-            print("Q-Table: {}".format(self.q_table))
-            
+            print(
+                f"Next state: {self.next_state}, Next action: {self.next_action}, Reward: {self.reward}"
+            )
 
+        elif mode == "values":
+            print(f"Q-Table: {self.q_table}")
