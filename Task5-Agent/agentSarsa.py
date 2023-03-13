@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class SARSA:
     def __init__(self, states_n, actions_n, alpha, gamma, epsilon):
         self.states_n = states_n

@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class EXPECTEDSARSA:
     def __init__(self, states_n, actions_n, alpha, gamma, epsilon):
         self.states_n = states_n
@@ -26,27 +27,20 @@ class EXPECTEDSARSA:
         self._update(
             state, action, next_state, next_action, reward, terminated, truncated
         )
-        best_action = np.argmax(self.q_table[self.next_state][:])
-        # print('best', best_action)
-        greedy_actions = 0
-        exp_q = 0
-        for i in range(self.actions_n):
-            if self.q_table[next_state][i] == best_action:
-                greedy_actions += 1
-
+        best_action = np.argmax(self.q_table[self.next_state, :])
         non_greedy = self.epsilon / self.actions_n
-        if (greedy_actions == 0):
-            greedy_actions_p = non_greedy
-        else:
-            greedy_actions_p = ((1 - self.epsilon) / greedy_actions) + non_greedy
-        for i in range(self.actions_n):
-            if self.q_table[self.next_state][i] == best_action:
-                exp_q += self.q_table[self.next_state][i] * greedy_actions_p
-            else:
-                exp_q += self.q_table[self.next_state][i] * non_greedy
 
-        target = reward + self.gamma * exp_q
-        self.q_table[state, action] = self.q_table[state, action] + self.alpha * (target - self.q_table[self.state][self.action])
+        greedy_actions = [1-self.epsilon + non_greedy if i ==
+                          best_action else non_greedy for i in range(len(self.q_table[self.next_state, :]))]
+
+        expectedSarsavalues = [
+            greedy_actions[i]*self.q_table[next_state, i] for i in range(len(self.q_table[self.next_state, :]))
+        ]
+
+        self.q_table[state, action] = self.q_table[state, action] + self.alpha*(
+            reward + self.gamma *
+            np.sum(expectedSarsavalues)-self.q_table[state, action]
+        )
 
     def _update(
         self, state, action, next_state, next_action, reward, terminated, truncated
