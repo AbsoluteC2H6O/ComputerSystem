@@ -30,11 +30,11 @@ class EXPECTEDSARSA:
         best_action = np.argmax(self.q_table[self.next_state, :])
         non_greedy = self.epsilon / self.actions_n
 
-        greedy_actions = [1-self.epsilon + non_greedy if i ==
-                          best_action else non_greedy for i in range(len(self.q_table[self.next_state, :]))]
+        greedy_actions = [1-self.epsilon + non_greedy if qvlues ==
+                          best_action else non_greedy for qvlues in range(len(self.q_table[self.next_state, :]))]
 
         expectedSarsavalues = [
-            greedy_actions[i]*self.q_table[next_state, i] for i in range(len(self.q_table[self.next_state, :]))
+            greedy_actions[qvlues]*self.q_table[next_state, qvlues] for qvlues in range(len(self.q_table[self.next_state, :]))
         ]
 
         self.q_table[state, action] = self.q_table[state, action] + self.alpha*(
