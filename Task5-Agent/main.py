@@ -1,12 +1,10 @@
-
-from agentSarsaE import EXPECTEDSARSA
-from agentSarsa  import SARSA
-import matplotlib.pyplot as plt
-import gym_environments
-import numpy as np
-import time
 import sys
+import time
 import gym
+import numpy as np
+import matplotlib.pyplot as plt
+from agentSarsa import SARSA
+from agentSarsaE import EXPECTEDSARSA
 
 def calculate_states_size(env):
     max = env.observation_space.high
@@ -21,12 +19,11 @@ def calculate_state(env, value):
     return int(values[1]) * 19 + int(values[0])
 
 
-def run(env, agent, selection_method, episodes):
+def run(env, agent, selection_method, episodes, total_rewards, total_average, position):
     i = 0
-    total_rewards = np.zeros(episodes)
     for episode in range(1, episodes + 1):
-        # if episode % 100 == 0:
-        #     print(f"Episode: {episode}")
+        # if episode % 10 == 0:
+        #     print("Episode {} of {}".format(episode, episodes))
         observation, _ = env.reset()
         action = agent.get_action(calculate_state(env, observation), selection_method)
         terminated, truncated = False, False
@@ -47,100 +44,165 @@ def run(env, agent, selection_method, episodes):
             observation = new_observation
             action = next_action
             total_rewards[i] += reward
-        i+=1
-    return total_rewards
+        i += 1
+    # valor = np.average(total_rewards)
+    # total_average[position] = valor
+    # total_alpha[position] = valor
+    # print(total_rewards)
+    total_average[position] = total_rewards
+
+
+def generateGraphics(env, episodes, alp):
+    seedEps = [0.05, 0.3, 0.6]
+    seedGmm = [0.2, 0.5, 0.8]
+
+    s = (len(seedEps)*len(seedGmm), episodes)
+    array_sarsa = np.zeros(s)
+    array_expecteds = np.zeros(s)
+    total_rewards_s = np.zeros(episodes)
+    total_rewards_es = np.zeros(episodes)
+
+    i = 0
+    for eps in seedEps:
+        for gam in seedGmm:
+            print('\nParametros: Epsilon = {}, Gamma = {}, Alpha = {}'.format(eps, gam, alp))
+            # SARSA
+            print("\nCalculo en modo SARSA")
+            env.reset()
+            agentSarsa = SARSA(
+                calculate_states_size(env),
+                env.action_space.n,
+                alpha=alp,
+                gamma=gam,
+                epsilon=eps,
+            )
+            run(env, agentSarsa, "epsilon-greedy", episodes, total_rewards_s, array_sarsa, i)
+            print("Completado el modo SARSA")
+            env.reset()
+            print("\nCalculo en modo EXPECTED SARSA")
+
+            # EXPECTEDSARSA
+            agentExpectedSarsa = EXPECTEDSARSA(
+                calculate_states_size(env),
+                env.action_space.n,
+                alpha=alp,
+                gamma=gam,
+                epsilon=eps,
+            )
+            run(env, agentExpectedSarsa, "epsilon-greedy", episodes, total_rewards_es, array_expecteds, i)
+            print("Completado el modo EXPECTED SARSA")
+            total_rewards_s, total_rewards_es = totalRewards(n_episodes=episodes)
+            i += 1
+            env.close()
+    printFigureIterable(array_sarsa, seedEps, seedGmm, alp, 0)
+    printFigureIterable(array_expecteds, seedEps, seedGmm, alp, 1)
+    # printPrueba(total_rewards_s, seedEps, seedGmm, alp, 0)
+    # printPrueba(total_rewards_es, seedEps, seedGmm, alp, 1)
 
 def totalRewards(n_episodes):
-    total_rewards_q = np.zeros(n_episodes)
-    total_rewards_dq = np.zeros(n_episodes)
-    return total_rewards_q, total_rewards_dq
+    total_rewards_s = np.zeros(n_episodes)
+    total_rewards_es = np.zeros(n_episodes)
+    return total_rewards_s, total_rewards_es
 
-def printFigure(total_rewards_s, total_rewards_es, alp, eps, seedA, seedE):
-    # -- Graph Environment MountainCar --
-    window = 80
-    for j in range(len(total_rewards_s)-1):
-        totals_sarsa = total_rewards_s[j]
-        totals_esarsa = total_rewards_es[j]
-        s_avg_rewards = np.array([np.mean(totals_sarsa[i-window:i])  
+
+def printFigureIterable(array_imp, seedEps, seedGmm, alp, cond):
+    plt.figure(figsize=(12,8))
+    iE = 0
+    iG = 0
+
+    for i in range(len(array_imp)):
+        window = 10
+        array_i = array_imp[i]
+        s_avg_rewards = np.array([np.mean(array_i[i-window:i])  
                                 if i >= window
-                                else np.mean(totals_sarsa[:i])
-                                for i in range(1, len(totals_sarsa))
-                                ])
-        es_avg_rewards = np.array([np.mean(totals_esarsa[i-window:i])  
-                                if i >= window
-                                else np.mean(totals_esarsa[:i])
-                                for i in range(1, len(totals_esarsa))
-                                ])
-        plt.figure(figsize=(10,6))
+                                else np.mean(array_i[:i])
+                                for i in range(1, len(array_i))
+                                ])    
         plt.plot(s_avg_rewards,
-                label='Sarsa')
-        plt.plot(es_avg_rewards,
-                label='ExpectedSarsa')
-        plt.ylabel('Sum of rewards during episode')
-        plt.xlabel('Episodes')
-        plt.title('Parameters: Env = MountainCar, Gamma = 0.95, Alpha = {}, Epsilon = {}'.format(seedA, seedE))
-        plt.legend(ncol=2)
-        plt.savefig("EnvMountainCarEps{}Alpha{}.jpg".format(eps, alp), dpi=600)
+                label='E = {} G = {}'.format(seedEps[iE], seedGmm[iG]))
+        iG += 1
+        if iG == 3:
+            iG = 0
+            iE += 1
+
+    plt.ylabel('Sum rewards')
+    plt.xlabel('Episodes')
+    plt.title('Parameters: Env = MountainCar, Alpha  = {}'.format(alp))
+    plt.legend()
+    if(cond == 0):
+        plt.savefig("NEWEnvMountainCarSarsa.jpg", dpi=600)
+    else:
+        plt.savefig("NEWEnvMountainCarExpectedSarsa.jpg", dpi=600)
+    #plt.show()
+    
+
+def printFigure(total_alpha_s, total_alpha_es):
+    plt.figure(figsize=(10,6))
+    plt.plot(total_alpha_s,
+            label='Sarsa')
+    plt.plot(total_alpha_es,
+            label='ExpectedSarsa')
+    plt.ylabel('Average return')
+    plt.xlabel('Alpha')
+    plt.title('Parameters: Env = MountainCar, Epsilon = 0.1, Gamma = 0.9')
+    plt.legend(loc='lower center', ncol=3, frameon=False)
+    plt.savefig("EnvMountainCarAlpha.jpg", dpi=600)
+    #plt.show()
+
 
 if __name__ == "__main__":
-    episodes = 40 if len(sys.argv) == 1 else int(sys.argv[1])
+    episodes = 3000 if len(sys.argv) == 1 else int(sys.argv[1])
 
     env = gym.make("MountainCar-v0")
-    total_rewards_sarsa = np.zeros(episodes)
-    total_rewards_sarsa_e = np.zeros(episodes)
-    totals_rewards_sarsa = []
-    totals_rewards_sarsa_e = []
-    seedGam, seedAlp, seedEps = 0.95, 0.2, 0.05
-    it = 0
-    for i in range(3):
-        seedAlp = 0.2
-        for j in range(3):
-            print('\nParametros: Epsilon = {}, Gamma = {}, Alpha = {}'.format(seedEps, seedGam, seedAlp))
-        #SARSA
-            print('SARSA RUN')
-            agentS = SARSA(
-                calculate_states_size(env),
-                env.action_space.n,
-                alpha=seedAlp,
-                gamma=seedGam,
-                epsilon=seedEps,
-            )
-            # Train
-            total_rewards_sarsa = run(env, agentS, "epsilon-greedy", episodes)
-            # env.close()
+    total_rewards_s = np.zeros(episodes)
+    total_alpha_s = np.zeros(10)
+    total_rewards_es = np.zeros(episodes)
+    total_alpha_es = np.zeros(10)
+    seedAlp = 0.1
+    eps = 0.2
+    gam = 0.95
+    alp = 0.25
 
-            # Play
-            # env = gym.make("MountainCar-v0", render_mode="human")
-            # run(env, agentS, "greedy", 1)
-            # agentS.render()
-            # env.close()
-            
-            time.sleep(1)
-        # Expected Sarsa
-            # env = gym.make("MountainCar-v0")
-            env.reset()
-            agentE = EXPECTEDSARSA(
-                calculate_states_size(env),
-                env.action_space.n,
-                alpha=seedAlp,
-                gamma=seedGam,
-                epsilon=seedEps,
-            )
-            print('EXPECTED SARSA RUN\n')
-            # Train
-            total_rewards_sarsa_e = run(env, agentE, "epsilon-greedy", episodes)
-            env.close()
+    generateGraphics(env, episodes, alp)
 
-            # Play
-            # env = gym.make("MountainCar-v0", render_mode="human")
-            # run(env, agentE, "greedy", 1)
-            # agentE.render()
-            # env.close()
-            totals_rewards_sarsa.insert(it, total_rewards_sarsa)
-            totals_rewards_sarsa_e.insert(it, total_rewards_sarsa_e)
-            total_rewards_q, total_rewards_dq = totalRewards(n_episodes=episodes)
-            seedAlp += 0.3
-            it += 1
-        seedEps += 0.3
-    
-    printFigure(totals_rewards_sarsa, totals_rewards_sarsa_e, i+1, j+1, seedA=seedAlp, seedE=seedEps)
+    # for i in range(10):
+    #     print('Parametros: Epsilon = {}, Gamma = {}, Alpha = {}'.format(eps, gam, seedAlp))
+    #     # SARSA
+    #     print("\nCalculo en modo SARSA")
+    #     env.reset()
+    #     agentSarsa = SARSA(
+    #         calculate_states_size(env),
+    #         env.action_space.n,
+    #         alpha=seedAlp,
+    #         gamma=gam,
+    #         epsilon=eps,
+    #     )
+    #     run(env, agentSarsa, "epsilon-greedy", episodes, total_rewards_s, total_alpha_s, i)
+    #     print("Completado el modo SARSA\n")
+    #     env.reset()
+    #     print("\nCalculo en modo EXPECTED SARSA\n")
+    #     # EXPECTEDSARSA
+    #     agentExpectedSarsa = EXPECTEDSARSA(
+    #         calculate_states_size(env),
+    #         env.action_space.n,
+    #         alpha=seedAlp,
+    #         gamma=gam,
+    #         epsilon=eps,
+    #     )
+    #     run(env, agentExpectedSarsa, "epsilon-greedy", episodes, total_rewards_es, total_alpha_es, i)
+    #     print("Completado el modo EXPECTED SARSA\n")
+    #     print('Resultados de cada algoritmo:')
+    #     print("\nSarsa:")
+    #     agentSarsa.render()
+    #     print("\nExpected Sarsa:")
+    #     agentExpectedSarsa.render()
+    #     total_rewards_s, total_rewards_es = totalRewards(n_episodes=episodes)
+    #     seedAlp += 0.1
+
+    # printFigure(total_alpha_s, total_alpha_es)
+    env.close()
+    # Play
+    # env = gym.make("MountainCar-v0", render_mode="human")
+    # run(env, agent, "greedy", 1)
+    # agent.render()
+    # env.close()
