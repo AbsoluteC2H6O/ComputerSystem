@@ -47,10 +47,11 @@ def run(env, agent, selection_method, episodes, total_rewards, total_average, po
         i += 1
     valor = np.average(total_rewards)
     total_average[position] = valor
+    # print('valor total', total_average[position], position)
     # total_alpha[position] = valor
     # print(total_rewards)
     # total_average[position] = total_rewards
-
+    print('valor total', total_average[position], position)
 
 def generateGraphics(env, episodes, alp):
     seedEps = [0.05, 0.3, 0.6]
@@ -136,7 +137,7 @@ def printFigureIterable(array_imp, seedEps, seedGmm, alp, cond):
     #plt.show()
     
 
-def printFigure(total_alpha_s, total_alpha_es):
+def printFigure(total_alpha_s, total_alpha_es, eps, gam, cond):
     plt.figure(figsize=(10,6))
     plt.plot(total_alpha_s,
             label='Sarsa')
@@ -144,23 +145,34 @@ def printFigure(total_alpha_s, total_alpha_es):
             label='ExpectedSarsa')
     plt.ylabel('Average return')
     plt.xlabel('Alpha')
-    plt.title('Parameters: Env = MountainCar, Epsilon = 0.1, Gamma = 0.9')
+    plt.title('Parameters: Env = MountainCar, Epsilon = {}, Gamma = {}'.format(eps, gam))
     plt.legend()
-    plt.savefig("NEWEnvMountainCarAlpha.jpg", dpi=600)
+    if cond == 0:
+        plt.savefig("NEW-SumEnvMountainCarAlpha.jpg", dpi=600)
+    else:
+        plt.savefig("NEW-AveEnvMountainCarAlpha.jpg", dpi=600)
     #plt.show()
 
 
 if __name__ == "__main__":
-    episodes = 10000 if len(sys.argv) == 1 else int(sys.argv[1])
+    episodes = 3000 if len(sys.argv) == 1 else int(sys.argv[1])
 
     env = gym.make("MountainCar-v0")
-    total_rewards_s = np.zeros(episodes)
+    total_rewards_s_train = np.zeros(episodes)
+    total_rewards_es_train = np.zeros(episodes)
+
+    total_rewards_s = np.zeros(100)
+    total_rewards_es = np.zeros(100)
+
+    total_alpha_s_train = np.zeros(10)
+    total_alpha_es_train = np.zeros(10)
+
     total_alpha_s = np.zeros(10)
-    total_rewards_es = np.zeros(episodes)
     total_alpha_es = np.zeros(10)
+
     seedAlp = 0.1
-    eps = 0.2
-    gam = 0.95
+    eps = 0.05
+    gam = 0.8
     alp = 0.25
 
     # generateGraphics(env, episodes, alp)
@@ -177,10 +189,11 @@ if __name__ == "__main__":
             gamma=gam,
             epsilon=eps,
         )
-        run(env, agentSarsa, "epsilon-greedy", episodes, total_rewards_s, total_alpha_s, i)
-        print("Completado el modo SARSA\n")
+        run(env, agentSarsa, "epsilon-greedy", episodes, total_rewards_s_train, total_alpha_s_train, i)
+        print("Completado el modo SARSA")
+        run(env, agentSarsa, "greedy", 100, total_rewards_s, total_alpha_s, i)
         env.reset()
-        print("\nCalculo en modo EXPECTED SARSA\n")
+        print("\nCalculo en modo EXPECTED SARSA")
         # EXPECTEDSARSA
         agentExpectedSarsa = EXPECTEDSARSA(
             calculate_states_size(env),
@@ -189,17 +202,14 @@ if __name__ == "__main__":
             gamma=gam,
             epsilon=eps,
         )
-        run(env, agentExpectedSarsa, "epsilon-greedy", episodes, total_rewards_es, total_alpha_es, i)
+        run(env, agentExpectedSarsa, "epsilon-greedy", episodes, total_rewards_es_train, total_alpha_es_train, i)
         print("Completado el modo EXPECTED SARSA\n")
-        print('Resultados de cada algoritmo:')
-        print("\nSarsa:")
-        agentSarsa.render()
-        print("\nExpected Sarsa:")
-        agentExpectedSarsa.render()
-        total_rewards_s, total_rewards_es = totalRewards(n_episodes=episodes)
+        run(env, agentExpectedSarsa, "greedy", 100, total_rewards_es, total_alpha_es, i)
+        total_rewards_s_train, total_rewards_es_train = totalRewards(n_episodes=episodes)
+        total_rewards_s, total_rewards_es = totalRewards(n_episodes=100)
         seedAlp += 0.1
-
-    printFigure(total_alpha_s, total_alpha_es)
+    printFigure(total_alpha_s_train, total_alpha_es_train, eps, gam, 0) #sumatoria
+    printFigure(total_alpha_s, total_alpha_es, eps, gam, 1) #average
     env.close()
     # Play
     # env = gym.make("MountainCar-v0", render_mode="human")
