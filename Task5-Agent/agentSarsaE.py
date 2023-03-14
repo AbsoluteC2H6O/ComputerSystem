@@ -26,27 +26,27 @@ class EXPECTEDSARSA:
         self._update(
             state, action, next_state, next_action, reward, terminated, truncated
         )
-        best_action = np.argmax(self.q_table[self.next_state][:])
-        # print('best', best_action)
         greedy_actions = 0
         exp_q = 0
-        for i in range(self.actions_n):
-            if self.q_table[next_state][i] == best_action:
-                greedy_actions += 1
+        best_action = np.argmax(self.q_table[self.next_state, :])
+        predic = self.q_table[self.state, self.action]
+        # for i in range(self.actions_n):
+        #     if self.q_table[next_state, i] == best_action:
+        #         greedy_actions += 1
 
         non_greedy = self.epsilon / self.actions_n
-        if (greedy_actions == 0):
-            greedy_actions_p = non_greedy
-        else:
-            greedy_actions_p = ((1 - self.epsilon) / greedy_actions) + non_greedy
-        for i in range(self.actions_n):
-            if self.q_table[self.next_state][i] == best_action:
-                exp_q += self.q_table[self.next_state][i] * greedy_actions_p
-            else:
-                exp_q += self.q_table[self.next_state][i] * non_greedy
+        # if (greedy_actions == 0):
+        #     greedy_actions_p = non_greedy
+        # else:
+        greedy_actions_p = ((1 - self.epsilon)) + non_greedy
 
-        target = reward + self.gamma * exp_q
-        self.q_table[state, action] = self.q_table[state, action] + self.alpha * (target - self.q_table[self.state][self.action])
+        for i in range(self.actions_n):
+            if self.q_table[self.next_state, i] == best_action:
+                exp_q += self.q_table[self.next_state, i] * greedy_actions_p
+            else:
+                exp_q += self.q_table[self.next_state, i] * non_greedy
+        target = reward + (self.gamma * exp_q)
+        self.q_table[self.state, self.action] += self.alpha * (target - predic)
 
     def _update(
         self, state, action, next_state, next_action, reward, terminated, truncated

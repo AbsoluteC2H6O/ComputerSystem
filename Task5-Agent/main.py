@@ -1,10 +1,12 @@
 import sys
 import time
+
 import gym
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from agentSarsa import SARSA
 from agentSarsaE import EXPECTEDSARSA
+
 
 def calculate_states_size(env):
     max = env.observation_space.high
@@ -21,6 +23,7 @@ def calculate_state(env, value):
 
 def run(env, agent, selection_method, episodes, total_rewards, total_average, position):
     i = 0
+    valor = np.zeros(episodes)
     for episode in range(1, episodes + 1):
         # if episode % 10 == 0:
         #     print("Episode {} of {}".format(episode, episodes))
@@ -47,6 +50,7 @@ def run(env, agent, selection_method, episodes, total_rewards, total_average, po
         i += 1
     valor = np.average(total_rewards)
     total_average[position] = valor
+    print('valor:', position, total_average[position])
     # total_alpha[position] = valor
     # print(total_rewards)
     # array_rewards[position] = total_rewards
@@ -161,7 +165,7 @@ def printFigure(total_alpha_s, total_alpha_es):
 
 
 if __name__ == "__main__":
-    episodes = 5000  if len(sys.argv) == 1 else int(sys.argv[1])
+    episodes = 1000 if len(sys.argv) == 1 else int(sys.argv[1])
 
     env = gym.make("MountainCar-v0")
     total_rewards_s = np.zeros(episodes)
@@ -170,7 +174,7 @@ if __name__ == "__main__":
     total_alpha_es = np.zeros(10)
     seedAlp = 0.1
     eps = 0.2
-    gam = 0.95
+    gam = 0.9
     # alp = 0.25
 
     # generateGraphics(env, episodes, alp)
@@ -201,11 +205,7 @@ if __name__ == "__main__":
         )
         run(env, agentExpectedSarsa, "epsilon-greedy", episodes, total_rewards_es, total_alpha_es, i)
         print("Completado el modo EXPECTED SARSA\n")
-        print('Resultados de cada algoritmo:')
-        print("\nSarsa:")
-        agentSarsa.render()
-        print("\nExpected Sarsa:")
-        agentExpectedSarsa.render()
+
         total_rewards_s, total_rewards_es = totalRewards(n_episodes=episodes)
         seedAlp += 0.1
 
