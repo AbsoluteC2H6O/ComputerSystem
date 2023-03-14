@@ -45,11 +45,11 @@ def run(env, agent, selection_method, episodes, total_rewards, total_average, po
             action = next_action
             total_rewards[i] += reward
         i += 1
-    # valor = np.average(total_rewards)
-    # total_average[position] = valor
+    valor = np.average(total_rewards)
+    total_average[position] = valor
     # total_alpha[position] = valor
     # print(total_rewards)
-    total_average[position] = total_rewards
+    # total_average[position] = total_rewards
 
 
 def generateGraphics(env, episodes, alp):
@@ -145,13 +145,13 @@ def printFigure(total_alpha_s, total_alpha_es):
     plt.ylabel('Average return')
     plt.xlabel('Alpha')
     plt.title('Parameters: Env = MountainCar, Epsilon = 0.1, Gamma = 0.9')
-    plt.legend(loc='lower center', ncol=3, frameon=False)
-    plt.savefig("EnvMountainCarAlpha.jpg", dpi=600)
+    plt.legend()
+    plt.savefig("NEWEnvMountainCarAlpha.jpg", dpi=600)
     #plt.show()
 
 
 if __name__ == "__main__":
-    episodes = 3000 if len(sys.argv) == 1 else int(sys.argv[1])
+    episodes = 10000 if len(sys.argv) == 1 else int(sys.argv[1])
 
     env = gym.make("MountainCar-v0")
     total_rewards_s = np.zeros(episodes)
@@ -163,43 +163,43 @@ if __name__ == "__main__":
     gam = 0.95
     alp = 0.25
 
-    generateGraphics(env, episodes, alp)
+    # generateGraphics(env, episodes, alp)
 
-    # for i in range(10):
-    #     print('Parametros: Epsilon = {}, Gamma = {}, Alpha = {}'.format(eps, gam, seedAlp))
-    #     # SARSA
-    #     print("\nCalculo en modo SARSA")
-    #     env.reset()
-    #     agentSarsa = SARSA(
-    #         calculate_states_size(env),
-    #         env.action_space.n,
-    #         alpha=seedAlp,
-    #         gamma=gam,
-    #         epsilon=eps,
-    #     )
-    #     run(env, agentSarsa, "epsilon-greedy", episodes, total_rewards_s, total_alpha_s, i)
-    #     print("Completado el modo SARSA\n")
-    #     env.reset()
-    #     print("\nCalculo en modo EXPECTED SARSA\n")
-    #     # EXPECTEDSARSA
-    #     agentExpectedSarsa = EXPECTEDSARSA(
-    #         calculate_states_size(env),
-    #         env.action_space.n,
-    #         alpha=seedAlp,
-    #         gamma=gam,
-    #         epsilon=eps,
-    #     )
-    #     run(env, agentExpectedSarsa, "epsilon-greedy", episodes, total_rewards_es, total_alpha_es, i)
-    #     print("Completado el modo EXPECTED SARSA\n")
-    #     print('Resultados de cada algoritmo:')
-    #     print("\nSarsa:")
-    #     agentSarsa.render()
-    #     print("\nExpected Sarsa:")
-    #     agentExpectedSarsa.render()
-    #     total_rewards_s, total_rewards_es = totalRewards(n_episodes=episodes)
-    #     seedAlp += 0.1
+    for i in range(10):
+        print('Parametros: Epsilon = {}, Gamma = {}, Alpha = {}'.format(eps, gam, seedAlp))
+        # SARSA
+        print("\nCalculo en modo SARSA")
+        env.reset()
+        agentSarsa = SARSA(
+            calculate_states_size(env),
+            env.action_space.n,
+            alpha=seedAlp,
+            gamma=gam,
+            epsilon=eps,
+        )
+        run(env, agentSarsa, "epsilon-greedy", episodes, total_rewards_s, total_alpha_s, i)
+        print("Completado el modo SARSA\n")
+        env.reset()
+        print("\nCalculo en modo EXPECTED SARSA\n")
+        # EXPECTEDSARSA
+        agentExpectedSarsa = EXPECTEDSARSA(
+            calculate_states_size(env),
+            env.action_space.n,
+            alpha=seedAlp,
+            gamma=gam,
+            epsilon=eps,
+        )
+        run(env, agentExpectedSarsa, "epsilon-greedy", episodes, total_rewards_es, total_alpha_es, i)
+        print("Completado el modo EXPECTED SARSA\n")
+        print('Resultados de cada algoritmo:')
+        print("\nSarsa:")
+        agentSarsa.render()
+        print("\nExpected Sarsa:")
+        agentExpectedSarsa.render()
+        total_rewards_s, total_rewards_es = totalRewards(n_episodes=episodes)
+        seedAlp += 0.1
 
-    # printFigure(total_alpha_s, total_alpha_es)
+    printFigure(total_alpha_s, total_alpha_es)
     env.close()
     # Play
     # env = gym.make("MountainCar-v0", render_mode="human")
