@@ -1,3 +1,4 @@
+LICENSE
 MANIFEST.in
 README.md
 setup.py
@@ -18,7 +19,6 @@ gym_environments/envs/atari/v0/pacman/game/settings.py
 gym_environments/envs/atari/v0/pacman/game/graphics/ghosts.png
 gym_environments/envs/atari/v0/pacman/game/graphics/pacman.png
 gym_environments/envs/atari/v0/pacman/game/maps/__init__.py
-gym_environments/envs/atari/v0/pacman/game/maps/level1.txt
 gym_environments/envs/atari/v0/pacman/game/src/Dot.py
 gym_environments/envs/atari/v0/pacman/game/src/Map.py
 gym_environments/envs/atari/v0/pacman/game/src/Scene.py
@@ -77,7 +77,6 @@ gym_environments/envs/puzzles/v0/blocks/__init__.py
 gym_environments/envs/puzzles/v0/blocks/blocks.py
 gym_environments/envs/puzzles/v0/blocks/game/Game.py
 gym_environments/envs/puzzles/v0/blocks/game/__init__.py
-gym_environments/envs/puzzles/v0/blocks/game/env.txt
 gym_environments/envs/puzzles/v0/blocks/game/settings.py
 gym_environments/envs/puzzles/v0/blocks/game/graphics/box.png
 gym_environments/envs/puzzles/v0/blocks/game/graphics/character.png
@@ -96,7 +95,6 @@ gym_environments/envs/puzzles/v0/princess/__init__.py
 gym_environments/envs/puzzles/v0/princess/princess.py
 gym_environments/envs/puzzles/v0/princess/game/Game.py
 gym_environments/envs/puzzles/v0/princess/game/__init__.py
-gym_environments/envs/puzzles/v0/princess/game/env.txt
 gym_environments/envs/puzzles/v0/princess/game/settings.py
 gym_environments/envs/puzzles/v0/princess/game/graphics/background.png
 gym_environments/envs/puzzles/v0/princess/game/graphics/main_character.png

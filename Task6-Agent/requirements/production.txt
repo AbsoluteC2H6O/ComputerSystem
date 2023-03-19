@@ -1,2 +1,0 @@
--r common.txt
-https://github.com/jesuspangulo/gym_environments/archive/refs/heads/main.zip
