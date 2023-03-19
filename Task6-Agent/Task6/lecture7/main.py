@@ -4,22 +4,8 @@ import gym_environments
 import numpy as np
 from agentDynaQ import agentDynaQ
 from agentDynaQPlus import agentDynaQPlus
-# import os
-# from gym.envs.registration import register
 
-# # Allowing environment to have sounds
-# if "SDL_AUDIODRIVER" in os.environ:
-#     del os.environ["SDL_AUDIODRIVER"]
-
-# register(
-#     id="Princess-v0",
-#     entry_point="envs.puzzles.v0.princess.princess:PrincessEnv",
-# )
-# register(
-#     id="Blocks-v0",
-#     entry_point="envs.puzzles.v0.blocks.blocks:BlocksEnv",
-# )
-def run(env, agent: agentDynaQ, selection_method, episodes):
+def run(env, agent: agentDynaQPlus, selection_method, episodes):
     for episode in range(episodes):
         if episode > 0:
             print(f"Episode: {episode+1}")
@@ -45,7 +31,7 @@ if __name__ == "__main__":
     episodes = 350 if len(sys.argv) < 3 else int(sys.argv[2])
 
     env = gym.make(environments[id])
-    agent = agentDynaQ(
+    agent = agentDynaQPlus(
         env.observation_space.n, env.action_space.n, alpha=1, gamma=0.95, epsilon=0.1
     )
 

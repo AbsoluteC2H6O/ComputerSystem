@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class agentDynaQPlus:
     def __init__(self, states_n, actions_n, alpha, gamma, epsilon):
         self.states_n = states_n
@@ -7,6 +8,7 @@ class agentDynaQPlus:
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
+        self.k = 0.01
         self.reset()
 
     def reset(self):
@@ -19,13 +21,25 @@ class agentDynaQPlus:
         self.q_table = np.zeros((self.states_n, self.actions_n))
         self.model = {}
         self.visited_states = {}
+        self.visited_states_at = {}
 
     def start_episode(self):
         self.episode += 1
         self.step = 0
 
+    def dynaQBonus(self, r,  next_state):
+        last_visit = self.visited_states[next_state][0]
+        tau = self.step - last_visit
+        self.visited_states_at[next_state] = self.step
+
+        r = r + self.k * np.sqrt(tau)
+        return r
+
     def update(self, state, action, next_state, reward):
         self._update(state, action, next_state, reward)
+        if ((state, action) not in self.model and next_state in self.visited_states_at):
+            reward = self.dynaQBonus(reward, next_state)
+
         self.q_table[state, action] = self.q_table[state, action] + self.alpha * (
             reward
             + self.gamma * np.max(self.q_table[next_state])
@@ -35,8 +49,10 @@ class agentDynaQPlus:
         if state in self.visited_states:
             if action not in self.visited_states[state]:
                 self.visited_states[state].append(action)
+                self.visited_states_at[state] = self.step
         else:
             self.visited_states[state] = [action]
+            self.visited_states_at[state] = self.step
 
     def _update(self, state, action, next_state, reward):
         self.step += 1
