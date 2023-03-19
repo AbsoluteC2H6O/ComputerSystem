@@ -7,6 +7,8 @@ from agentDynaQ import agentDynaQ
 from agentDynaQPlus import agentDynaQPlus
 
 def run(env, agent: agentDynaQ, selection_method, episodes):
+    i =0
+    total_average = []
     for episode in range(episodes):
         if episode > 0:
             print(f"Episode: {episode+1}")
@@ -16,14 +18,19 @@ def run(env, agent: agentDynaQ, selection_method, episodes):
         while not (terminated or truncated):
             action = agent.get_action(observation, selection_method)
             next_observation, reward, terminated, truncated, _ = env.step(action)
-            agent.update(observation, action, next_observation, reward)
+            steps = agent.update(observation, action, next_observation, reward)
             observation = next_observation
+            # valor = np.average(steps)
+            # total_average[i] = valor
+            # print('total', total_average)
         if selection_method == "epsilon-greedy":
             for _ in range(100):
                 state = np.random.choice(list(agent.visited_states.keys()))
                 action = np.random.choice(agent.visited_states[state])
                 reward, next_state = agent.model[(state, action)]
                 agent.update(state, action, next_state, reward)
+    return total_average
+    
                 
 def printFigureIterable(array_dyna, array_dyna_plus):
     plt.figure(figsize=(12,8))

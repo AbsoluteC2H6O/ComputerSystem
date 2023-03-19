@@ -54,6 +54,8 @@ class agentDynaQPlus:
             self.visited_states[state] = [action]
             self.visited_states_at[state] = self.step
 
+        return self.visited_states
+    
     def _update(self, state, action, next_state, reward):
         self.step += 1
         self.state = state

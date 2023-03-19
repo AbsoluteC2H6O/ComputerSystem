@@ -37,7 +37,9 @@ class agentDynaQ:
                 self.visited_states[state].append(action)
         else:
             self.visited_states[state] = [action]
-
+            
+        return self.visited_states
+    
     def _update(self, state, action, next_state, reward):
         self.step += 1
         self.state = state
