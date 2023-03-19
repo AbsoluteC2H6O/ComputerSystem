@@ -8,7 +8,7 @@ class agentDynaQPlus:
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
-        self.k = 0.01
+        self.k = 0.001
         self.reset()
 
     def reset(self):
