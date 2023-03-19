@@ -19,9 +19,6 @@ from gym_environments.envs.puzzles.v0.princess.princess import (
 from gym_environments.envs.puzzles.v0.blocks.blocks import (
     BlocksEnv as BlocksEnvV0,
 )
-from gym_environments.envs.atari.v0.pacman.pacman import (
-    PacmanEnv as PacmanEnvV0
-)
 
 (
     TwoArmedBanditEnvV0,
@@ -31,5 +28,4 @@ from gym_environments.envs.atari.v0.pacman.pacman import (
     RobotMazeEnvV0,
     PrincessEnvV0,
     BlocksEnvV0,
-    PacmanEnvV0,
 )

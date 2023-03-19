@@ -39,8 +39,3 @@ register(
     id="Blocks-v0",
     entry_point="gym_environments.envs:BlocksEnvV0",
 )
-
-register(
-    id="Pacman-v0",
-    entry_point="gym_environments.envs:PacmanEnvV0",
-)
