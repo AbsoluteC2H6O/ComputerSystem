@@ -10,8 +10,6 @@ from agentDynaQPlus import agentDynaQPlus
 def run(env, agent, selection_method, episodes):
     step = 0
     total_steps = np.zeros(episodes)
-    total_average= np.zeros(episodes)
-    # for _ in range(2):
     for episode in range(episodes):
         observation, _ = env.reset()
         if (episode % 100 == 0):
@@ -33,10 +31,6 @@ def run(env, agent, selection_method, episodes):
         total_steps[episode]+=step
         step = 0
     return total_steps
-    #     total_average[episode]+=total_steps[episode]
-    # for i in range(episodes):
-    #     total_average[i] = np.average(total_average[i])
-    # return total_average
 
 def printFigureIterable(array_dyna, array_dyna_plus):
     plt.figure(figsize=(12, 8))
