@@ -61,12 +61,12 @@ if __name__ == "__main__":
     )
     # Train
     totals_q = np.zeros(episodes)
-    for i in range(2):
+    for i in range(10):
         dyna_q_train = run(env, agent, "epsilon-greedy", episodes)
         for i in range(episodes):
             totals_q[i]+= dyna_q_train[i]
     for i in range(episodes):
-        totals_q[i]= totals_q[i]/2
+        totals_q[i]= totals_q[i]/10
 
 # Dyna Q +
     env.reset()
@@ -75,12 +75,12 @@ if __name__ == "__main__":
     )
     # Train
     totals_q_plus = np.zeros(episodes)
-    for i in range(2):
+    for i in range(10):
         dyna_q_plus_train = run(env, agent, "epsilon-greedy", episodes)
         for i in range(episodes):
             totals_q_plus[i]+= dyna_q_plus_train[i]
     for i in range(episodes):
-        totals_q_plus[i]= totals_q_plus[i]/2
+        totals_q_plus[i]= totals_q_plus[i]/10
     
     # grafica steps per episode vs Episodes.
     printFigureIterable(totals_q, totals_q_plus)
