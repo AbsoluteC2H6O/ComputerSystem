@@ -1,0 +1,60 @@
+- Task6-Agent Last images uploaded.
+- Task6-Agent Finall changes in average.
+- Task6-Agent Finall changes in average.
+- Task6-Agent Finall changes in average.
+- Task6-Agent Corrected experiment numbers.
+- Task6-agent Corrected playing images.
+- Task6-Agent Final changes.
+- Task6-Agent Generated DynaQ-+ graphics.
+- Task6-Agent Corrected steps, graphics.
+- Task6-Agent Added structure to show graphics.
+- Task6-Agent Two agents completed.
+- Task6-Agent Dyna Q plus first implementation.
+- Task6-Agent actualizacion 2
+- Task6-Agent actualizacion
+- Add files via upload
+- Create production.txt
+- Create local.txt
+- Create common.txt
+- Create production.txt
+- Create local.txt
+- Create common.txt
+- Task6-Agent commir folders.
+- Task6-Agent Corrected folders.
+- Task6-Agent mover la carpeta requirements
+- Create production.txt
+- Create local.txt
+- Create common.txt
+- Task6-Agent Corrected folder names.
+- Task6Agent Agent configuration folder.
+- Task6-Agent run first blocks and princess environment.
+- Task6-Agent configurate folder for task 6 DYNA-Q.
+- master updated changelog.
+- Task5 agent 2 (#6)
+- Task4 agent (#5)
+- Task3 env (#4)
+- Updated changelog files and corrected comented code.
+- Task2 env (#2)
+- segmentacion de carpetas de entorno, v0 entorno del Robot Battery y v1 para el nuevo entorno
+- Incluir el Env y conectarlo con el main
+- Carpeta para la tarea 2
+- Updated changelod.md
+- Delete condition invalid
+- modificacion linea 21 main.py
+- Cambio del texto de juego ganado y perdido, se incorpora algunos comentarios en agent.py
+- master updated CHANGELOG.md
+- Task2 agent sol1 (#1)
+- Updated changelog file.
+- Add changelog file.
+- Agregada la animacion para diferenciar cuando se obtiene un reward en la maquina actual.
+- Incorporar el numero de iteraciones y ganancia total, agregue el efecto de agrandamiento de la maquina.
+- Corrected rewards.
+- Se cambia color de fondo, se incluye texto copy, cambio de tama#o de fuente, efecto sombra al rewards
+- Carpeta inician con el environment, agent, settings, fonts y graphics de la tarea 1 para el profesor Alejandro.
+- Carpeta de la tarea 1 del profe Alejandro Mujica
+- Delete other.py
+- Modify iterations and execute main function for the agent.
+- Comentarios y elminar listas sin uso, ajustar el nombre Rewards por Rewards Total
+- Corrected rewards and show after method ends iteration.
+- Change structure folders.
+- First commit
