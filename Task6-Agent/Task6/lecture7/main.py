@@ -9,31 +9,34 @@ from agentDynaQPlus import agentDynaQPlus
 
 def run(env, agent, selection_method, episodes):
     step = 0
-    total_steps = []
-    total_average= []
-    for _ in range(10):
-        for episode in range(episodes):
-            observation, _ = env.reset()
-            if (episode % 100 == 0):
-                print("Episode", episode)
-            agent.start_episode()
-            terminated, truncated = False, False
-            while not (terminated or truncated):
-                action = agent.get_action(observation, selection_method)
-                next_observation, reward, terminated, truncated, _ = env.step(
-                    action)
-                agent.update(observation, action, next_observation, reward)
-                observation = next_observation
-            if selection_method == "epsilon-greedy":
-                for _ in range(100):
-                    state = np.random.choice(list(agent.visited_states.keys()))
-                    action = np.random.choice(agent.visited_states[state])
-                    reward, next_state = agent.model[(state, action)]
-                    step = agent.update(state, action, next_state, reward)
-            total_steps.append(step)
-            step = 0
-        total_average.append(total_steps[episode])
-    return total_average
+    total_steps = np.zeros(episodes)
+    total_average= np.zeros(episodes)
+    # for _ in range(2):
+    for episode in range(episodes):
+        observation, _ = env.reset()
+        if (episode % 100 == 0):
+            print("Episode", episode)
+        agent.start_episode()
+        terminated, truncated = False, False
+        while not (terminated or truncated):
+            action = agent.get_action(observation, selection_method)
+            next_observation, reward, terminated, truncated, _ = env.step(
+                action)
+            agent.update(observation, action, next_observation, reward)
+            observation = next_observation
+        if selection_method == "epsilon-greedy":
+            for _ in range(100):
+                state = np.random.choice(list(agent.visited_states.keys()))
+                action = np.random.choice(agent.visited_states[state])
+                reward, next_state = agent.model[(state, action)]
+                step = agent.update(state, action, next_state, reward)
+        total_steps[episode]+=step
+        step = 0
+    return total_steps
+    #     total_average[episode]+=total_steps[episode]
+    # for i in range(episodes):
+    #     total_average[i] = np.average(total_average[i])
+    # return total_average
 
 def printFigureIterable(array_dyna, array_dyna_plus):
     plt.figure(figsize=(12, 8))
@@ -51,8 +54,8 @@ def printFigureIterable(array_dyna, array_dyna_plus):
 
 if __name__ == "__main__":
     environments = ["Princess-v0", "Blocks-v0"]
-    id = 0 if len(sys.argv) < 2 else int(sys.argv[1])
-    episodes = 350 if len(sys.argv) < 3 else int(sys.argv[2])
+    id = 1 if len(sys.argv) < 2 else int(sys.argv[1])
+    episodes = 1000 if len(sys.argv) < 3 else int(sys.argv[2])
 
     steps_dyna_q = np.zeros(episodes)
     steps_dyna_q_plus = np.zeros(episodes)
@@ -63,7 +66,13 @@ if __name__ == "__main__":
         env.observation_space.n, env.action_space.n, alpha=1, gamma=0.95, epsilon=0.1
     )
     # Train
-    dyna_q_train = run(env, agent, "epsilon-greedy", episodes)
+    totals_q = np.zeros(episodes)
+    for i in range(2):
+        dyna_q_train = run(env, agent, "epsilon-greedy", episodes)
+        for i in range(episodes):
+            totals_q[i]+= dyna_q_train[i]
+    for i in range(episodes):
+        totals_q[i]= totals_q[i]/2
 
 # Dyna Q +
     env.reset()
@@ -71,7 +80,14 @@ if __name__ == "__main__":
         env.observation_space.n, env.action_space.n, alpha=1, gamma=0.95, epsilon=0.1
     )
     # Train
-    dyna_q_plus_train = run(env, agent, "epsilon-greedy", episodes)
+    totals_q_plus = np.zeros(episodes)
+    for i in range(2):
+        dyna_q_plus_train = run(env, agent, "epsilon-greedy", episodes)
+        for i in range(episodes):
+            totals_q_plus[i]+= dyna_q_plus_train[i]
+    for i in range(episodes):
+        totals_q_plus[i]= totals_q_plus[i]/2
+    
     # grafica steps per episode vs Episodes.
-    printFigureIterable(dyna_q_train, dyna_q_plus_train)
+    printFigureIterable(totals_q, totals_q_plus)
     env.close()

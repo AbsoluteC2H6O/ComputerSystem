@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class agentDynaQPlus:
     def __init__(self, states_n, actions_n, alpha, gamma, epsilon):
         self.states_n = states_n
@@ -30,8 +31,10 @@ class agentDynaQPlus:
         last_visit = self.visited_states[next_state][0]
         tau = self.step - last_visit
         self.visited_states_at[next_state] = self.step
-
-        r = r + self.k * np.sqrt(tau)
+        if (tau < 0):
+            r = r + ((self.k * np.sqrt(tau*-1))*-1)
+        else:
+            r = r + self.k * np.sqrt(tau)
         return r
 
     def update(self, state, action, next_state, reward):
@@ -53,7 +56,7 @@ class agentDynaQPlus:
             self.visited_states[state] = [action]
             self.visited_states_at[state] = self.step
         return self.step
-    
+
     def _update(self, state, action, next_state, reward):
         self.step += 1
         self.state = state
