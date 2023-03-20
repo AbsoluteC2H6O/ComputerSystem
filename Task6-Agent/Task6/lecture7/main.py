@@ -7,7 +7,8 @@ from agentDynaQ import agentDynaQ
 from agentDynaQPlus import agentDynaQPlus
 
 def run(env, agent: agentDynaQ, selection_method, episodes):
-    i =0
+    steps =0
+    step = 0
     total_average = []
     for episode in range(episodes):
         if episode > 0:
@@ -16,34 +17,34 @@ def run(env, agent: agentDynaQ, selection_method, episodes):
         agent.start_episode()
         terminated, truncated = False, False
         while not (terminated or truncated):
+            steps+=1
             action = agent.get_action(observation, selection_method)
             next_observation, reward, terminated, truncated, _ = env.step(action)
-            steps = agent.update(observation, action, next_observation, reward)
+            agent.update(observation, action, next_observation, reward)
             observation = next_observation
-            # valor = np.average(steps)
-            # total_average[i] = valor
-            # print('total', total_average)
         if selection_method == "epsilon-greedy":
             for _ in range(100):
                 state = np.random.choice(list(agent.visited_states.keys()))
                 action = np.random.choice(agent.visited_states[state])
                 reward, next_state = agent.model[(state, action)]
-                agent.update(state, action, next_state, reward)
+                step = agent.update(state, action, next_state, reward)
+        total_average.append(step)
+        step=0
     return total_average
     
                 
 def printFigureIterable(array_dyna, array_dyna_plus):
     plt.figure(figsize=(12,8))
     plt.plot(array_dyna,
-                label='E = {} G = {} A='.format(0.1,0.95,1))
+                label='Dyna Q')
     plt.plot(array_dyna_plus,
-                label='E = {} G = {} A='.format(0.1,0.95,1))
+                label='Dyna Q +')
 
     plt.ylabel('Steps per episodes')
     plt.xlabel('Episodes')
+    plt.title(label='E = {} G = {} A='.format(0.1,0.95,1))
     plt.legend()
     plt.savefig("BlockEnvironmentDynaQvsDynaQPlus.jpg", dpi=600)
-    # plt.show()
 
 if __name__ == "__main__":
     environments = ["Princess-v0", "Blocks-v0"]
@@ -61,16 +62,15 @@ if __name__ == "__main__":
     )
 
     # Train
-    run(env, agent, "epsilon-greedy", episodes)
+    steps_dyna_q = run(env, agent, "epsilon-greedy", episodes)
     env.close()
 
     # Play
-    env = gym.make(environments[id], render_mode="human")
-    run(env, agent, "greedy", 1)
-    agent.render()
+    # env = gym.make(environments[id], render_mode="human")
+    # run(env, agent, "greedy", 1)
+    # agent.render()
     # grafica steps per episode vs Episodes.
     
-
 # Dyna Q + 
     env = gym.make(environments[id])
     agent = agentDynaQPlus(
@@ -78,13 +78,13 @@ if __name__ == "__main__":
     )
 
     # Train
-    run(env, agent, "epsilon-greedy", episodes)
+    steps_dyna_q_plus=run(env, agent, "epsilon-greedy", episodes)
     env.close()
 
     # Play
-    env = gym.make(environments[id], render_mode="human")
-    run(env, agent, "greedy", 1)
-    agent.render()
+    # env = gym.make(environments[id], render_mode="human")
+    # run(env, agent, "greedy", 1)
+    # agent.render()
     printFigureIterable(steps_dyna_q,steps_dyna_q_plus)
     # grafica steps per episode vs Episodes.
     env.close()
