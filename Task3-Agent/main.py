@@ -21,7 +21,6 @@ if "SDL_AUDIODRIVER" in os.environ:
     del os.environ["SDL_AUDIODRIVER"]
 
 
-
 def train(env, agent, episodes):
     for _ in range(episodes):
         observation, _ = env.reset()
@@ -62,7 +61,7 @@ if __name__ == "__main__":
         env.observation_space.n, env.action_space.n, gamma=0.9
     )
 
-    mode = 's'
+    mode = 'deterministic'
     if(mode == 'deterministic'):
         train(env, agent_deterministic, episodes=1000)
         agent_deterministic.render()

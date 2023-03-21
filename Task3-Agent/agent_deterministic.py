@@ -8,6 +8,9 @@ class MonteCarloDet:
         self.gamma = gamma
         self.pi = np.full((self.states_n, self.actions_n), 1 / self.actions_n)
         self.reset()
+        # self.V = np.zeros((self.states_n, self.states_n))
+        # self.returns = {(i, j):list() for i in range(self.states_n) for j in range(self.states_n)}
+        # self.deltas = {(i, j):list() for i in range(self.states_n) for j in range(self.states_n)}
 
     def reset(self):
         self.episode = []  # número de episodios
@@ -27,6 +30,17 @@ class MonteCarloDet:
             self.episode = []  # inicializo de nuevo los episodios
 
     def _update_q(self):
+        # G = 0
+        #print(episode)
+        # for i, step in enumerate(self.episode[::-1]):
+        #     G = self.gamma*G + step[2]
+        #     if step[0] not in [x[0] for x in self.episode[::-1][len(self.episode)-i:]]:
+        #         idx = (step[0], step[1])
+        #         self.returns[idx].append(G)
+        #         newValue = np.average(self.returns[idx])
+        #         self.deltas[idx[0], idx[1]].append(np.abs(self.V[idx[0], idx[1]]-newValue))
+        #         self.V[idx[0], idx[1]] = newValue
+               
         G = 0
         self.episode.reverse()
         states_actions = []
@@ -48,16 +62,16 @@ class MonteCarloDet:
         for state, action, reward_a in self.episode[1:]:
             G = self.gamma*G + reward
             reward = reward_a
-            # print('G', G)
-            
-            if (state_t, action_t) in states_actions[0:len(states_actions)-2]:
+            if (state, action) in states_actions[0:len(states_actions)-2]:
                 self.returns[state_t][action_t] = G
                 self.returns_n[state_t][action_t] = np.average(
                     self.returns[state_t][action_t])
                 self.q[state_t][action_t] = self.returns_n[state_t][action_t]
                 # if(np.argmax(self.q[state][action])!=self.pi[0][0]):
-                print('np.argmax',np.argmax(self.q[state_t]), action)
+                print('self.q',self.q[state_t])
+                print('np.argmax(self.q[state_t][action])',self.q[state_t][action], np.argmax(self.q[state_t]))
                 self.pi[state_t] = np.argmax(self.q[state_t][action])
+                
 
     # def _update_pi(self):
     #     states = []
@@ -72,10 +86,11 @@ class MonteCarloDet:
         # print('pi', self.pi, state)
         probability = 0
         isZero = False
-        for action in self.pi[state]:
-            if action > 0:
-                probability+=action
-            else:
+        # print('self.pi[state]', self.pi[state])
+        for prop in self.pi[state]:
+            if prop > 0:
+                probability+=prop
+            elif prop ==0:
                 isZero = True
         if isZero != True and probability ==1:
             # print('p en 1',)
