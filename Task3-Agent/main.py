@@ -5,27 +5,22 @@ from gym.envs.registration import register
 from agent import MonteCarlo
 from agent_deterministic import MonteCarloDet
 import numpy as np
-
+import os
 # registro Env
-register (
-    id="RobotBattery-v0",
-    entry_point="Env.v0.robot_battery:RobotBatteryEnv",
-)
-
 register (
     id="RobotMaze-v0",
     entry_point="Env.v0.robot_maze:RobotMazeEnv",
 )
-
 register (
-    id="Robot-v1",
-    entry_point="Env.v1.robot_battery:RobotBatteryEnv",
+    id="FrozenLake-v1",
+    entry_point="Env.frozen_lake:FrozenLakeEnv",
 )
 
-register (
-    id="FrozenLake-v2",
-    entry_point="Env.v2.frozen_lake.frozen_lake:FrozenLakeEnv",
-)
+# Allowing environment to have sounds
+if "SDL_AUDIODRIVER" in os.environ:
+    del os.environ["SDL_AUDIODRIVER"]
+
+
 
 def train(env, agent, episodes):
     for _ in range(episodes):
@@ -58,6 +53,7 @@ def play(env, agent):
 
 if __name__ == "__main__":
     env = gym.make("RobotMaze-v0", render_mode="human")
+    # env = gym.make("FrozenLake-v1", render_mode="human")
     agent = MonteCarlo(
         env.observation_space.n, env.action_space.n, gamma=0.9, epsilon=0.9
     )
@@ -66,15 +62,15 @@ if __name__ == "__main__":
         env.observation_space.n, env.action_space.n, gamma=0.9
     )
 
-    mode = 'deterministic'
+    mode = 's'
     if(mode == 'deterministic'):
-        train(env, agent_deterministic, episodes=100)
+        train(env, agent_deterministic, episodes=1000)
         agent_deterministic.render()
         play(env, agent_deterministic)
 
     else:
-        train(env, agent, episodes=100)
+        train(env, agent, episodes=1000)
         agent.render()
         play(env, agent)
-
+    env.render()
     env.close()
