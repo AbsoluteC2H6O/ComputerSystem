@@ -72,7 +72,7 @@ class RobotMazeEnv(gym.Env):
         super().reset(seed=seed)
         self.action = 0
         self.reward = 0.0
-        self.state = 0
+        self.state = np.random.randint(0, 8)
         return self.state, {}
 
     def step(self, action):
