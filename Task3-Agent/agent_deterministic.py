@@ -27,38 +27,20 @@ class MonteCarloDet:
 
     def _update_q(self):
         G = 0
-        states_actions = []
-        [
-            states_actions.append((state, action, reward))
-            for state, action, reward in self.episode
-            if (state, action, reward) not in states_actions
-        ]
         self.episode.reverse()
-        # for state, action, reward in (self.episode):
-        #     if(reward > 0):
-                # reward_t = reward
-                # state_t = state
-                # action_t =action
-        reward_t = self.episode[0][2]
-        state_t = self.episode[0][0]
-        action_t =self.episode[0][1]
+        process = []
         for state, action, reward_a in (self.episode):
-            reward_t = reward_a
-            state_t = state
-            action_t =action
-            G = self.gamma*G + reward_t
-            self.returns_n[state_t][action_t] += 1
-            if (state_t, action_t) not in states_actions[0:]:
-                self.returns[state_t][action_t]= G
-                # self.returns_n[state_t][action_t] = np.average(
-                #     self.returns[state_t][action_t])
-                self.q[state_t][action_t] =np.average(
-                    self.returns[state_t][action_t])
-                # self.q[state_t][action_t] = (
-                #     self.returns[state_t][action_t] / self.returns_n[state_t][action_t])
-                self.pi[state_t] = np.argmax(self.q[state_t][action])
-                # print('self.q', self.q)
-                # print('self.pi', self.pi)
+            G = self.gamma*G + reward_a
+
+            if ((state, action) not in process):
+                process.append((state, action))
+                self.returns[state][action] += G  # append G
+                self.returns_n[state][action] += 1  # promedio
+                self.q[state][action] = (
+                    self.returns[state][action] / self.returns_n[state][action])  # average q(st,at)
+                self.pi[state] = np.argmax(
+                    self.q[state])  # argmax pi(st,at)
+      
 
     def get_action(self, state):
         return np.random.choice(self.actions_n)
@@ -67,34 +49,14 @@ class MonteCarloDet:
         return np.argmax(self.actions_n)
 
     def get_best_action(self, state):
-        print('self.q[state]',self.q)
-        iterator = 0
-        best = 0
-        best = min(self.q[state])
-        # while iterator!=3:
-        #     if(self.q[state][iterator] > self.q[state][iterator+1]):
-        #         best = iterator
-        #     elif(self.q[state][best] < self.q[state][iterator+1]):
-        #         best = iterator +1
-        #     iterator+=1
-        for _ in self.q[state]:
-            if(best == self.q[state][iterator]):
-                best = iterator
-            iterator+=1
-            
-        print('best', best)
-        return best
-        #return np.argmax(self.q[state])
+        return self.pi[state]
+
     def get_pi_action(self, state):
-        hasValue = False
-        if(self.pi[state] != 0):
-            hasValue =True
-        if(hasValue):
-            return np.random.choice(self.actions_n, p=self.pi[state])
-        else:
+        epsilon = np.random.uniform()
+        if(epsilon < 0.1):
             return np.random.choice(self.actions_n)
-   
-        #return np.argmax(self.q[state])
+        else:
+            return int(self.pi[state])
+        
     def render(self):
         print(f"Values: {self.q}\n")
-    

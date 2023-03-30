@@ -25,11 +25,16 @@ def train(env, agent, episodes):
     for _ in range(episodes):
         observation, _ = env.reset()
         terminated, truncated = False, False
+        iterator =0
         while not (terminated or truncated):
-            action = agent.get_pi_action(observation)
+            if(iterator ==0):
+                action = agent.get_action(observation)
+            else:
+                action = agent.get_pi_action(observation)
             new_observation, reward, terminated, truncated, _ = env.step(action)
-            agent.update(new_observation, action, reward, terminated)
+            agent.update(observation, action, reward, terminated)
             observation = new_observation
+            iterator+=1
 
 
 def play(env, agent):
