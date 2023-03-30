@@ -26,7 +26,7 @@ def train(env, agent, episodes):
         observation, _ = env.reset()
         terminated, truncated = False, False
         while not (terminated or truncated):
-            action = agent.get_action(observation)
+            action = agent.get_pi_action(observation)
             new_observation, reward, terminated, truncated, _ = env.step(action)
             agent.update(new_observation, action, reward, terminated)
             observation = new_observation
@@ -37,15 +37,15 @@ def play(env, agent):
     terminated, truncated = False, False
     while not (terminated or truncated):
         action = agent.get_best_action(observation)
-        observation, _, terminated, truncated, _ = env.step(action)
+        observation, reward, terminated, truncated, truncated = env.step(action)
         env.render()
        
         time.sleep(1)
 
 
 if __name__ == "__main__":
-    env = gym.make("FrozenLake-v1", render_mode="human")
-    # env = gym.make("RobotMaze-v0", render_mode="human")
+    # env = gym.make("FrozenLake-v1", render_mode="human")
+    env = gym.make("RobotMaze-v0", render_mode="human")
     agent = MonteCarlo(
         env.observation_space.n, env.action_space.n, gamma=0.9, epsilon=0.9
     )
@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
     mode = 'deterministic'
     if(mode == 'deterministic'):
-        train(env, agent_deterministic, episodes=10000)
+        train(env, agent_deterministic, episodes=1000)
         agent_deterministic.render()
         play(env, agent_deterministic)
 
