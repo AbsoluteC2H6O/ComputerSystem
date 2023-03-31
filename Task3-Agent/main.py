@@ -33,7 +33,7 @@ def trainDeterminisctic(env, agent, episodes,total_rewards):
         i=0
         terminatedEp = False
         truncatedEp  = False
-        while not (terminated or truncated):
+        while not (terminated or truncated or iterator>=1000):
             if(iterator ==0):
                 action = agent.get_action(observation)
             else:
@@ -45,6 +45,9 @@ def trainDeterminisctic(env, agent, episodes,total_rewards):
             iterator+=1
             terminatedEp= terminated
             truncatedEp = truncated
+            if(iterator>=1000):
+                truncatedEp = True
+                break
         i+=1
                   
     if(terminatedEp):
@@ -59,7 +62,7 @@ def trainStocastic(env, agent, episodes,total_rewards):
         iterator = 0
         terminatedEp = False
         truncatedEp  = False
-        while not (terminated or truncated):
+        while not (terminated or truncated or iterator>=1000):
             action = agent.get_action(observation)
             new_observation, reward, terminated, truncated, _ = env.step(action)
             agent.update(observation, action, reward, terminated)
@@ -68,6 +71,9 @@ def trainStocastic(env, agent, episodes,total_rewards):
             iterator +=1
             terminatedEp= terminated
             truncatedEp = truncated
+            if(iterator>=1000):
+                truncatedEp = True
+                break
         i+=1
         
     if(terminatedEp):
@@ -93,7 +99,7 @@ def totalRewards(n_episodes):
 if __name__ == "__main__":
     # env = gym.make("RobotMaze-v0", render_mode="human")
     seedGam, seedEp = 0.05, 0.3
-    episodes = 1000
+    episodes = 10000
     total_rewards_det = np.zeros(episodes)
     total_rewards_st = np.zeros(episodes)
 
