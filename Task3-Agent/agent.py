@@ -45,8 +45,6 @@ class MonteCarlo:
             self.q[state][action] = (
                 self.returns[state][action] / self.returns_n[state][action]
             )
-        print(f"Values: {self.q}\n")
-            
 
     def _update_pi(self):
         states = []

@@ -60,9 +60,9 @@ class FrozenLakeEnv(gym.Env):
                 self.current_reward,
                 terminated,
             )
-            self.render()
-            time.sleep(3)
-            self.close()
+            # self.render()
+            # time.sleep(3)
+            # self.close()
         else:
             self.world.update(
                 self.state,
@@ -71,19 +71,20 @@ class FrozenLakeEnv(gym.Env):
                 terminated,
             )
 
-            self.render()
-            time.sleep(self.delay)
+            # self.render()
+            # time.sleep(self.delay)
 
         return self.state, self.current_reward, terminated, False, {}
 
     def render(self):
-        print(
-            "Action {}, reward {}, state {}".format(
-                self.current_action, self.current_reward, self.state
-            )
-        )
-        self.renderInConsole()
-        self.world.render()
+        # print(
+        #     "Action {}, reward {}, state {}".format(
+        #         self.current_action, self.current_reward, self.state
+        #     )
+        # )
+        # self.renderInConsole()
+        # self.world.render()
+        c= 0
 
     def close(self):
         self.world.close()
