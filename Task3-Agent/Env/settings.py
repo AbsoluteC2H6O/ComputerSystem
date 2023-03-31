@@ -2,7 +2,7 @@ import pathlib
 import numpy as np
 import pygame
 
-randomCels =np.random.randint(5,16)
+randomCels =np.random.randint(5,10)
 # Grid
 ROWS = randomCels
 COLS = randomCels
