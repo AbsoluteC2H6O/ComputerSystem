@@ -31,6 +31,8 @@ def trainDeterminisctic(env, agent, episodes,total_rewards):
         terminated, truncated = False, False
         iterator =0
         i=0
+        terminatedEp = False
+        truncatedEp  = False
         while not (terminated or truncated):
             if(iterator ==0):
                 action = agent.get_action(observation)
@@ -41,14 +43,22 @@ def trainDeterminisctic(env, agent, episodes,total_rewards):
             observation = new_observation
             total_rewards[i] += iterator
             iterator+=1
+            terminatedEp= terminated
+            truncatedEp = truncated
         i+=1
-            
+                  
+    if(terminatedEp):
+        return 0
+    if(truncatedEp):
+        return 1  
 def trainStocastic(env, agent, episodes,total_rewards):
     for _ in range(episodes):
         observation, _ = env.reset()
         terminated, truncated = False, False
         i=0
         iterator = 0
+        terminatedEp = False
+        truncatedEp  = False
         while not (terminated or truncated):
             action = agent.get_action(observation)
             new_observation, reward, terminated, truncated, _ = env.step(action)
@@ -56,8 +66,15 @@ def trainStocastic(env, agent, episodes,total_rewards):
             observation = new_observation
             total_rewards[i] += iterator
             iterator +=1
+            terminatedEp= terminated
+            truncatedEp = truncated
         i+=1
-
+        
+    if(terminatedEp):
+        return 0
+    if(truncatedEp):
+        return 1
+    
 def play(env, agent):
     observation, _ = env.reset()
     terminated, truncated = False, False
@@ -107,6 +124,8 @@ if __name__ == "__main__":
     ws.cell(row=1, column=2, value=str("Estocastico")) 
     ws.cell(row=1, column=3, value=str("Gamma")) 
     ws.cell(row=1, column=4, value=str("Epsilon")) 
+    ws.cell(row=1, column=5, value=str("Determinista gano?")) 
+    ws.cell(row=1, column=6, value=str("Estocastico gano? ")) 
     for i in range(variations):
         for j in range(rounds):
             print('\nParametros: Epsilon = {}, Gamma = {}\n'.format(seedEp,seedGam ))
@@ -121,14 +140,25 @@ if __name__ == "__main__":
             ws.cell(row=fila, column=4, value=str(seedEp)) 
             # Determinista
             print('Calculo en modo Determinista')
-            trainDeterminisctic(env, agent_deterministic, episodes, total_rewards_det)
+            terminate = trainDeterminisctic(env, agent_deterministic, episodes, total_rewards_det)
             print('\tSteps de episodios determinista',total_rewards_det[0])
             ws.cell(row=fila, column=1, value=str(total_rewards_det[0])) 
             agent_deterministic.reset()
             # Estocastico
             env = gym.make("FrozenLake-v1", render_mode="human")
             print('\nCalculo en modo Estocastico')
-            trainStocastic(env, agentStocastic, episodes, total_rewards_st)
+            truncate = trainStocastic(env, agentStocastic, episodes, total_rewards_st)
+            
+            if(truncate == 0):
+                ws.cell(row=fila, column=5, value=str("Si")) 
+            else:
+                ws.cell(row=fila, column=5, value=str("No")) 
+                
+            if(truncate == 0):
+                ws.cell(row=fila, column=6, value=str("Si")) 
+            else:
+                ws.cell(row=fila, column=6, value=str("No")) 
+    
             print('\tSteps de episodios estocastico',total_rewards_st[0])
             ws.cell(row=fila, column=2, value=str(total_rewards_det[0])) 
             env.reset()
