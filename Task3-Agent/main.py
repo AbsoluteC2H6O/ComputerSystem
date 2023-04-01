@@ -127,11 +127,11 @@ if __name__ == "__main__":
     
     fila =2
     ws.cell(row=1, column=1, value=str("Determinista")) 
-    ws.cell(row=1, column=2, value=str("Estocastico")) 
-    ws.cell(row=1, column=3, value=str("Gamma")) 
-    ws.cell(row=1, column=4, value=str("Epsilon")) 
-    ws.cell(row=1, column=5, value=str("Determinista gano?")) 
-    ws.cell(row=1, column=6, value=str("Estocastico gano? ")) 
+    ws.cell(row=1, column=2, value=str("Determinista gano?")) 
+    ws.cell(row=1, column=3, value=str("Estocastico")) 
+    ws.cell(row=1, column=4, value=str("Estocastico gano? ")) 
+    ws.cell(row=1, column=5, value=str("Gamma")) 
+    ws.cell(row=1, column=6, value=str("Epsilon")) 
     for i in range(variations):
         for j in range(rounds):
             print('\nParametros: Epsilon = {}, Gamma = {}\n'.format(seedEp,seedGam ))
@@ -142,8 +142,8 @@ if __name__ == "__main__":
             agent_deterministic = MonteCarloDet(
                 env.observation_space.n, env.action_space.n, gamma=seedGam
             )
-            ws.cell(row=fila, column=3, value=str(seedGam)) 
-            ws.cell(row=fila, column=4, value=str(seedEp)) 
+            ws.cell(row=fila, column=5, value=str(seedGam)) 
+            ws.cell(row=fila, column=6, value=str(seedEp)) 
             # Determinista
             print('Calculo en modo Determinista')
             terminate = trainDeterminisctic(env, agent_deterministic, episodes, total_rewards_det)
@@ -156,17 +156,17 @@ if __name__ == "__main__":
             truncate = trainStocastic(env, agentStocastic, episodes, total_rewards_st)
             
             if(truncate == 0):
-                ws.cell(row=fila, column=5, value=str("Si")) 
+                ws.cell(row=fila, column=2, value=str("Si")) 
             else:
-                ws.cell(row=fila, column=5, value=str("No")) 
+                ws.cell(row=fila, column=2, value=str("No")) 
                 
             if(truncate == 0):
-                ws.cell(row=fila, column=6, value=str("Si")) 
+                ws.cell(row=fila, column=4, value=str("Si")) 
             else:
-                ws.cell(row=fila, column=6, value=str("No")) 
+                ws.cell(row=fila, column=4, value=str("No")) 
     
             print('\tSteps de episodios estocastico',total_rewards_st[0])
-            ws.cell(row=fila, column=2, value=str(total_rewards_det[0])) 
+            ws.cell(row=fila, column=3, value=str(total_rewards_st[0])) 
             env.reset()
             agentStocastic.reset()
             
