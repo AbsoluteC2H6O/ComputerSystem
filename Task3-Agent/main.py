@@ -166,7 +166,7 @@ if __name__ == "__main__":
                 ws.cell(row=fila, column=6, value=str("No")) 
     
             print('\tSteps de episodios estocastico',total_rewards_st[0])
-            ws.cell(row=fila, column=2, value=str(total_rewards_det[0])) 
+            ws.cell(row=fila, column=2, value=str(total_rewards_st[0])) 
             env.reset()
             agentStocastic.reset()
             
