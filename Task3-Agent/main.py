@@ -127,11 +127,13 @@ if __name__ == "__main__":
     
     fila =2
     ws.cell(row=1, column=1, value=str("Determinista")) 
-    ws.cell(row=1, column=2, value=str("Determinista gano?")) 
+    ws.cell(row=1, column=2, value=str("¿Ganó?")) 
     ws.cell(row=1, column=3, value=str("Estocastico")) 
-    ws.cell(row=1, column=4, value=str("Estocastico gano? ")) 
+    ws.cell(row=1, column=4, value=str("¿Ganó?")) 
     ws.cell(row=1, column=5, value=str("Gamma")) 
     ws.cell(row=1, column=6, value=str("Epsilon")) 
+    ws.cell(row=1, column=7, value=str("Estados")) 
+    ws.cell(row=2, column=7, value=str(randomCels*randomCels))
     for i in range(variations):
         for j in range(rounds):
             print('\nParametros: Epsilon = {}, Gamma = {}\n'.format(seedEp,seedGam ))
