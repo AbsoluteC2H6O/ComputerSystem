@@ -9,6 +9,22 @@ from gym import spaces
 
 from .game.Game import Game
 
+P = {
+    0: {
+        0: [(1.0, 0, 0.0, False)],
+        1: [(1.0, 0, 0.0, False)],
+        2: [(1.0, 4, 0.0, False)],
+        3: [(1.0, 1, 0.0, False)]
+    },
+    1: {
+        0: [(1.0, 1, 0.0, False)],
+        1: [(1.0, 0, 0.0, False)],
+        2: [(1.0, 5, 0.0, True)],
+        3: [(1.0, 2, 0.0, False)]
+    }
+}
+MatrixP = {}
+
 
 class PrincessEnv(gym.Env):
     metadata = {"render_modes": ["human"], "render_fps": 4}
@@ -24,6 +40,7 @@ class PrincessEnv(gym.Env):
         self.current_action = 0
         self.current_reward = 0.0
         self.delay = 1
+        self.P = self.generateP()
 
     def __compute_state_result(self, mc, s1, s2):
         return mc * self.n**2 + s1 * self.n + s2
@@ -45,6 +62,8 @@ class PrincessEnv(gym.Env):
         return self.__compute_state_result(*self.current_state), {}
 
     def step(self, action):
+        # Modifiquen el método step para que use la tabla P en lugar de poner las estructuras condicionales.
+        # Luego modifiquen el método step para que use la tabla P en lugar de poner las estructuras condicionales.
         self.current_action = action
 
         old_state = self.current_state
@@ -73,6 +92,111 @@ class PrincessEnv(gym.Env):
             False,
             {},
         )
+
+    def generateP(self):
+        print("Generating P matrix")
+        # Cada Estado asociado a 4 acciones / lista de posibilidades con una sola tupla de P=1
+        # Reglas:
+        # 1- Una transición que me lleve de s a s' con s != s'  tiene recompensa de -1.
+        # 2- Una transición que me lleve de s a s' con s == s'  tiene recompensa de -10.
+        # 3- Una transición que me lleve de a un estado tal en el que la posición del
+        # personaje sea igual a la de una de las estatuas, tiene recompensa -100 y debe
+        # ser marcado en True el cuarto componente de la tupla.
+        # 4- Una transición que me lleve a un estado tal en el que las estatuas estén ubicadas
+        # sobre ambos targets al mismo tiempo, tiene recompensa 1000 y debe ser marcado en True
+        # el cuarto componente de la tupla.
+        # 5. Cualquier acción de ejecutada desde un estado terminal me deja en el mismo estado
+        # con recompensa 0.
+        
+        # Finally generatin P matrix
+        for _ in range(self.n * self.n * self.n):
+            MatrixP[_] = []
+        for state in range(self.n * self.n * self.n):
+            actionsDic = {}
+            for _ in range(4):
+                actionsDic[_] = []
+            for j in range(4):
+                # emular juego con MOVE CHECK_WIN CHECK_LOSS
+                # decidir valores para la tupla
+                
+                # Como ponerlos en una posicion inicial: main character y estatuas.
+                
+                if(j ==0):
+                    self.game.world.main_character.move_left()
+                if(j ==1):
+                    self.game.world.main_character.move_down()
+                if(j ==2):
+                    self.game.world.main_character.move_right()
+                if(j ==3):
+                    self.game.world.main_character.move_up()
+                # 0: left, 1: down, 2: right, 3: up
+                
+                # Como modelar movimiento de las estatuas
+                # self.game.world.statue_1.move_left()
+                # self.game.world.statue_2.move_left()
+
+                loss = self.game.world.check_lost()
+                win = self.game.world.check_win()
+
+                reward = 0
+                
+                # Generar la logica de las reglas
+                rule1 = False
+                rule2 = False
+                rule3 = False
+                rule4 = False
+                rule5 = False
+
+                if (rule1):
+                    reward = -1
+                elif (rule2):
+                    reward = -10
+                elif (rule3):
+                    reward = -100
+                elif (rule4):
+                    reward = 1000
+                elif (rule5):
+                    reward = 0
+
+                status = False
+
+                if (loss == True):
+                    status = True
+                elif (win == True):
+                    status = True
+
+                if (rule3 == True):
+                    status = True
+
+                # Generar una logica para los estados
+                newState = state
+                if (rule1):
+                    newState += 1
+
+                actionsDic[j].append(
+                    (1.0, newState, reward, status)
+                )
+                # print('loss', loss)
+                # print('win', win)
+
+            self.appendMatrix(state, actionsDic)
+
+        # # move_right move_left move_up move_down
+        # self.game.world.main_character.move_left()
+        # # 0: left, 1: down, 2: right, 3: up
+        # self.game.world.statue_1.move_left()
+        # self.game.world.statue_2.move_right()
+
+        # loss = self.game.world.check_lost()
+        # win = self.game.world.check_win()
+        # print('loss', loss)
+        # print('win', win)
+        # print("ma", MatrixP)
+        return P
+
+    def appendMatrix(self, state, actionsDic):
+        # Appening P matrix
+        MatrixP[state] = actionsDic
 
     def render(self):
         self.game.render()
