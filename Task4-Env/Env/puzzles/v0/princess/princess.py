@@ -23,7 +23,6 @@ P = {
         3: [(1.0, 2, 0.0, False)]
     }
 }
-MatrixP = {}
 
 
 class PrincessEnv(gym.Env):
@@ -109,94 +108,88 @@ class PrincessEnv(gym.Env):
         # con recompensa 0.
         
         # Finally generatin P matrix
-        for _ in range(self.n * self.n * self.n):
-            MatrixP[_] = []
-        for state in range(self.n * self.n * self.n):
-            actionsDic = {}
-            for _ in range(4):
-                actionsDic[_] = []
-            for j in range(4):
-                # emular juego con MOVE CHECK_WIN CHECK_LOSS
-                # decidir valores para la tupla
-                
-                # Como ponerlos en una posicion inicial: main character y estatuas.
-                
-                if(j ==0):
-                    self.game.world.main_character.move_left()
-                if(j ==1):
-                    self.game.world.main_character.move_down()
-                if(j ==2):
-                    self.game.world.main_character.move_right()
-                if(j ==3):
-                    self.game.world.main_character.move_up()
-                # 0: left, 1: down, 2: right, 3: up
-                
-                # Como modelar movimiento de las estatuas
-                # self.game.world.statue_1.move_left()
-                # self.game.world.statue_2.move_left()
+        MatrixP = {state: {action: [] for action in range(self.action_space.n)} for state in range(self.observation_space.n)}
+        for ch in range(self.n ):
+            for st1 in range(self.n):
+                for st2 in range(self.n):
+                    statePos = ch * self.n**2+st1*self.n+st2
+                    print("state",statePos )
+                    for action in range(4):
+                        # emular juego con MOVE CHECK_WIN CHECK_LOSS
+                        # decidir valores para la tupla
+                        
+                        # Como ponerlos en una posicion inicial: main character y estatuas.
+                        positionI = self.game.world.main_character.returnXy()
+                        positionIST1 = self.game.world.statue_1.returnXy()
+                        positionIST2 = self.game.world.statue_2.returnXy()
+                        # Nota cada movimiento tiene un tamano de 16 px
+                        if(action ==0):
+                            self.game.world.main_character.move_left()
+                            self.game.world.statue_1.move_left()
+                            self.game.world.statue_2.move_right()
+                        if(action ==1):
+                            self.game.world.main_character.move_down()
+                            self.game.world.statue_1.move_down()
+                            self.game.world.statue_2.move_up()
+                        if(action ==2):
+                            self.game.world.main_character.move_right()
+                            self.game.world.statue_1.move_right()
+                            self.game.world.statue_2.move_left()
+                        if(action ==3):
+                            self.game.world.main_character.move_up()
+                            self.game.world.statue_1.move_up()
+                            self.game.world.statue_2.move_down()
+                        # 0: left, 1: down, 2: right, 3: up
+                        positionF = self.game.world.main_character.returnXy()
+                        # Como modelar movimiento de las estatuas
+                        positionFST1 = self.game.world.statue_1.returnXy()
+                        positionFST2 = self.game.world.statue_2.returnXy()
+                        
+                        # print("positionI", positionI, positionF)
+                        
+                        loss = self.game.world.check_lost()
+                        win = self.game.world.check_win()
 
-                loss = self.game.world.check_lost()
-                win = self.game.world.check_win()
+                        reward = 0
+                        
+                        # Generar la logica de las reglas
+                        rule1 = False
+                        rule2 = False
+                        rule3 = False
+                        rule4 = False
+                        rule5 = False
 
-                reward = 0
-                
-                # Generar la logica de las reglas
-                rule1 = False
-                rule2 = False
-                rule3 = False
-                rule4 = False
-                rule5 = False
+                        if (rule1):
+                            reward = -1
+                        elif (rule2):
+                            reward = -10
+                        elif (rule3):
+                            reward = -100
+                        elif (rule4):
+                            reward = 1000
+                        elif (rule5):
+                            reward = 0
 
-                if (rule1):
-                    reward = -1
-                elif (rule2):
-                    reward = -10
-                elif (rule3):
-                    reward = -100
-                elif (rule4):
-                    reward = 1000
-                elif (rule5):
-                    reward = 0
+                        status = False
 
-                status = False
+                        if (loss == True):
+                            status = True
+                        elif (win == True):
+                            status = True
 
-                if (loss == True):
-                    status = True
-                elif (win == True):
-                    status = True
+                        if (rule3 == True):
+                            status = True
 
-                if (rule3 == True):
-                    status = True
-
-                # Generar una logica para los estados
-                newState = state
-                if (rule1):
-                    newState += 1
-
-                actionsDic[j].append(
-                    (1.0, newState, reward, status)
-                )
-                # print('loss', loss)
-                # print('win', win)
-
-            self.appendMatrix(state, actionsDic)
-
-        # # move_right move_left move_up move_down
-        # self.game.world.main_character.move_left()
-        # # 0: left, 1: down, 2: right, 3: up
-        # self.game.world.statue_1.move_left()
-        # self.game.world.statue_2.move_right()
-
-        # loss = self.game.world.check_lost()
-        # win = self.game.world.check_win()
-        # print('loss', loss)
-        # print('win', win)
-        # print("ma", MatrixP)
+                        # Generar una logica para los estados
+                        newState = statePos
+                        if (rule1):
+                            newState += 1
+                        MatrixP[statePos][action].append((1.0, newState, reward, status))
+                  
+                        # print('loss', loss)
+                        # print('win', win)
+        print("ma", MatrixP)
         return P
-
-    def appendMatrix(self, state, actionsDic):
-        # Appening P matrix
-        MatrixP[state] = actionsDic
 
     def render(self):
         self.game.render()

@@ -51,3 +51,7 @@ class Entity(DrawableMixin):
         self.off_set_i = 1
         self.off_set_j = 0
         self.move()
+        
+    def returnXy(self):
+        position = {self.x, self.y}
+        return position
