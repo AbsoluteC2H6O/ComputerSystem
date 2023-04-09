@@ -1,7 +1,6 @@
 from .DrawableMixin import DrawableMixin
 from .Tilemap import TileMap
-
-
+from Env.puzzles.v0.princess.game.settings import TILE_SIZE
 class Entity(DrawableMixin):
     def __init__(
         self, x, y, width, height, texture_name, frame_index, world, movement, busy_mark
@@ -53,5 +52,5 @@ class Entity(DrawableMixin):
         self.move()
         
     def returnXy(self):
-        position = {self.x, self.y}
+        position = [int(self.x/TILE_SIZE), int(self.y/TILE_SIZE)]
         return position
