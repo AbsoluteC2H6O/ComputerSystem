@@ -16,25 +16,25 @@ register (
 # RobotBattery-v0, FrozenLake-v1, FrozenLake-v2
 # env = gym.make('FrozenLake-v1', render_mode="human")
 env = gym.make('Princess-v0', render_mode="human")
-# agent = ValueIteration(env.observation_space.n, env.action_space.n, env.P, 0.2)
+agent = ValueIteration(env.observation_space.n, env.action_space.n, env.P, 0.2)
 
-# # Elegir el modo Iteration o Policy
-# agent.solve(2, "Policy")
-# agent.render()
+# Elegir el modo Iteration o Policy
+agent.solve(1000, "Policy")
+agent.render()
 
-# observation, info = env.reset()
-# terminated, truncated = False, False
+observation, info = env.reset()
+terminated, truncated = False, False
 
-# env.render()
-# time.sleep(2)
+env.render()
+time.sleep(2)
 
-# while not (terminated or truncated):
-#     action = agent.get_action(observation)
-#     observation, current_reward, terminated, truncated, _, = env.step(action)
-#     if terminated and current_reward > 0:
-#         print("\n¡El agente completo con exito el juego!")
-#     elif terminated:
-#         print("\nEl agente NO completo el juego de manera exitosa, se fue por el charco.")
+while not (terminated or truncated):
+    action = agent.get_action(observation)
+    observation, current_reward, terminated, truncated, _, = env.step(action)
+    if terminated and current_reward > 0:
+        print("\n¡El agente completo con exito el juego!")
+    elif terminated:
+        print("\nEl agente NO completo el juego de manera exitosa, La estatua lo aplasto")
 
 time.sleep(2)
 env.close()

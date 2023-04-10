@@ -151,7 +151,8 @@ class PrincessEnv(gym.Env):
                         st2posEndState = self.calculateStateByCoordinate(
                             st2posEndCoordinate)
 
-                        stateByPosEnd = princessPosEndState * self.n**2 + st1posEndState*self.n+st2posEndState
+                        stateByPosEnd = princessPosEndState * self.n**2 + \
+                            st1posEndState*self.n+st2posEndState
 
                         reward = 0
                         # Logica de las reglas
@@ -160,20 +161,20 @@ class PrincessEnv(gym.Env):
                         rule3 = False
                         rule4 = False
                         rule5 = False
-                        if(stateByPosEnd != stateByPosInit):
+                        if (stateByPosEnd != stateByPosInit):
                             rule1 = True
                         else:
                             rule2 = True
-                            
-                        if(princessPosEndCoordinate == st1posEndCoordinate or princessPosEndCoordinate == st2posEndCoordinate):
-                            rule3 =True
 
-                        if(self.check_win(st1posEndCoordinate,st2posEndCoordinate)):
-                            rule4 =True
-                            
-                        if(self.check_win(st1posInitCoordinate,st2posInitCoordinate)):
-                            rule5 =True
-                            
+                        if (princessPosEndCoordinate == st1posEndCoordinate or princessPosEndCoordinate == st2posEndCoordinate):
+                            rule3 = True
+
+                        if (self.check_win(st1posEndCoordinate, st2posEndCoordinate)):
+                            rule4 = True
+
+                        if (self.check_win(st1posInitCoordinate, st2posInitCoordinate)):
+                            rule5 = True
+
                         if (rule1):
                             reward = -1
                         elif (rule2):
@@ -193,8 +194,11 @@ class PrincessEnv(gym.Env):
                             status = True
                         MatrixP[stateByPosInit][action].append(
                             (1.0, stateByPosEnd, reward, status))
-                     
+
         print("ma", MatrixP)
+        f = open("matrixP.py", "a")
+        f.write(str(MatrixP))
+        f.close()
         return MatrixP
 
     def calculateCoordinate(self, stOrChState):
@@ -206,7 +210,7 @@ class PrincessEnv(gym.Env):
     def coordinateLeft(self, stOrChState):
         row = (stOrChState // self.game.world.tile_map.cols)
         column = (stOrChState-self.game.world.tile_map.cols*row)
-        if (row - 1 > 0):
+        if ((row - 1) > 0):
             if (self.game.world.tile_map.map[row-1][column] != 0):
                 row = row - 1
         position = [row, column]
@@ -215,7 +219,7 @@ class PrincessEnv(gym.Env):
     def coordinateRight(self, stOrChState):
         row = (stOrChState // self.game.world.tile_map.cols)
         column = (stOrChState-self.game.world.tile_map.cols*row)
-        if (row + 1 < self.rows):
+        if ((row + 1) < self.rows):
             if (self.game.world.tile_map.map[row+1][column] != 0):
                 row = row + 1
         position = [row, column]
@@ -224,18 +228,18 @@ class PrincessEnv(gym.Env):
     def coordinateDown(self, stOrChState):
         row = (stOrChState // self.game.world.tile_map.cols)
         column = (stOrChState-self.game.world.tile_map.cols*row)
-        if (column + 1 < self.cols):
+        if ((column + 1) < self.cols):
             if (self.game.world.tile_map.map[row][column+1] != 0):
-                column + 1
+                column = column + 1
         position = [row, column]
         return position
 
     def coordinateUp(self, stOrChState):
         row = (stOrChState // self.game.world.tile_map.cols)
         column = (stOrChState-self.game.world.tile_map.cols*row)
-        if (column - 1 > 0):
+        if ((column - 1) > 0):
             if (self.game.world.tile_map.map[row][column-1] != 0):
-                column - 1
+                column = column - 1
         position = [row, column]
         return position
 
@@ -249,7 +253,7 @@ class PrincessEnv(gym.Env):
         t1 = self.game.world.target_1
         t2 = self.game.world.target_2
         return s1 == t1 and s2 == t2
-    
+
     def render(self):
         self.game.render()
 

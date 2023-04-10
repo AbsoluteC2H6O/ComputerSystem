@@ -34,7 +34,7 @@ class ValueIteration():
                 for s in range(self.states_n):
                     valuesPolicy = [sum([prob * (r + self.gamma * self.values[s_])
                                 for prob, s_, r, _ in self.P[s][self.policy[s]]])]
-                    print('values policy', valuesPolicy)
+                    # print('values policy', valuesPolicy)
                     self.values[s] = valuesPolicy[0]
                     # self.policy[s] = np.argmax(np.array(valuesPolicy))
                     
