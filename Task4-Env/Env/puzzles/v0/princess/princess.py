@@ -103,7 +103,7 @@ class PrincessEnv(gym.Env):
         for princessPos in range(self.n):
             for st1Position in range(self.n):
                 for st2Position in range(self.n):
-                    stateByPosInit = princessPos * self.n**2+st1Position*self.n+st2Position
+                    stateByPosInit = princessPos * self.n**2 + st1Position*self.n + st2Position*1
                     stateByPosEnd = stateByPosInit 
                     princessPosInitCoordinate = self.calculateCoordinate(
                         princessPos)
@@ -162,7 +162,7 @@ class PrincessEnv(gym.Env):
                         st2posEndState = self.calculateStateByCoordinate(
                             st2posEndCoordinate)
 
-                        stateByPosEnd = princessPosEndState * self.n**2 + st1posEndState*self.n+st2posEndState
+                        stateByPosEnd = self.__compute_state_result(princessPosEndState,st1posEndState,st2posEndState)
 
                         reward = 0
                         # Logica de las reglas
