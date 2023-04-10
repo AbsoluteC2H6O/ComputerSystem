@@ -19,7 +19,7 @@ env = gym.make('Princess-v0', render_mode="human")
 agent = ValueIteration(env.observation_space.n, env.action_space.n, env.P, 0.2)
 
 # Elegir el modo Iteration o Policy
-agent.solve(1000, "Policy")
+agent.solve(100, "Policy")
 agent.render()
 
 observation, info = env.reset()
