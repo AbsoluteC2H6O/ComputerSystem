@@ -4,6 +4,8 @@ import pygame
 import gym
 from gym import spaces
 from .game.Game import Game
+from Env.puzzles.v0.princess.game import settings
+
 
 class PrincessEnv(gym.Env):
     metadata = {"render_modes": ["human"], "render_fps": 4}
@@ -19,6 +21,12 @@ class PrincessEnv(gym.Env):
         self.current_action = 0
         self.current_reward = 0.0
         self.delay = 1
+        self.rows = 0
+        self.cols = 0
+        with open(settings.ENVIRONMENT, "r") as f:
+            self.rows, self.cols = f.readline().split(" ")
+        self.rows = int(self.rows)
+        self.cols = int(self.cols)
         self.P = self.generateP()
 
     def __compute_state_result(self, mc, s1, s2):
@@ -85,37 +93,87 @@ class PrincessEnv(gym.Env):
         # el cuarto componente de la tupla.
         # 5. Cualquier acción de ejecutada desde un estado terminal me deja en el mismo estado
         # con recompensa 0.
-        
+
         # Generate P matrix
-        MatrixP = {state: {action: [] for action in range(self.action_space.n)} for state in range(self.observation_space.n)}
-        # 0: left, 1: down, 2: right, 3: up
-        for ch in range(self.n ):
-            for st1 in range(self.n):
-                for st2 in range(self.n):
-                    statePos = ch * self.n**2+st1*self.n+st2
-                    # print("state",statePos )
+        MatrixP = {state: {action: [] for action in range(
+            self.action_space.n)} for state in range(self.observation_space.n)}
+
+        for princessPos in range(self.n):
+            for st1Position in range(self.n):
+                for st2Position in range(self.n):
+                    stateByPosInit = princessPos * self.n**2+st1Position*self.n+st2Position
+                    princessPosInitCoordinate = self.calculateCoordinate(
+                        princessPos)
+                    st1posInitCoordinate = self.calculateCoordinate(
+                        st1Position)
+                    st2posInitCoordinate = self.calculateCoordinate(
+                        st2Position)
+                    # Logica de las acciones
+                    # 0: left, 1: down, 2: right, 3: up
                     for action in range(4):
-                        # emular juego con MOVE CHECK_WIN CHECK_LOSS
-                        # decidir valores para la tupla
-                        # Como ponerlos en una posicion inicial: main character y estatuas.
-                        
-                        # if(action ==0):
-                        # if(action ==1):
-                        # if(action ==2):
-                        # if(action ==3):
-                        # Como modelar movimiento de las estatuas
-                        self.sumlateGame()
-                        loss = self.game.world.check_lost()
-                        win = self.game.world.check_win()
+                        princessPosEndCoordinate = princessPosInitCoordinate
+                        st1posEndCoordinate = st1posInitCoordinate
+                        st2posEndCoordinate = st2posInitCoordinate
+
+                        if (action == 0):
+                            princessPosEndCoordinate = self.coordinateLeft(
+                                princessPos)
+                            st1posEndCoordinate = self.coordinateLeft(
+                                st1Position)
+                            st2posEndCoordinate = self.coordinateRight(
+                                st2Position)
+                        if (action == 1):
+                            princessPosEndCoordinate = self.coordinateDown(
+                                princessPos)
+                            st1posEndCoordinate = self.coordinateDown(
+                                st1Position)
+                            st2posEndCoordinate = self.coordinateUp(
+                                st2Position)
+                        if (action == 2):
+                            princessPosEndCoordinate = self.coordinateRight(
+                                princessPos)
+                            st1posEndCoordinate = self.coordinateRight(
+                                st1Position)
+                            st2posEndCoordinate = self.coordinateLeft(
+                                st2Position)
+                        if (action == 3):
+                            princessPosEndCoordinate = self.coordinateUp(
+                                princessPos)
+                            st1posEndCoordinate = self.coordinateUp(
+                                st1Position)
+                            st2posEndCoordinate = self.coordinateDown(
+                                st2Position)
+
+                        princessPosEndState = self.calculateStateByCoordinate(
+                            princessPosEndCoordinate)
+                        st1posEndState = self.calculateStateByCoordinate(
+                            st1posEndCoordinate)
+                        st2posEndState = self.calculateStateByCoordinate(
+                            st2posEndCoordinate)
+
+                        stateByPosEnd = princessPosEndState * self.n**2 + st1posEndState*self.n+st2posEndState
 
                         reward = 0
-                        # Generar la logica de las reglas
+                        # Logica de las reglas
                         rule1 = False
                         rule2 = False
                         rule3 = False
                         rule4 = False
                         rule5 = False
+                        if(stateByPosEnd != stateByPosInit):
+                            rule1 = True
+                        else:
+                            rule2 = True
+                            
+                        if(princessPosEndCoordinate == st1posEndCoordinate or princessPosEndCoordinate == st2posEndCoordinate):
+                            rule3 =True
 
+                        if(self.check_win(st1posEndCoordinate,st2posEndCoordinate)):
+                            rule4 =True
+                            
+                        if(self.check_win(st1posInitCoordinate,st2posInitCoordinate)):
+                            rule5 =True
+                            
                         if (rule1):
                             reward = -1
                         elif (rule2):
@@ -129,19 +187,13 @@ class PrincessEnv(gym.Env):
 
                         status = False
 
-                        if (loss == True):
-                            status = True
-                        elif (win == True):
-                            status = True
                         if (rule3 == True):
                             status = True
-                        # Generar una logica para los estados
-                        # newState = statePos
-                        # if (rule1):
-                        #     newState += 1
-                        MatrixP[statePos][action].append((1.0, statePos, reward, status))
-                        # print('loss', loss)
-                        # print('win', win)
+                        elif (rule4 == True):
+                            status = True
+                        MatrixP[stateByPosInit][action].append(
+                            (1.0, stateByPosEnd, reward, status))
+                     
         print("ma", MatrixP)
         return MatrixP
 
@@ -150,10 +202,54 @@ class PrincessEnv(gym.Env):
         column = (stOrChState-self.game.world.tile_map.cols*row)
         position = [row, column]
         return position
+
+    def coordinateLeft(self, stOrChState):
+        row = (stOrChState // self.game.world.tile_map.cols)
+        column = (stOrChState-self.game.world.tile_map.cols*row)
+        if (row - 1 > 0):
+            if (self.game.world.tile_map.map[row-1][column] != 0):
+                row = row - 1
+        position = [row, column]
+        return position
+
+    def coordinateRight(self, stOrChState):
+        row = (stOrChState // self.game.world.tile_map.cols)
+        column = (stOrChState-self.game.world.tile_map.cols*row)
+        if (row + 1 < self.rows):
+            if (self.game.world.tile_map.map[row+1][column] != 0):
+                row = row + 1
+        position = [row, column]
+        return position
+
+    def coordinateDown(self, stOrChState):
+        row = (stOrChState // self.game.world.tile_map.cols)
+        column = (stOrChState-self.game.world.tile_map.cols*row)
+        if (column + 1 < self.cols):
+            if (self.game.world.tile_map.map[row][column+1] != 0):
+                column + 1
+        position = [row, column]
+        return position
+
+    def coordinateUp(self, stOrChState):
+        row = (stOrChState // self.game.world.tile_map.cols)
+        column = (stOrChState-self.game.world.tile_map.cols*row)
+        if (column - 1 > 0):
+            if (self.game.world.tile_map.map[row][column-1] != 0):
+                column - 1
+        position = [row, column]
+        return position
+
+    def calculateStateByCoordinate(self, coordinate):
+        state = coordinate[1] + self.game.world.tile_map.cols*coordinate[0]
+        return state
+
+    def check_win(self, statue_1, statue_2):
+        s1 = statue_1[0], statue_1[1]
+        s2 = statue_2[0], statue_2[1]
+        t1 = self.game.world.target_1
+        t2 = self.game.world.target_2
+        return s1 == t1 and s2 == t2
     
-    def sumlateGame(self):
-        print("Start simulating")
-        
     def render(self):
         self.game.render()
 
