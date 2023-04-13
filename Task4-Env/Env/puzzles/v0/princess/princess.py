@@ -5,7 +5,7 @@ import gym
 from gym import spaces
 from .game.Game import Game
 from Env.puzzles.v0.princess.game import settings
-from matrixP import M
+# from matrixP import M
 
 
 class PrincessEnv(gym.Env):
@@ -84,36 +84,26 @@ class PrincessEnv(gym.Env):
 
     def generateP(self):
         print("Generating P matrix")
-        # Reglas:
-        # 1- Una transición que me lleve de s a s' con s != s'  tiene recompensa de -1.
-        # 2- Una transición que me lleve de s a s' con s == s'  tiene recompensa de -10.
-        # 3- Una transición que me lleve de a un estado tal en el que la posición del
-        # personaje sea igual a la de una de las estatuas, tiene recompensa -100 y debe
-        # ser marcado en True el cuarto componente de la tupla.
-        # 4- Una transición que me lleve a un estado tal en el que las estatuas estén ubicadas
-        # sobre ambos targets al mismo tiempo, tiene recompensa 1000 y debe ser marcado en True
-        # el cuarto componente de la tupla.
-        # 5. Cualquier acción de ejecutada desde un estado terminal me deja en el mismo estado
-        # con recompensa 0.
-
         # Generate P matrix
         MatrixP = {state: {action: [] for action in range(
             self.action_space.n)} for state in range(self.observation_space.n)}
-
+        self.terminal_state = None
         for princessPos in range(self.n):
             for st1Position in range(self.n):
                 for st2Position in range(self.n):
                     stateByPosInit = princessPos * self.n**2 + st1Position*self.n + st2Position*1
-                    stateByPosEnd = stateByPosInit 
-                    princessPosInitCoordinate = self.calculateCoordinate(
-                        princessPos)
-                    st1posInitCoordinate = self.calculateCoordinate(
-                        st1Position)
-                    st2posInitCoordinate = self.calculateCoordinate(
-                        st2Position)
+
                     # Logica de las acciones
                     # 0: left, 1: down, 2: right, 3: up
                     for action in range(4):
+                        stateByPosEnd = stateByPosInit
+                        princessPosInitCoordinate = self.calculateCoordinate(
+                            princessPos)
+                        st1posInitCoordinate = self.calculateCoordinate(
+                            st1Position)
+                        st2posInitCoordinate = self.calculateCoordinate(
+                            st2Position)
+                        
                         princessPosEndCoordinate = princessPosInitCoordinate
                         st1posEndCoordinate = st1posInitCoordinate
                         st2posEndCoordinate = st2posInitCoordinate
@@ -122,38 +112,54 @@ class PrincessEnv(gym.Env):
                             if (self.princessCanMove(princessPos, st1posInitCoordinate, st2posInitCoordinate, action)):
                                 princessPosEndCoordinate = self.coordinateLeft(
                                     princessPos)
-                            if (self.StatusCanMove(st1posInitCoordinate, st2posInitCoordinate, action)):
-                                st1posEndCoordinate = self.coordinateLeft(
-                                    st1Position)
-                                st2posEndCoordinate = self.coordinateRight(
-                                    st2Position)
+                                if (self.Status1CanMove(st1posInitCoordinate, st2posInitCoordinate, action)):
+                                    st1posEndCoordinate = self.coordinateLeft(
+                                        st1Position)
+                                if(self.Status2CanMove(st1posInitCoordinate, st2posInitCoordinate, action)):
+                                    st2posEndCoordinate = self.coordinateRight(
+                                        st2Position)
+                                if(st2posEndCoordinate ==st1posEndCoordinate):
+                                    st1posEndCoordinate =st1posInitCoordinate
+                                    st2posEndCoordinate = st2posInitCoordinate
                         if (action == 1):
                             if (self.princessCanMove(princessPos, st1posInitCoordinate, st2posInitCoordinate, action)):
                                 princessPosEndCoordinate = self.coordinateDown(
                                     princessPos)
-                            if (self.StatusCanMove(st1posInitCoordinate, st2posInitCoordinate, action)):
-                                st1posEndCoordinate = self.coordinateDown(
-                                    st1Position)
-                                st2posEndCoordinate = self.coordinateUp(
-                                    st2Position)
+                                if (self.Status1CanMove(st1posInitCoordinate, st2posInitCoordinate, action)):
+                                    st1posEndCoordinate = self.coordinateDown(
+                                        st1Position)
+                                if(self.Status2CanMove(st1posInitCoordinate, st2posInitCoordinate, action)):
+                                    st2posEndCoordinate = self.coordinateUp(
+                                        st2Position)
+                                if(st2posEndCoordinate ==st1posEndCoordinate):
+                                    st1posEndCoordinate =st1posInitCoordinate
+                                    st2posEndCoordinate = st2posInitCoordinate
                         if (action == 2):
                             if (self.princessCanMove(princessPos, st1posInitCoordinate, st2posInitCoordinate, action)):
                                 princessPosEndCoordinate = self.coordinateRight(
                                     princessPos)
-                            if (self.StatusCanMove(st1posInitCoordinate, st2posInitCoordinate, action)):
-                                st1posEndCoordinate = self.coordinateRight(
-                                    st1Position)
-                                st2posEndCoordinate = self.coordinateLeft(
-                                    st2Position)
+                                if (self.Status1CanMove(st1posInitCoordinate, st2posInitCoordinate, action)):
+                                    st1posEndCoordinate = self.coordinateRight(
+                                        st1Position)
+                                if(self.Status2CanMove(st1posInitCoordinate, st2posInitCoordinate, action)):
+                                    st2posEndCoordinate = self.coordinateLeft(
+                                        st2Position)
+                                if(st2posEndCoordinate ==st1posEndCoordinate):
+                                    st1posEndCoordinate =st1posInitCoordinate
+                                    st2posEndCoordinate = st2posInitCoordinate
                         if (action == 3):
                             if (self.princessCanMove(princessPos, st1posInitCoordinate, st2posInitCoordinate, action)):
                                 princessPosEndCoordinate = self.coordinateUp(
                                     princessPos)
-                            if (self.StatusCanMove(st1posInitCoordinate, st2posInitCoordinate, action)):
-                                st1posEndCoordinate = self.coordinateUp(
-                                    st1Position)
-                                st2posEndCoordinate = self.coordinateDown(
-                                    st2Position)
+                                if (self.Status1CanMove(st1posInitCoordinate, st2posInitCoordinate, action)):
+                                    st1posEndCoordinate = self.coordinateUp(
+                                        st1Position)
+                                if(self.Status2CanMove(st1posInitCoordinate, st2posInitCoordinate, action)):
+                                    st2posEndCoordinate = self.coordinateDown(
+                                        st2Position)
+                                if(st2posEndCoordinate ==st1posEndCoordinate):
+                                    st1posEndCoordinate =st1posInitCoordinate
+                                    st2posEndCoordinate = st2posInitCoordinate
 
                         princessPosEndState = self.calculateStateByCoordinate(
                             princessPosEndCoordinate)
@@ -162,7 +168,8 @@ class PrincessEnv(gym.Env):
                         st2posEndState = self.calculateStateByCoordinate(
                             st2posEndCoordinate)
 
-                        stateByPosEnd = self.__compute_state_result(princessPosEndState,st1posEndState,st2posEndState)
+                        stateByPosEnd = self.__compute_state_result(
+                            princessPosEndState, st1posEndState, st2posEndState)
 
                         reward = 0
                         # Logica de las reglas
@@ -171,30 +178,40 @@ class PrincessEnv(gym.Env):
                         rule3 = False
                         rule4 = False
                         rule5 = False
+                        # 1- Una transición que me lleve de s a s' con s != s'  tiene recompensa de -1.
                         if (stateByPosEnd != stateByPosInit):
                             rule1 = True
+                        # 2- Una transición que me lleve de s a s' con s == s'  tiene recompensa de -10.
                         else:
                             rule2 = True
 
+                        # 3- Una transición que me lleve de a un estado tal en el que la posición del
+                        # personaje sea igual a la de una de las estatuas, tiene recompensa -100 y debe
+                        # ser marcado en True el cuarto componente de la tupla.
                         if (princessPosEndCoordinate == st1posEndCoordinate or princessPosEndCoordinate == st2posEndCoordinate):
                             rule3 = True
 
+                        # 4- Una transición que me lleve a un estado tal en el que las estatuas estén ubicadas
+                        # sobre ambos targets al mismo tiempo, tiene recompensa 1000 y debe ser marcado en True
+                        # el cuarto componente de la tupla.
                         if (self.check_win(st1posEndCoordinate, st2posEndCoordinate)):
                             rule4 = True
 
                         if (self.check_win(st1posInitCoordinate, st2posInitCoordinate)):
                             rule5 = True
-
-                        if (rule1):
-                            reward = -1
-                        elif (rule2):
-                            reward = -10
-                        elif (rule3):
+ 
+                        if (rule3):
                             reward = -100
                         elif (rule4):
                             reward = 1000
-                        elif (rule5):
-                            reward = 0
+                            self.terminal_state = stateByPosEnd
+                        elif (rule2):
+                            reward = -10
+                        else:
+                            reward = -1
+ 
+                        # elif (rule5):
+                        #     reward = 0
 
                         status = False
 
@@ -202,8 +219,15 @@ class PrincessEnv(gym.Env):
                             status = True
                         elif (rule4 == True):
                             status = True
-                        MatrixP[stateByPosInit][action].append(
-                            (1.0, stateByPosEnd, reward, status))
+
+                        # 5. Cualquier acción de ejecutada desde un estado terminal me deja en el mismo estado
+                        # con recompensa 0.
+                        if (stateByPosInit == self.terminal_state):
+                            MatrixP[stateByPosInit][action].append(
+                                (1.0, stateByPosInit, 0.0, True))
+                        else:
+                            MatrixP[stateByPosInit][action].append(
+                                (1.0, stateByPosEnd, reward, status))
 
         # print("ma", MatrixP)
         # f = open("matrixP.py", "a")
@@ -217,37 +241,37 @@ class PrincessEnv(gym.Env):
         position = [row, column]
         return position
 
-    def coordinateLeft(self, stOrChState):
+    def coordinateUp(self, stOrChState):
         row = (stOrChState // self.game.world.tile_map.cols)
         column = (stOrChState-self.game.world.tile_map.cols*row)
-        if ((row - 1) >= 0):
+        if ((row - 1) >= 0 and row < self.game.world.tile_map.rows and column >= 0 and column < self.game.world.tile_map.cols):
             if (self.game.world.tile_map.map[row-1][column] != 0):
                 row = row - 1
-        position = [row, column]
-        return position
-
-    def coordinateRight(self, stOrChState):
-        row = (stOrChState // self.game.world.tile_map.cols)
-        column = (stOrChState-self.game.world.tile_map.cols*row)
-        if ((row + 1) < self.rows):
-            if (self.game.world.tile_map.map[row+1][column] != 0):
-                row = row + 1
         position = [row, column]
         return position
 
     def coordinateDown(self, stOrChState):
         row = (stOrChState // self.game.world.tile_map.cols)
         column = (stOrChState-self.game.world.tile_map.cols*row)
-        if ((column + 1) < self.cols):
+        if ((row + 1) < self.game.world.tile_map.rows and row >= 0 and column >= 0 and column < self.game.world.tile_map.cols):
+            if (self.game.world.tile_map.map[row+1][column] != 0):
+                row = row + 1
+        position = [row, column]
+        return position
+
+    def coordinateRight(self, stOrChState):
+        row = (stOrChState // self.game.world.tile_map.cols)
+        column = (stOrChState-self.game.world.tile_map.cols*row)
+        if ((column + 1) < self.game.world.tile_map.cols and (column + 1) >= 0 and row >= 0 and row < self.game.world.tile_map.rows):
             if (self.game.world.tile_map.map[row][column+1] != 0):
                 column = column + 1
         position = [row, column]
         return position
 
-    def coordinateUp(self, stOrChState):
+    def coordinateLeft(self, stOrChState):
         row = (stOrChState // self.game.world.tile_map.cols)
         column = (stOrChState-self.game.world.tile_map.cols*row)
-        if ((column - 1) >= 0):
+        if ((column - 1) >= 0 and (column - 1) < self.game.world.tile_map.cols and row >= 0 and row < self.game.world.tile_map.rows):
             if (self.game.world.tile_map.map[row][column-1] != 0):
                 column = column - 1
         position = [row, column]
@@ -256,13 +280,13 @@ class PrincessEnv(gym.Env):
     def princessCanMove(self, prPos, st1Pos, st2Pos, action):
         row = (prPos // self.game.world.tile_map.cols)
         column = (prPos-self.game.world.tile_map.cols*row)
-        if (action == 0):
-            row = row-1
-        if (action == 1):
-            column = column+1
-        if (action == 2):
-            row = row+1
         if (action == 3):
+            row = row-1
+        if (action == 2):
+            column = column+1
+        if (action == 1):
+            row = row+1
+        if (action == 0):
             column = column-1
 
         if (row != st1Pos[0] and row != st2Pos[0] and column != st1Pos[1] and column != st2Pos[1]):
@@ -270,30 +294,56 @@ class PrincessEnv(gym.Env):
         else:
             return False
 
-    def StatusCanMove(self,st1Pos, st2Pos, action):
+    def Status1CanMove(self, st1Pos, st2Pos, action):
         r1 = st1Pos[0]
         c1 = st1Pos[1]
         r2 = st2Pos[0]
         c2 = st2Pos[1]
 
-        if (action == 0):
-            r1 = r1-1
-            r2 = r2+1
-        if (action == 1):
-            c1 = c1+1
-            c2 = c2-1
-        if (action == 2):
-            r1 = r1+1
-            r2 = r2-1
         if (action == 3):
+            r1 = r1-1
+        if (action == 2):
+            c1 = c1+1
+        if (action == 1):
+            r1 = r1+1
+        if (action == 0):
             c1 = c1-1
-            c2 = c2+1
 
         if (c1 != c2 and r1 != r2):
             return True
         else:
             return False
 
+    def Status2CanMove(self, st1Pos, st2Pos, action):
+        r1 = st1Pos[0]
+        c1 = st1Pos[1]
+        r2 = st2Pos[0]
+        c2 = st2Pos[1]
+
+        if (action == 3):
+            r1 = r1-1
+        if (action == 2):
+            c1 = c1+1
+        if (action == 1):
+            r1 = r1+1
+        if (action == 0):
+            c1 = c1-1
+
+        if (c1 != c2 and r1 != r2):
+            if (action == 3):
+                r2 = r2+1
+            if (action == 2):
+                c2 = c2-1
+            if (action == 1):
+                r2 = r2-1
+            if (action == 0):
+                c2 = c2+1
+
+            if (c1 != c2 and r1 != r2):
+                return True
+            else:
+                return False
+            
     def calculateStateByCoordinate(self, coordinate):
         state = int(coordinate[1] +
                     self.game.world.tile_map.cols*coordinate[0])
