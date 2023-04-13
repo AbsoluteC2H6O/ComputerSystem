@@ -1,34 +1,20 @@
-- Task6-Agent Last images uploaded.
-- Task6-Agent Finall changes in average.
-- Task6-Agent Finall changes in average.
-- Task6-Agent Finall changes in average.
-- Task6-Agent Corrected experiment numbers.
-- Task6-agent Corrected playing images.
-- Task6-Agent Final changes.
-- Task6-Agent Generated DynaQ-+ graphics.
-- Task6-Agent Corrected steps, graphics.
-- Task6-Agent Added structure to show graphics.
-- Task6-Agent Two agents completed.
-- Task6-Agent Dyna Q plus first implementation.
-- Task6-Agent actualizacion 2
-- Task6-Agent actualizacion
-- Add files via upload
-- Create production.txt
-- Create local.txt
-- Create common.txt
-- Create production.txt
-- Create local.txt
-- Create common.txt
-- Task6-Agent commir folders.
-- Task6-Agent Corrected folders.
-- Task6-Agent mover la carpeta requirements
-- Create production.txt
-- Create local.txt
-- Create common.txt
-- Task6-Agent Corrected folder names.
-- Task6Agent Agent configuration folder.
-- Task6-Agent run first blocks and princess environment.
-- Task6-Agent configurate folder for task 6 DYNA-Q.
+- Task4-Env Corrected some details.
+- Task4-Env corrections.
+- Task4-Env corrected statues in same position and princess.
+- Task4-Env Corrected matrix P, generate a fie and connected with policy iteration algorithm.
+- Task4-Env Generate P matrix algorithm completed.
+- Task4-Env Title size env added.
+- Task4-Env Calculate states and improvement in dictionary.
+- Task4-Env Created generation matrix p algorithm base.
+- Task4-Env Created folder.
+- Task4-Env Merge main branch.
+- Task3-Agent Updated documents
+- Task3-Agent Corrected documents.
+- Task3-Agent corrected doc columns
+- Task3-Agent Corrected stocastic values.
+- Task3-Agent added 100000 experiment.
+- Task3 agent (#8)
+- Task6 agent (#7)
 - master updated changelog.
 - Task5 agent 2 (#6)
 - Task4 agent (#5)
